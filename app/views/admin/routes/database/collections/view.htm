@@ -1,0 +1,468 @@
+ 
+<div class="position-relative mb-4">
+    <check if="{{ isset(@notfound) }}">
+        <true>
+            <div class="w-100 my-4">
+                <h1>Not found</h1>
+                <p class="text-body-secondary">Collection <span class="fw-bolder">{{isset(@GET.view)?@GET.view:''}}</span> was not found in our records.</p>
+            </div>
+        </true>
+        <false>
+            <div class="modal fade" id="newEntryModal" tabindex="-1" aria-labelledby="newEntryModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="newEntryModalLabel">New Entry</h5>
+                      <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="newEntyForm">
+                    <div class="modal-body">
+                      <repeat group="{{@collection.fields}}" value="{{@field}}">
+                        <div class="d-flex bg-body flex-column mb-4">
+                        <label for="newEntry-{{@field.name}}" class="mb-2 fw-bolder">{{@field.name}}</label>
+                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="newEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.default}}" placeholder="{{@field.default}}" {{@field.notnull==0?'':'required'}}>
+                        </div>
+                      </repeat>  
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="newEntryExit">Cancel</button>
+                      <button class="btn btn-primary" type="submit">Save changes</button>
+                    </div>
+                  </form>
+                  </div>
+                </div>
+            </div>
+            <div class="modal fade" id="fieldsModal" tabindex="-1" aria-labelledby="fieldsModalLabel" aria-hidden="true" style="display: none;">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="fieldsModalLabel">Data Fields</h5>
+                    <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form id="newEntyForm">
+                  <div class="modal-body">
+                    <repeat group="{{@collection.fields}}" value="{{@field}}">
+                      <p>{{@field.name}} ( {{@field.type}} )</p> 
+                    </repeat>  
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                  </div>
+                </form>
+                </div>
+              </div>
+          </div>
+            <div class="modal fade" id="backupModal" tabindex="-1" aria-labelledby="backupModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="backupModalLabel">Backup Collection</h5>
+                      <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Woohoo, you're reading this text in a modal!</p>
+                    </div>
+                    <div class="modal-footer">  
+                        <div class="col">
+                          <div class="d-flex flex-column gap-1">
+                            <span class="text-body-secondary">Entries: {{@collection.dataCount}}</span>
+                            <span class="text-body-secondary">Data Fields: {{@collection.fieldsCount}}</span>
+                          </div>
+                        </div>
+                        <div class="col text-end">
+                          <button class="btn btn-primary" type="button">
+                            <svg class="icon">
+                                <use xlink:href="/public/assets/icons/svg/free.svg#cil-data-transfer-down"></use>
+                            </svg>
+                            Download
+                        </button>
+                        </div>  
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true" style="display: none;">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="renameModalLabel">Rename Collection</h5>
+                    <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Woohoo, you're reading this text in a modal!</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="button">Save changes</button>
+                  </div>
+                </div>
+              </div>
+          </div>
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+                      <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Woohoo, you're reading this text in a modal!</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                      <button class="btn btn-danger" type="button">Yes, delete it</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="w-100 mb-4">
+                <div class="d-flex justify-content-between align-items-center"> 
+                    <h1>{{@collection.name}}</h1>
+                    <div class="ms-auto">
+                        <a role="button" class="btn bg-color border" aria-label="New Entry" data-ui-toggle="modal" data-ui-target="#newEntryModal">+ New Entry</a>  
+                    </div> 
+                </div>
+            </div>
+
+            <div class="card mb-4">   
+                <div class="card-header"> 
+                  <div class="d-flex justify-content-between"> 
+                    <span>Entries: {{ @collection.dataCount }} found</span> 
+                  </div>
+                </div>
+                <div class="card-body pb-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover m-0">
+                        <thead>
+                          <tr> 
+                            <repeat group="{{@collection.fields}}" value="{{@field}}">
+                                <th scope="col">{{@field.name}}</th> 
+                            </repeat> 
+                            <th scope="col" class="text-end">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <check if="{{@collection.data}}"> 
+                                <repeat group="{{@collection.data}}" value="{{@data}}" key="{{@key}}">
+                                <tr>  
+                                  <repeat group="{{@collection.fields}}" value="{{@field}}">
+                                    <td> 
+                                      {{ !empty(@data[@field.name]) ? stripslashes(@data[@field.name]) : '' }}
+                                    </td>  
+                                  </repeat>
+                                    <td class="text-end pe-0">
+                                      <div class="inline-flex"> 
+                                        <a role="button" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary" aria-label="Edit" href="/{{@SITE.uri_backend}}/database/collections?view={{@collection.name}}">
+                                          <svg class="icon icon-sm">
+                                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                                          </svg> 
+                                          Edit
+                                          </a> 
+                                      </div>
+                                    </td>
+                                </tr> 
+                                </repeat>
+                            </check>  
+                        </tbody>
+                      </table>
+                  </div>
+                </div> 
+            </div>
+            <div class="w-100 py-4 position-relative">
+                <div class="row row-cols-1 row-cols-md-2">
+
+                    <div class="col mb-4">
+                        <div class="card">
+                            <div class="card-header"> 
+                                <div class="d-flex justify-content-between"> 
+                                  <span>Data Fields</span> 
+                                  <a role="button" class="btn btn-sm text-primary p-0" aria-label="Edit Data Fields" data-ui-toggle="modal" data-ui-target="#fieldsModal"> 
+                                    Add / Remove
+                                  </a>
+                                </div>
+                              </div>
+                              <div class="card-body">
+                                <check if="{{ @collection.fieldsCount > 0 }}">
+                                  <true>
+                                    <div class="table-responsive"> 
+                                    <table class="table table-hover m-0">
+                                      <thead>
+                                      <tr> 
+                                          <th scope="col">Name</th>  
+                                          <th scope="col">Type</th>  
+                                          <th scope="col">Default</th>  
+                                          <th scope="col">Is Null</th> 
+                                          <th scope="col">Key</th>  
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                          <repeat group="{{@collection.fields}}" value="{{@field}}"> 
+                                            <tr>   
+                                                <td>{{@field.name}}</td> 
+                                                <td>{{@field.type}}</td>  
+                                                <td>{{@field.default}}</td> 
+                                                <td>{{@field.notnull==0?'FALSE':'TRUE'}}</td> 
+                                                <td>{{@field.key==0?'':'🔑'}}</td> 
+                                            </tr> 
+                                          </repeat>  
+                                      </tbody>
+                                    </table> 
+                                    </div>
+                                  </true>
+                                  <false>
+                                    <p>Data fields empty.</p>
+                                  </false>
+                                </check>
+                               
+                              </div> 
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card">
+                            <div class="card-header"> 
+                                <div class="d-flex justify-content-between"> 
+                                  <span>Manage Collection</span> 
+                                </div>
+                              </div>
+                              <div class="card-body">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a role="button" class="btn btn-secondary" aria-label="Save Backup" data-ui-toggle="modal" data-ui-target="#backupModal">
+                                        <svg class="icon">
+                                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-data-transfer-down"></use>
+                                        </svg>
+                                        Import / Export
+                                    </a>
+                                    <a role="button" class="btn btn-info" aria-label="Rename Collection" data-ui-toggle="modal" data-ui-target="#renameModal">
+                                      <svg class="icon">
+                                          <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                                      </svg>
+                                      Rename Collection
+                                  </a>
+                                    <a role="button" class="btn btn-danger" aria-label="Delete Collection" data-ui-toggle="modal" data-ui-target="#deleteModal">
+                                        <svg class="icon">
+                                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
+                                        </svg>
+                                        Delete Collection
+                                    </a>
+                                </div>
+                              </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-100 pt-2 position-relative">
+              <div class="accordion" id="devBlock">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="devConsoleTitle">
+                    <button class="accordion-button collapsed gap-2" type="button" data-ui-toggle="collapse" data-ui-target="#devConsole" aria-expanded="false" aria-controls="devConsole">
+                      <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-code"></use>
+                    </svg>
+                    Developer Mode
+                    </button>
+                  </h2>
+                  <div class="accordion-collapse collapse" id="devConsole" aria-labelledby="devConsoleTitle" data-ui-parent="#devBlock" style="">
+                    <div class="accordion-body">
+                      <div class="d-flex flex-wrap gap-2">
+                        <div class="input-group mb-2">
+                          <span class="input-group-text p-0">
+                            <select class="form-select" aria-label="HTTP Request" id="devReqType" name="devReqType"> 
+                              <option value="GET" selected="">GET</option>
+                              <option value="POST">POST</option> 
+                              <option value="PUT">PUT</option> 
+                              <option value="DELETE">DELETE</option> 
+                            </select> 
+                          </span>
+                          <input class="form-control" type="text" id="devReqUri" name="devReqUri" placeholder="URI" value="{{ @API.base_url .'/'. @collection.name }}" readonly disabled>
+                        </div>
+                
+                        <!-- Radio buttons for Node.js and cURL -->
+                        <div class="mb-3">
+                          <label class="form-label">Library:</label>
+                          <div>
+                            <input type="radio" id="nodeRadio" name="reqMethod" value="node" checked>
+                            <label for="nodeRadio">Node.js (Fetch API)</label>
+                          </div>
+                          <div>
+                            <input type="radio" id="curlRadio" name="reqMethod" value="curl">
+                            <label for="curlRadio">cURL</label>
+                          </div>
+                        </div>
+                
+                        <div class="input-group mb-4"> 
+                          <textarea rows="10" cols="250" class="form-control" id="devReqParams" name="devReqParams" aria-label="PARAMS" readonly></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </div> 
+            </div>
+
+            <input type="hidden" id="tbl_name" name="tbl_name" value="{{@collection.name}}">
+            <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+        </false>
+    </check> 
+
+</div>
+
+
+<script>
+  "use strict"
+
+  const newEntyForm = document.getElementById('newEntyForm'); 
+  const token = document.querySelector('#token'); 
+  const tableNameInput = document.querySelector("#tbl_name"); 
+
+
+  //
+  if(newEntyForm){
+    newEntyForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const formData = new FormData(newEntyForm);
+    const schema = {};
+    formData.forEach((value, key) => {
+      schema[key] = value;  // Dynamically adds field name and value
+    });
+    
+    const payload = {
+      token: token.value,
+      collection: tableNameInput.value,
+      schema: schema,  // Now contains all the form inputs
+    }
+
+    let uri_request = "database/collections?add-entry";
+    fetchRequest(payload, uri_request);
+  });
+
+  }
+
+    // Add Event Listeners
+    async function fetchRequest(formData, url){
+      event.preventDefault();  
+      hideAlerts();
+
+      try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/"+url, formData, {
+          headers: {
+              "Content-Type": "application/json", 
+          },
+        }).then(response => {  
+          const data = response.data;
+          if (data.status === "success") {  
+            alert(response.data.message);
+            window.location.reload();
+            return false;
+          } else {
+              showAlert("error", response.data.message);
+          }
+        }).finally(() => {
+           let hideEntryModal = document.getElementById('newEntryExit');
+           if(hideEntryModal){hideEntryModal.click()};
+        });
+
+      } catch (error) {
+          showAlert("error", "Error creating table. Please try again later.");
+      }
+
+    }
+
+   document.addEventListener('DOMContentLoaded', () => {
+    const devReqType = document.getElementById('devReqType');
+    const devReqParams = document.getElementById('devReqParams');
+    const devReqUri = document.getElementById('devReqUri');
+    const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
+
+    const fetchExamples = (method, uri) => {
+        const templates = {
+            GET: `fetch('${uri}', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            POST: `fetch('${uri}', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    },
+    body: JSON.stringify({
+        key: 'value',
+        anotherKey: 'anotherValue'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            PUT: `fetch('${uri}', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    },
+    body: JSON.stringify({
+        key: 'updatedValue'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            DELETE: `fetch('${uri}', {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`
+        };
+        return templates[method];
+    };
+
+    const curlExamples = (method, uri) => {
+        const templates = {
+            GET: `curl -X GET "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`,
+            POST: `curl -X POST "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "value", "anotherKey": "anotherValue"}'`,
+            PUT: `curl -X PUT "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "updatedValue"}'`,
+            DELETE: `curl -X DELETE "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`
+        };
+        return templates[method];
+    };
+
+    const updateTextarea = () => {
+        const selectedMethod = devReqType.value;
+        const uri = devReqUri.value;
+        const selectedReqMethod = document.querySelector('input[name="reqMethod"]:checked').value;
+
+        let example;
+        if (selectedReqMethod === 'node') {
+            example = fetchExamples(selectedMethod, uri); // Use fetch examples for Node.js
+        } else if (selectedReqMethod === 'curl') {
+            example = curlExamples(selectedMethod, uri); // Use cURL examples
+        }
+
+        devReqParams.value = example;
+    };
+
+    // Set default to GET example using the URI from devReqUri
+    updateTextarea();
+
+    // Update textarea based on selected method and URI
+    devReqType.addEventListener('change', updateTextarea);
+    reqMethodRadios.forEach(radio => {
+        radio.addEventListener('change', updateTextarea);
+    });
+});
+
+
+ 
+</script>

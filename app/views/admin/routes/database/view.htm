@@ -1,0 +1,35 @@
+ 
+
+<div class="position-relative mb-4">
+    <div class="w-100">
+        <span class="h1">Collections</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <repeat group="{{@collectionsList}}" value="{{@item}}">
+            <check if="{{ @item.name != 'sqlite_sequence' }}">  
+            <set collectionName="{{@item.name}}"></set>
+
+            <div class="col mb-3">
+            <div class="card bg-color p-3">
+                <div class="w-100 d-flex align-items-center justify-content-between gap-2"> 
+                    <a aria-label="{{@collectionName}}" href="/{{@SITE.uri_backend}}/database/collections?view={{@collectionName}}" class="fs-6 fw-bolder text-body text-truncate">
+                    <svg class="icon">
+                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-storage"></use>
+                    </svg>
+                    {{@collectionName}}
+                    </a>
+                    <div class="ms-auto">
+                        <a class="btn btn-sm bg-color border" role="button" aria-label="Manage" href="/{{@SITE.uri_backend}}/database/collections?view={{@collectionName}}">Manage</a> 
+                    </div>
+                </div>
+            </div>
+            </div>
+            </check>
+        </repeat>
+         
+    </div>
+    <div class="mt-2">
+        <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/database/collections/add" class="btn bg-primary">+ New collection</a>
+    </div>
+</div>

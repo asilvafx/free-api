@@ -1,0 +1,25 @@
+{
+    "name": "pigmilcom/webapp",
+    "type": "project",
+    "config": {
+        "vendor-dir": "app/vendor/",
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+        "autoload": {
+        "psr-4": {
+            "Pigmilcom\\Webapp\\": "app/vendor/src"
+        }
+    },
+    "authors": [
+        {
+            "name": "pigmilcom"
+        }
+    ],
+    "require": {
+        "pragmarx/google2fa": "^8.0",
+        "yohang88/letter-avatar": "^2.3",
+        "bacon/bacon-qr-code": "^3.0"
+    }
+}

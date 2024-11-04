@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="{{isset(@PAGE.description)?@PAGE.description:''}}">
+  <meta name="author" content="PIGMIL.COM">
+  <meta name="keyword" content="{{isset(@PAGE.keywords)?@PAGE.keywords:''}}">
+  <meta name="robots" content="index,follow">
+  <meta name="googlebot" content="index">
+  <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-96x96.png" sizes="96x96">
+  <link rel="apple-touch-icon" sizes="57x57" href="{{@PUBLIC}}/manifest/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="{{@PUBLIC}}/manifest/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="{{@PUBLIC}}/manifest/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{@PUBLIC}}/manifest/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="{{@PUBLIC}}/manifest/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="{{@PUBLIC}}/manifest/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="{{@PUBLIC}}/manifest/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="{{@PUBLIC}}/manifest/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{@PUBLIC}}/manifest/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/android-chrome-192x192.png" sizes="192x192">
+  <link rel="manifest" href="{{@PUBLIC}}/manifest/manifest.json">
+  <meta name="msapplication-TileImage" content="{{@PUBLIC}}/manifest/mstile-144x144.png">
+  <meta name="msapplication-TileColor" content="{{@SITE.color_primary}}">
+  <meta name="theme-color" content="currentColor"> 
+  
+  <title>{{isset(@PAGE.title)?@PAGE.title.' - ':''}} {{isset(@SITE.name)?@SITE.name:''}}</title> 
+
+  <link href="{{@PUBLIC}}/client/app.css?v={{@DEBUG>0?time():@VERSION}}" rel="stylesheet">
+  <script src="{{@PUBLIC}}/client/app.js?v={{@DEBUG>0?time():@VERSION}}"></script>
+  
+  <style>
+    :root {
+      --primary-color: {{@SITE.color_primary}};
+      --primary-text: {{@SITE.color_primary_text}};  
+      --app-dark-color: {{@SITE.color_dark}};
+      --app-light-color: {{@SITE.color_light}}; 
+      --app-dark-color-secondary: {{@SITE.color_dark_secondary}};
+      --app-light-color-secondary: {{@SITE.color_light_secondary}};
+    }
+  </style>
+  <style> 
+     <include href="{{ 'index.css' }}" />
+  </style>
+</head>
+<body>
+  <div class="min-vh-100 d-flex flex-row align-items-center"> 
+    <div class="container"> 
+      <check if="{{ isset(@CONTENT) }}"> 
+        <include href="{{ 'routes' . @CONTENT . '/view.htm' }}" />
+      </check> 
+    </div>
+  </div>   
+  <script>
+    "use strict" 
+      <include href="index.js" />  
+  </script>
+</body>
+</html>

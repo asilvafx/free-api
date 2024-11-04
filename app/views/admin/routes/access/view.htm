@@ -1,0 +1,140 @@
+ 
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-start">
+      <div class="col">
+        <span class="h1">Users</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+      </div>
+      <div class="ms-auto">
+        <a role="button" class="btn bg-color border" aria-label="Permissions" href="/{{@SITE.uri_backend}}/access/permissions">
+          <svg class="icon">
+            <use xlink:href="/public/assets/icons/svg/free.svg#cil-shield-alt"></use>
+          </svg> Permissions
+        </a>
+    </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header"> 
+          <div class="d-flex justify-content-between"> 
+            <span>Total: {{count(@usersAll)}}</span>
+            <span><a role="button" aria-label="View all" href="/{{@SITE.uri_backend}}/access/users">View all</a></span>
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+                <thead>
+                  <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <repeat group="{{ @usersList }}" value="{{ @item }}" key="{{ @key }}"> 
+                    <set displayName="{{@item.displayName}}"></set>
+                    <set userEmail="{{@item.email}}"></set>
+                    <set userRole="{{@item.role}}"></set>
+                    <set userIsAdmin="{{@item.is_admin}}"></set>
+                    <set userIsSuper="{{@item.is_super_admin}}"></set>
+                    <set userIsDev="{{@item.is_developer}}"></set>
+                    <set userUid="{{@item.user_id}}"></set>
+                    <tr> 
+                      <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}">
+                        <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1?'isAdminClr':''}}">
+                          <span>{{@userIsSuper===1?'★ ':''}}</span>
+                          <span>{{@displayName}}</span>
+                          <check if="{{@userIsDev===1}}">
+                            <span class="position-relative">
+                            <span class="badge text-uppercase bg-body">Dev</span>
+                            </span>
+                          </check>  
+                      </span></a></td>
+                      <td>{{@userEmail}}</td>
+                      <td>{{getRoleNameById(@userRole)}}</td>
+                      <td class="text-end pe-0">
+                        <div class="inline-flex gap-1"> 
+                          <a role="button" aria-label="View" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-primary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg> 
+                            View
+                          </a>
+                          <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/users/edit?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                            </svg> 
+                            Edit
+                          </a>
+                        </div>
+                      </td>
+                    </tr> 
+                  </repeat>
+                </tbody>
+              </table>
+          </div>
+        </div>
+    </div>  
+    <div>
+        <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/users/add" class="btn bg-primary py-2">+ Add new user</a>
+    </div>
+</div>
+
+<div class="position-relative">
+    <div class="w-100 my-4">
+        <span class="h1">Roles</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header"> 
+          <div class="d-flex justify-content-between"> 
+            <span>Total: {{count(@rolesAll)}}</span>
+            <span><a role="button" aria-label="View all" href="/{{@SITE.uri_backend}}/access/roles">View all</a></span>
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+                <thead>
+                  <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <repeat group="{{ @rolesList }}" value="{{ @item }}" key="{{ @key }}"> 
+                    <set roleName="{{@item.name}}"></set>
+                    <set roleDescription="{{@item.description}}"></set>
+                    <set roleId="{{@item.id}}"></set> 
+                    <tr> 
+                      <td><a class="text-body" aria-label="{{@roleName}}" href="/{{@SITE.uri_backend}}/access/roles/view?id={{@roleId}}">{{@roleName}}</a></td>
+                      <td>{{@roleDescription}}</td> 
+                      <td class="text-end pe-0">
+                        <div class="inline-flex gap-1">  
+                          <a role="button" aria-label="View" href="/{{@SITE.uri_backend}}/access/roles/view?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-primary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg> 
+                            View
+                          </a>
+                          <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                            </svg> 
+                            Edit
+                          </a>
+                        </div>
+                      </td>
+                    </tr> 
+                  </repeat>
+                </tbody>
+              </table>
+          </div>
+        </div>
+    </div>  
+    <div>
+        <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/roles/add" class="btn bg-primary py-2">+ Add new role</a>
+    </div>
+</div>

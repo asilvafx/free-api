@@ -1,0 +1,268 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.footer {
+  margin-top: auto;
+}
+.form-switch-2xl input {
+height: 30px !important;
+width: 53px !important;
+} 
+.form-switch-xl input { 
+height: 23px !important;
+width: 41px !important;
+}
+.card-icon img {
+width: 50px;
+height: 50px;
+}
+.app-logo {
+height: 35px;
+width: auto; 
+object-fit: fill;
+} 
+#profileImage, #logoPreview {
+width: 80px;
+height: 80px;
+object-fit: fill;
+}
+#keywordsContainer {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+padding: 4px;
+}
+
+#siteKeywords {
+flex-grow: 1;
+min-width: 150px;
+border: none;
+outline: none;
+background: inherit;
+}
+
+#siteDescription { 
+padding-right: 40px; /* Space for the character counter */
+}
+
+#charCount {
+font-size: 0.8rem; /* Make the text smaller */
+color: #6c757d; /* Match the secondary text color */
+z-index: 9;
+}
+
+.keyword { 
+padding: 5px 10px;
+border-radius: 5px;
+margin-right: 5px;
+display: inline-flex;
+align-items: center;
+} 
+
+.keyword .delete {
+margin-left: 8px;
+cursor: pointer;
+color: red;
+}
+
+.star-rating {
+  color: #77ff33 !important;
+}
+
+#profileForm [contenteditable="true"] {
+border: var(--ui-card-border-width) solid var(--ui-card-border-color);
+padding: .3rem;
+border-radius: 5px;
+}
+.file-explorer {
+margin-top: 20px;
+}
+
+.file-item {
+padding: 10px;
+border-bottom: 1px solid #ddd;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.file-item:last-child {
+border-bottom: none;
+}
+
+.file-item .file-name {
+flex: 1;
+}
+
+.file-item button {
+background: #007BFF;
+color: #fff;
+border: none;
+padding: 5px 10px;
+cursor: pointer;
+border-radius: 3px;
+}
+
+.file-item button:hover {
+background: #0056b3;
+}
+
+.action-buttons {
+margin-top: 20px;
+}
+
+.action-buttons button {
+margin-right: 10px;
+}
+
+
+.file-list { 
+display: flex;
+flex-wrap: wrap;
+align-items: start;
+justify-content: start;
+}
+.file-item {
+margin: 5px 0;
+display: flex;
+width: 100%;
+gap: 5px;
+} 
+.progress { 
+border-radius: 10px;
+overflow: hidden;
+}
+
+.progress-bar { 
+transition: width 0.4s ease;
+} 
+
+#passwordRequirements {
+margin-bottom: 15px;
+}
+#passwordRequirements p {
+margin-bottom: 5px;
+font-weight: bold;
+}
+#passwordRequirements ul {
+padding-left: 20px;
+list-style-type: disc;
+}
+#passwordRequirements li {
+font-size: 14px;
+line-height: 1.5;
+}
+#passwordRequirements .invalid {
+color: #e74c3c;
+}
+#passwordRequirements .valid {
+color: #2ecc71;
+} 
+.isAdminClr {
+color: #007BFF !important;
+}
+.qrCodeImg {
+    width: 400px;
+    max-width: 100%;
+    height: auto;
+}
+.otp-input {
+display: flex;
+flex-wrap: nowrap;
+justify-content: center; 
+margin: 0 auto;
+width: 100%;
+max-width: 445px;
+}
+.otp-input input {
+width: 100%;
+height: 50px;
+margin: 0 3px;
+text-align: center;
+font-size: 1.5rem; 
+border-radius: 12px;  
+transition: all 0.3s ease;
+} 
+
+.otp-input input:focus { 
+box-shadow: 0 0 0 2px rgba(166, 86, 246, 0.3);
+outline: none;
+}
+.otp-input input::-webkit-outer-spin-button,
+.otp-input input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.otp-input input[type="number"] {
+    appearance: textfield;
+-moz-appearance: textfield;
+} 
+#timer {
+font-size: 1rem;
+color: var(--primary-color);
+font-weight: 500;
+margin-left: 3px;
+}
+@keyframes pulse {
+0% {
+    opacity: 1;
+}
+50% {
+    opacity: 0.5;
+}
+100% {
+    opacity: 1;
+}
+}
+.expired {
+animation: pulse 2s infinite;
+color: #ff4444;
+}
+.resend-text {
+margin-top: 1rem;
+font-size: 0.9rem;
+color: #b0b0b0;
+}
+.resend-link {
+color: var(--primary-color);
+text-decoration: none;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+.resend-link:hover {
+color: var(--primary-color);
+text-decoration: underline;
+}
+.uploaded-image,
+.uploaded-video {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: fill;
+}
+.effects-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.effect-tab {
+  padding: 6px 16px;
+  background-color: var(--border-color);
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+.effect-tab.selected {
+  background-color: var(--primary-color);
+  color: var(--primary-text);
+  border-color: var(--primary-color);
+}
+.charCounter {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: smaller;
+}

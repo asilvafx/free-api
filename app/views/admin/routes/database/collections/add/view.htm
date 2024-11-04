@@ -1,0 +1,208 @@
+ 
+<div class="position-relative mb-4">
+    <div class="w-100 my-4">
+        <h1>New Collection</h1>
+        <p class="text-body-secondary">Create a new table in the database by filling out the form below.</p>
+    </div> 
+
+    <form action="/{{@SITE.uri_backend}}/database/collections/add" method="post" enctype="multipart/form-data" id="addCollectionForm" class="mt-4">
+        <!-- Table Name -->
+        <div class="input-group mb-4">
+            <span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="/public/assets/icons/svg/free.svg#cil-storage"></use>
+                </svg>
+            </span>
+            <input class="form-control" type="text" id="tableName" name="tableName" placeholder="Collection name" required="">
+        </div> 
+        <div id="fields-container"></div>
+
+        <!-- Add Field Button -->
+        <div class="w-100 mb-4">
+            <button type="button" class="btn border py-2 px-4 w-100 fw-bolder" id="addFieldBtn">
+                + Add Field
+            </button>
+        </div>
+        <input type="hidden" id="schema" name="schema" value="">
+        <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+
+        <!-- Submit Button --> 
+        <div class="w-100 d-flex justify-content-between align-items-center"> 
+            <div class="position-relative">
+                <button class="btn btn-secondary px-4" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/database'; void(0);">← Go back</button>
+            </div>
+            <div class="position-relative">
+                <button class="btn btn-primary px-4" type="submit"> Create Collection</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Ensure script is loaded after the DOM -->
+<script> 
+    "use strict";
+
+    // Fields data structure
+    let fields = [
+        { name: "", type: "INTEGER", defaultValue: "", notNull: false, primaryKey: false, autoIncrement: false },
+    ];
+
+    // Querying all necessary DOM elements
+    const fieldsContainer = document.querySelector("#fields-container");
+    const tableNameInput = document.querySelector("#tableName");
+    const addFieldBtn = document.querySelector("#addFieldBtn");
+    const form = document.querySelector("#addCollectionForm"); 
+    const token = document.querySelector("#token");
+    const schemaInput = document.querySelector('#schema'); 
+
+    // Add Field functionality
+    const addField = () => {
+        fields.push({ name: "", type: "INTEGER", defaultValue: "", notNull: false, primaryKey: false, autoIncrement: false });
+        renderFields();
+    };
+
+    // Remove Field functionality
+    const removeField = (index) => {
+        fields.splice(index, 1);
+        renderFields();
+    };
+
+    // Handle field changes
+    const handleFieldChange = (index, event) => {
+        const { name, value, type, checked } = event.target; 
+        fields[index][name] = type === "checkbox" ? checked : value;
+
+        const autoIncrement = document.querySelector("#autoIncrement-group-"+index);  
+        const fieldTypeSelect = document.querySelector("#fieldType-"+index);  
+        
+        if(fieldTypeSelect.value === 'INTEGER'){
+            let iPrimaryKey = document.getElementById('primaryKey-'+index);
+            if(iPrimaryKey.checked){
+                autoIncrement.classList.remove('hidden');
+            } else {
+                if(!autoIncrement.classList.contains('hidden')){
+                autoIncrement.classList.add('hidden');
+                autoIncrement.querySelector('input').checked = false;
+                }  
+            }
+        } else
+        if(fieldTypeSelect.value === 'TEXT' || fieldTypeSelect.value === 'BLOB') {
+            if(!autoIncrement.classList.contains('hidden')){
+                autoIncrement.classList.add('hidden');
+                autoIncrement.querySelector('input').checked = false;
+            } 
+        }
+    };
+
+    // Render fields dynamically
+    const renderFields = () => {
+        fieldsContainer.innerHTML = "";
+        fields.forEach((field, index) => {
+            const fieldHtml = `
+                <div class="border p-4 rounded mb-4 position-relative">
+                    <button type="button" class="btn btn-sm d-flex align-items-center gap-1 m-2 text-danger fw-bolder position-absolute top-0 end-0" data-index="${index}" onclick="removeField(${index})">
+                        <svg class="icon text-danger">
+                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
+                        </svg>
+                        Remove
+                    </button>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Field Name</label>
+                            <input type="text" name="name" class="form-control" value="${field.name}" onchange="handleFieldChange(${index}, event)" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Field Type</label>
+                            <select id="fieldType-${index}" name="type" class="form-select" onchange="handleFieldChange(${index}, event)">
+                                <option value="INTEGER" ${field.type === "INTEGER" ? "selected" : ""}>INTEGER</option>
+                                <option value="TEXT" ${field.type === "TEXT" ? "selected" : ""}>TEXT</option> 
+                                <option value="BLOB" ${field.type === "BLOB" ? "selected" : ""}>BLOB</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Default Value</label>
+                            <input type="text" name="defaultValue" class="form-control" value="${field.defaultValue}" onchange="handleFieldChange(${index}, event)">
+                        </div> 
+                        <div class="col-md-6">
+                            <label class="form-label">Null</label>
+                            <select name="notNull" class="form-select" onchange="handleFieldChange(${index}, event)">
+                                <option value="false" ${!field.notNull ? "selected" : ""}>Allow Null</option>
+                                <option value="true" ${field.notNull ? "selected" : ""}>Not Null</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-check">
+                            <input type="checkbox" name="primaryKey" class="form-check-input" id="primaryKey-${index}" ${field.primaryKey ? "checked" : ""} onchange="handleFieldChange(${index}, event)">
+                            <label class="form-check-label" for="primaryKey-${index}">Primary Key</label>
+                        </div>
+                        <div class="col-md-6 form-check hidden" id="autoIncrement-group-${index}">
+                            <input type="checkbox" name="autoIncrement" class="form-check-input" id="autoIncrement-${index}" ${field.autoIncrement ? "checked" : ""} onchange="handleFieldChange(${index}, event)">
+                            <label class="form-check-label" for="autoIncrement-${index}">Auto Increment</label>
+                        </div>
+                    </div>
+                </div>`;
+            fieldsContainer.insertAdjacentHTML("beforeend", fieldHtml);
+        });
+    };
+
+    // Add Event Listeners
+    addFieldBtn.addEventListener("click", addField);
+
+    form.addEventListener("submit", async function (event) {
+    event.preventDefault();  
+    hideAlerts();
+
+    // Validate tableNameInput value
+    const tableNamePattern = /^[a-zA-Z0-9-_]+$/;
+    if (!tableNamePattern.test(tableNameInput.value)) { 
+        showAlert("error", "Collection name can only contain letters, numbers, hyphens (-), or underscores (_).");
+        return false;
+    }
+
+    var schemaFields = fields.map((field) => {
+            let fieldSchema = `${field.name} ${field.type}`;
+            if (field.notNull) fieldSchema += " NOT NULL";
+            if (field.primaryKey) fieldSchema += " PRIMARY KEY";
+            if (field.autoIncrement) fieldSchema += " AUTOINCREMENT";
+            if (field.defaultValue) fieldSchema += ` DEFAULT ${field.type === "TEXT" ? `'${field.defaultValue}'` : field.defaultValue}`;
+            return fieldSchema;
+        }).join(", ");
+
+
+    const payload = {
+        token: token.value,
+        name: tableNameInput.value,
+        schema: schemaFields,
+    };
+
+    if (payload.schema === '') {
+        showAlert("error", "Collection must contain at least one field.");
+        return false;
+    }  
+
+    try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/database/collections/add?save", payload, {
+            headers: {
+                "Content-Type": "application/json", 
+            },
+        });
+
+        const data = response.data;
+        if (data.status === "success") {
+            alert("Table created successfully!");
+            let collectionUri = "/{{@SITE.uri_backend}}/database/collections?view=" + tableNameInput.value;
+            tableNameInput.value = "";
+            fields = [{ name: "", type: "TEXT", defaultValue: "", notNull: false, primaryKey: false, autoIncrement: false }];
+            renderFields();
+            window.location.href = collectionUri;
+            return false;
+        } else {
+            showAlert("error", response.data.message);
+        }
+    } catch (error) {
+        showAlert("error", "Error creating table. Please try again later.");
+    }
+    }); 
+
+    // Initial field rendering
+    renderFields(); 
+</script>

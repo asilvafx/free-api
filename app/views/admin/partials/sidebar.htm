@@ -1,0 +1,65 @@
+<div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
+  <div class="sidebar-header border-bottom">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-full align-items-center fw-bolder">
+      <img src="{{@SITE.logo}}" width="30" height="30" class="app-logo">
+      <span class="badge text-body fs-6">{{@SITE.name}}</span>
+      <span class="ms-auto badge bg-secondary">v{{@VERSION}}</span>
+      </span>
+    </div>
+    <button class="btn-close d-lg-none" type="button" data-ui-dismiss="offcanvas" data-ui-theme="dark" aria-label="Toggle" onclick="sidebarToggle();"></button>
+  </div>
+  <ul class="sidebar-nav" data-ui="navigation" data-simplebar="init"><div class="simplebar-wrapper" style="margin: -8px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden;"><div class="simplebar-content" style="padding: 8px;">
+    <li class="nav-item"><a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug=='dashboard'?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/" aria-label="Dashboard">
+        <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug=='dashboard'?'':'text-body'}}">
+          <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-speedometer"></use>
+        </svg> Dashboard</a>
+    </li>
+    <li class="nav-item"><a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug=='account'?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/account" aria-label="Account">
+      <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug=='account'?'':'text-body'}}">
+        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+      </svg> My Account</a>
+    </li>
+
+    <check if="{{ isset(@MENU.appnav) && isset(@MENU.appcount) && @MENU.appcount>0 }}">
+    <li class="nav-title">App</li>
+        <repeat group="{{@MENU.appnav}}" value="{{ @item }}">
+            <li class="nav-item">
+              <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
+                <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-{{@item.icon}}"></use>
+                </svg>
+                {{@item.title}}
+                <check if="{{@item.hasNew}}"><span class="badge badge-sm bg-primary ms-auto">NEW</span></check>
+              </a>
+            </li>
+        </repeat>
+    </check>
+
+    <li class="nav-title">System</li>
+
+    <check if="{{ isset(@MENU.sidenav) }}">
+        <repeat group="{{@MENU.sidenav}}" value="{{ @item }}">
+            <li class="nav-item">
+              <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
+                <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-{{@item.icon}}"></use>
+                </svg>
+                {{@item.title}}
+              </a>
+            </li>
+        </repeat>
+    </check>
+
+  </div></div></div></div><div class="simplebar-placeholder" style="width: 255px; height: 1263px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: hidden;"><div class="simplebar-scrollbar" style="height: 0px; transform: translate3d(0px, 0px, 0px); display: none;"></div></div></ul>
+  <div class="sidebar-footer border-top d-none d-md-flex">
+    <a aria-label="Logout" href="/{{@SITE.uri_auth}}/logout" class="w-100 btn d-flex justify-content-between align-items-center">
+    <span class="fw-bolder text-danger">Logout</span>
+    <span class="text-danger">
+      <svg class="icon">
+        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-account-logout"></use>
+      </svg>
+    </span>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,345 @@
+ 
+<div class="position-relative mb-4">
+
+    <check if="{{ isset(@notfound) }}">
+        <true> 
+            <div class="w-100 mb-4">
+                <span class="h1">Not Found</span>
+                <p class="text-body-secondary">User was not found in our records.</p>
+            </div> 
+            <div class="position-relative">
+                <button class="btn btn-secondary px-4" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access/users'; void(0);">← Go back</button>
+            </div>
+        </true>
+        <false> 
+            <div class="w-100 mb-4">
+                <span class="h1">Edit User</span>
+                <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+            </div>
+            <form id="dataForm"> 
+
+                <div class="input-group mb-4">
+                <span class="input-group-text">
+                    <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+                    </svg>
+                </span>
+                <input class="form-control" type="text" id="displayName" name="displayName" placeholder="Full Name" value="{{@USER->displayName}}" required="" {{@userSelf?'disabled aria-disabled="true"':''}}>
+                </div>
+
+                <check if="@userSelf"> 
+                    <a class="small text-body-secondary" aria-label="Change email address?" href="/{{@SITE.uri_backend}}/profile">Change email address?</a>
+                </check>
+
+                <div class="input-group mb-4 pt-2">
+                <span class="input-group-text">
+                    <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-at"></use>
+                    </svg>
+                </span>
+                <input class="form-control" type="email" id="email" name="email" placeholder="user@company.com" value="{{@USER->email}}" required="" {{@userSelf?'disabled aria-disabled="true"':''}}>
+                </div> 
+
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-group"></use>
+                        </svg>
+                    </span>
+                    <select class="form-select" id="role" name="role" required="" {{@userSelf?'disabled aria-disabled="true"':''}}>
+                        <option value="">Select Role</option>
+                        <repeat group="{{@rolesAll}}" value="{{@role}}">
+                            <option {{@USER->role===@role.id?'selected':''}} value="{{@role.id}}">{{@role.name}}</option>
+                        </repeat>
+                    </select>
+                </div>
+ 
+                <div class="row row-cols-1 mb-4">
+                  <div class="col">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="position-relative">
+                      <label class="text-body fw-bolder" for="isAdmin">Is Admin?</label>
+                      <p class="text-body-secondary">Allow user administration access.</p>
+                      </div>
+                      <div class="position-relative">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input form-switch-xl" id="isAdmin" type="checkbox" {{@USER->is_admin===1?'checked':''}} {{@userSelf?'disabled aria-disabled="true"':''}}> 
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div class="col">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="position-relative">
+                      <label class="text-body fw-bolder" for="isSuperAdmin">Is Super Admin?</label>
+                      <p class="text-body-secondary">Allow user full-administration access.</p>
+                      </div>
+                      <div class="position-relative">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input form-switch-xl" id="isSuperAdmin" type="checkbox" {{@USER->is_super_admin===1?'checked':''}} {{@userSelf?'disabled aria-disabled="true"':''}}> 
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div class="col">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="position-relative">
+                      <label class="text-body fw-bolder" for="isDeveloper">Is Developer?</label>
+                      <p class="text-body-secondary">Allow user developer access.</p>
+                      </div>
+                      <div class="position-relative">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input form-switch-xl" id="isDeveloper" type="checkbox" {{@USER->is_developer===1?'checked':''}} {{@userSelf?'disabled aria-disabled="true"':''}}> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+                </div> 
+ 
+                <input type="hidden" id="userId" name="userId" value="{{@USER->user_id}}">
+                <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+
+                <div class="w-100 d-flex justify-content-between align-items-center"> 
+                    <div class="position-relative">
+                        <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access/users'; void(0);">← Go back</button>
+                    </div>
+                    <div class="position-relative inline-flex gap-2"> 
+                    <button class="btn btn-primary" type="submit" {{@userSelf?'disabled aria-disabled="true"':''}}>Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </false>
+    </check>
+  
+</div> 
+<check if="{{ !isset(@notfound) && @userSelf != true }}">
+<div class="position-relative pt-4">
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+                <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body"> 
+                Are you sure you want to delete this user? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" type="submit" id="deleteUser">Yes, delete it</button>
+            </div> 
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <form id="newPasswordForm" class="modal-content"> 
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Change Password</h5>
+                    <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                </div> 
+                <div class="modal-body"> 
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <svg class="icon">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                            </svg>
+                        </span>
+                        <input class="form-control" type="password" id="password" name="password" placeholder="New Password">
+                        <span class="input-group-text password-toggle" onclick="togglePassword('password', this)">
+                            <svg class="icon eye-icon" id="eye-password">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg>
+                            <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <svg class="icon">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                            </svg>
+                        </span>
+                        <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
+                        <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', this)">
+                            <svg class="icon eye-icon" id="eye-confirmPassword">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg>
+                            <svg class="icon eye-slash-icon" id="eye-slash-confirmPassword" style="display: none;">
+                                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="passwordChangeExit">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                </div>  
+            </form>
+        </div>
+    </div>
+    
+
+    <div class="w-100 mb-4">
+        <span class="h1">Manage</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2"> 
+        <button class="btn btn-danger px-4" type="button" id="deleteUser" aria-label="Delete user" data-ui-toggle="modal" data-ui-target="#deleteModal">
+            <svg class="icon ">
+                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-trash"></use>
+            </svg>
+            Delete user
+        </button> 
+        <button class="btn btn-warning px-4" type="button" id="changePassword" aria-label="Change password" data-ui-toggle="modal" data-ui-target="#passwordModal">
+            <svg class="icon ">
+                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+            </svg>
+            Change password
+        </button>
+    </div>
+</div>
+</check>
+
+
+
+<script>
+    "use strict"
+
+    // Initialization
+    const dataForm = document.getElementById('dataForm'); 
+    const token = document.querySelector('#token');   
+          
+    // Form Fields
+    const displayName = document.getElementById('displayName');
+    const email = document.getElementById('email'); 
+    const role = document.getElementById('role');
+    const isAdmin = document.getElementById('isAdmin');
+    const user_id = document.getElementById('userId');
+    const deleteUser = document.getElementById('deleteUser');
+    const newPasswordForm = document.getElementById('newPasswordForm');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordChangeExit = document.getElementById('passwordChangeExit');
+    
+    // Submit Change Password Form
+    if(newPasswordForm){
+        newPasswordForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            if(passwordInput.value==""){ 
+                showAlert("error", 'Password cannot be empty');  
+                return false;
+            } else 
+            if(passwordInput.value != confirmPasswordInput.value ){  
+                showAlert("error", 'Passwords do not match.');  
+                return false;
+            }
+
+            const schema = {};  
+            schema['userId'] = user_id.value;
+            schema['crypt'] = btoa(passwordInput.value);
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "access/users/edit?password"; 
+            fetchRequest(payload, uri_request, newPasswordForm);
+        })
+    }
+    // Submit Delete Form
+    if(deleteUser){
+        deleteUser.addEventListener('click', function(e){
+            e.preventDefault();
+
+            const schema = {};  
+            schema['userId'] = user_id.value;
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "access/users/edit?delete"; 
+            fetchRequest(payload, uri_request, null);
+        })
+
+    }
+
+    // Submit Edit Form
+    if(dataForm){
+        dataForm.addEventListener('submit', function(e){
+        e.preventDefault(); 
+
+        var is_admin = isAdmin.checked?1:0;
+
+        const schema = {};  
+        schema['userId'] = user_id.value;
+        schema['displayName'] = displayName.value;
+        schema['email'] = email.value; 
+        schema['role'] = role.value;
+        schema['is_admin'] = is_admin;
+
+        const payload = {
+            token: token.value, 
+            schema: schema, 
+        }  
+
+        let uri_request = "access/users/edit?save"; 
+        fetchRequest(payload, uri_request, dataForm);
+        });
+    }
+
+      // Add Event Listeners
+      async function fetchRequest(formData, url, formEl) {
+        event.preventDefault();  
+        hideAlerts();
+
+        // Disable all inputs and submit button 
+        let inputs = formEl;
+        if(formEl){  
+            inputs = inputs.querySelectorAll('input, select, button');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        try {
+            const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(response => {
+                const data = response.data;
+                if (data.status === "success") {
+                    showAlert("success", response.data.message);  
+                    if(!formEl){
+                        window.location.reload();
+                    }  
+                    
+                    // Clear form inputs if success
+                    // if(formEl){ clearForm(formEl); ]
+                } else {
+                    showAlert("error", response.data.message);
+                }
+            }).finally(() => {
+                // Re-enable all inputs and submit button 
+                if(formEl){ inputs.forEach(input => input.disabled = false); } 
+
+                if(passwordModal.classList.contains('show')){
+                        passwordChangeExit.click();
+                } 
+            });
+
+        } catch (error) {
+            showAlert("error", "Error fetching api. Please try again later.");
+            // Re-enable all inputs and submit button in case of error
+
+            if(formEl){  inputs.forEach(input => input.disabled = false); }
+           
+        }
+    }
+ 
+</script>

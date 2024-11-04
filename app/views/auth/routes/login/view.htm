@@ -1,0 +1,744 @@
+<div class="row justify-content-center px-4">
+    <div class="col-lg-8">
+      <div class="card-group d-block d-md-flex row">
+        <div class="card col-md-7 p-2 p-md-3 p-lg-4 mb-0">
+          <div class="card-body">
+            <div id="errorAlert" class="alert alert-dark hidden" role="alert">
+             <span class="text-danger fw-bolder">
+              <svg class="icon">
+                <use xlink:href="/public/assets/icons/svg/free.svg#cil-warning"></use>
+              </svg>
+              <span id="errorMsg"></span></span>
+            </div>
+
+            <div id="validAlert" class="alert hidden" role="alert">
+              <span class="text-success fw-bolder">
+               <svg class="icon">
+                 <use xlink:href="/public/assets/icons/svg/free.svg#cil-check-alt"></use>
+               </svg>
+               <span id="successMsg"></span></span>
+            </div>
+
+            <!-- Auth Step -->
+            <div class="step" data-step="1">
+              <h1>Auth</h1>
+              <p class="text-body-secondary mb-4">Enter the email address associated with your account. 
+                <check if="{{@SITE.enable_register}}">Don't have an account?<a aria-label="Create account" href="/{{@SITE.uri_auth}}/register" class="ms-1">Create one</a></check>
+              </p>
+              <form id="authForm">
+              <div class="input-group mb-4"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+                  </svg></span>
+                <input class="form-control" type="email" id="auth" name="auth" placeholder="your@company.com" autofocus required>
+                <input class="form-control" type="text" id="pot" name="pot" value="" required>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <button class="btn btn-primary px-4" type="submit">Continue</button>
+                </div>
+                <div class="col-12 col-md-6 text-start text-md-end mt-4 mt-md-0">
+                  <button class="forgotPassword btn btn-link px-0" type="button">Having trouble signing in?</button>
+                </div>
+              </div>
+             </form>
+            </div>
+
+            <!-- Login Step --> 
+            <div class="step hidden" data-step="2">
+              <h1>Enter Password</h1>
+              <p class="text-body-secondary">Sign In to your account. <a aria-label="Change account" href="/{{@SITE.uri_auth}}" class="ms-1">Not you?</a></p>
+              <form id="loginForm">
+              <div class="input-group mb-3"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+                  </svg></span>
+                <input class="form-control" id="username" name="username" type="email" placeholder="mail@example.com" aria-disabled="true" required disabled readonly>
+              </div>
+              <div class="input-group mb-4">
+                <span class="input-group-text">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                    </svg>
+                </span>
+                <input class="form-control" id="password" name="password" type="password" placeholder="••••••••" required>
+                <span class="input-group-text password-toggle" onclick="togglePassword('password', this)">
+                    <svg class="icon eye-icon" id="eye-password">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                    </svg>
+                    <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                    </svg>
+                </span>
+              </div> 
+              <div class="d-flex mb-4 gap-2"> 
+              <input class="form-check-input" id="rememberme" name="rememberme" type="checkbox">
+              <label class="form-check-label" for="rememberme">Remember me?</label>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <check if="{{isset(@CAPTCHA.enabled) && isset(@CAPTCHA.sitekey) && @CAPTCHA.enabled}}">
+                    <true>
+                    <button class="g-recaptcha" 
+                    data-sitekey="{{@CAPTCHA.sitekey}}" 
+                    data-callback='onSubmit' 
+                    data-action='submit'>Login</button> 
+                    </true>
+                    <false> 
+                    <button class="btn btn-primary px-4" type="submit">Login</button>
+                    </false>
+                  </check>  
+                </div>
+                <div class="col-12 col-md-6 text-start text-md-end mt-4 mt-md-0">
+                  <button class="forgotPassword btn btn-link px-0" type="button">Having trouble signing in?</button>
+                </div>
+              </div>
+              </form>
+            </div>
+
+            <!-- OTP Step --> 
+            <div class="step hidden" data-step="3">
+              <h1>Two-factor Authentication</h1>
+              <p class="text-body-secondary">Choose your two-factor (2FA) authentication method. <a aria-label="Change account" href="/{{@SITE.uri_auth}}" class="ms-1">Not you?</a></p>
+              <form id="otpForm"> 
+              <div class="row">
+                <div class="col-12 my-4">
+
+                <div class="w-100 d-flex flex-column mb-2 hidden" data-choice="twofactor">
+                    <div class="w-100 card bg-color p-3"> 
+                    <div class="d-flex justify-content-between">
+                    <span>
+                    <svg class="icon me-2">
+                      <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-center-focus"></use>
+                    </svg>
+                    Authenticator App
+                    </span>
+                    <div class="form-check">
+                    <input class="form-check-input" id="twofactor-choice" type="radio" name="choiceRadios" value="twofactor">  
+                    </div>
+                    </div> 
+                    </div>
+                </div>
+                <div class="w-100 d-flex flex-column mb-2 hidden" data-choice="passkey">
+                  <div class="w-100 card bg-color p-3"> 
+                  <div class="d-flex justify-content-between">
+                  <span>
+                    <svg class="icon me-2">
+                      <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-fingerprint"></use>
+                    </svg>
+                    Passkey
+                  </span>
+                  <div class="form-check">
+                  <input class="form-check-input" id="passkey-choice" type="radio" name="choiceRadios" value="passkey"> 
+                  </div>
+                  </div> 
+                  </div>
+                </div>
+                <div class="w-100 d-flex flex-column mb-2 hidden" data-choice="pin">
+                  <div class="w-100 card bg-color p-3"> 
+                  <div class="d-flex justify-content-between">
+                  <span>
+                    <svg class="icon me-2">
+                      <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-dialpad"></use>
+                    </svg>
+                    PIN Code
+                  </span>
+                  <div class="form-check">
+                  <input class="form-check-input" id="pin-choice" type="radio" name="choiceRadios" value="pin"> 
+                  </div>
+                  </div> 
+                  </div>
+                </div>
+
+                </div>
+                <div class="col-12 col-md-6">
+                  <button class="btn btn-primary px-4" type="button" id="continueOtp" disabled>Continue</button>
+                </div>
+                <div class="col-12 col-md-6 text-start text-md-end mt-4 mt-md-0">
+                  <button class="forgotPassword btn btn-link px-0" type="button">Having trouble signing in?</button>
+                </div>
+              </div>
+              </form>
+            </div>
+ 
+            <!-- Choice Step -->
+            <div class="step hidden" data-step="4"> 
+              <!-- Div for PIN form -->
+              <div class="hidden" id="pin-form">
+                <h1>Verify With PIN Code</h1>
+                <p class="text-body-secondary">Verify using your PIN code. <a aria-label="Change account" href="/{{@SITE.uri_auth}}" class="ms-1">Not you?</a></p>
+               
+                <div class="mb-3">
+                  <label for="pinInput" class="text-body-secondary small">Enter 6-digts code:</label>
+                  <div class="otp-input pinInputs my-4">
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <div class="position-relative">
+                    <button class="btn btn-secondary px-4 choiceStepBack" type="button">← Change method</button>
+                  </div>
+                  <div class="position-relative">
+                    <button class="btn btn-primary px-4" type="button" onclick="pinVerify(); void(0);">Verify</button>
+                  </div> 
+                </div>
+
+              </div>
+
+              <!-- Div for Passkey form -->
+              <div class="hidden" id="passkey-form">
+                <h2>Use your Passkey</h2>
+                <p>Use your device's passkey to authenticate.</p>
+
+                <div class="flex flex-wrap gap-2">
+                  <div class="position-relative">
+                    <button class="btn btn-secondary px-4 choiceStepBack" type="button">← Change method</button>
+                  </div>
+                  <div class="position-relative">
+                    <button class="btn btn-primary px-4" type="button" onclick="void(0);" disabled="" aria-disabled="true">
+                      <div class="spinner-border" role="status" style="
+                            height: 20px;
+                            width: 20px;
+                        ">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </button>
+                  </div> 
+                </div>
+
+              </div>
+
+              <!-- Div for Authenticator App -->
+              <div class="hidden" id="twofactor">
+                <h1>Verify With Authenticator</h1>
+                <p class="text-body-secondary">Verify using your Authentication App code. <a aria-label="Change account" href="/{{@SITE.uri_auth}}" class="ms-1">Not you?</a></p>
+
+                <div class="mb-3">
+                  <label for="pinInput" class="text-body-secondary small">Enter 6-digts code:</label>
+                  <div class="otp-input twofactorInputs my-4">
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <div class="position-relative">
+                    <button class="btn btn-secondary px-4 choiceStepBack" type="button">← Change method</button>
+                  </div>
+                  <div class="position-relative">
+                    <button class="btn btn-primary px-4" type="button" onclick="twofactorVerify(); void(0);">Verify</button>
+                  </div> 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-end mt-4 mt-md-2">
+                  <button class="forgotPassword btn btn-link px-0" type="button">Having trouble signing in?</button>
+                </div> 
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  <check if="{{isset(@CAPTCHA.enabled) && isset(@CAPTCHA.sitekey) && @CAPTCHA.enabled}}"> 
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  <script>
+  function onSubmit(token) {
+    document.getElementById("loginForm").submit();
+  }
+  </script>
+  </check>
+
+  <script>
+    "use strict"
+    const host = window.location.protocol + "//" + window.location.host;
+    const authForm = document.getElementById('authForm');
+    const loginForm = document.getElementById('loginForm');
+    const forgotPassword = document.querySelectorAll('.forgotPassword');
+    const pinInputs = document.querySelectorAll(".pinInputs input"); 
+    const twofactorInputs = document.querySelectorAll(".twofactorInputs input"); 
+
+    let errorAlert = document.getElementById('errorAlert');
+    let errorMsg = document.getElementById('errorMsg'); 
+
+    const pot = document.getElementById('pot'); 
+    if(pot){
+      pot.removeAttribute('required');
+      pot.setAttribute('type', 'hidden');
+    }
+
+    function loadTwoFactorInputs(){
+
+      twofactorInputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        if (e.target.value.length > 1) {
+          e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.length === 1 && index < twofactorInputs.length - 1) {
+          twofactorInputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+          twofactorInputs[index - 1].focus();
+        }
+        if (e.key === "e") {
+          e.preventDefault();
+        }
+      });
+
+      // Listen for paste event to autofill inputs
+      input.addEventListener("paste", (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        if (pasteData.length === twofactorInputs.length && /^\d+$/.test(pasteData)) {
+          twofactorInputs.forEach((input, i) => {
+            input.value = pasteData[i];
+          });
+        }
+      });
+    });
+    }
+
+    function loadPinInputs(){
+
+      pinInputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        if (e.target.value.length > 1) {
+          e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.length === 1 && index < pinInputs.length - 1) {
+          pinInputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+          pinInputs[index - 1].focus();
+        }
+        if (e.key === "e") {
+          e.preventDefault();
+        }
+      });
+
+      // Listen for paste event to autofill inputs
+      input.addEventListener("paste", (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        if (pasteData.length === pinInputs.length && /^\d+$/.test(pasteData)) {
+          pinInputs.forEach((input, i) => {
+            input.value = pasteData[i];
+          });
+        }
+      });
+    });
+    }
+
+    if(authForm){
+      
+      authForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        cleanError();
+
+        let formData = new FormData(); 
+        let input_auth = document.getElementById('auth').value;
+        let input_pot = document.getElementById('pot').value; 
+
+        if(input_pot!=""){
+          showError('Request mismatch. Reason: Honey Pot'); 
+          return false;
+        }
+        if(!validateEmail(input_auth) ){
+          showError('You must enter a valid email address.'); 
+          return false;
+        }   
+
+        formData.append('action', 'auth');
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('username', input_auth);
+ 
+        toggleSubmit(true);
+        fetchRequest(formData, 'auth'); 
+      });
+    }
+
+    if(loginForm){
+      loginForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        
+        cleanError();
+
+        let formData = new FormData();
+        let inputAuth = document.getElementById('auth').value;
+        let inputUsername = document.getElementById('username').value;
+        let inputPassword = document.getElementById('password').value; 
+        let rememberme = document.getElementById('rememberme').checked; 
+        
+        if(!validateEmail(inputUsername) || inputAuth!=inputUsername){
+          window.location.reload();
+          return false;
+        } else 
+        if(inputPassword == ""){
+          showError('Enter you account password and try again.'); 
+          return false;
+        }
+
+        formData.append('action', 'login');
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('username', inputUsername);
+        formData.append('crypt', btoa(inputPassword));
+        formData.append('rememberme', rememberme);
+
+        toggleSubmit(true);
+        fetchRequest(formData, 'login'); 
+      });
+    }
+
+    if(forgotPassword){
+      forgotPassword.forEach(entry => {
+        entry.addEventListener('click', function(e){
+        e.preventDefault();
+        let inputUsername = document.getElementById('username').value;
+        let redirect_url = "{{@SITE.uri_auth}}/forgot";
+        
+        if(inputUsername!=""){
+          if(validateEmail(inputUsername)){
+            redirect_url = "{{@SITE.uri_auth}}/forgot?u="+btoa(inputUsername);
+          }
+        }
+        window.location.href = redirect_url;
+        e.stopPropagation();
+      });
+      }) 
+    }
+
+    async function fetchRequest(formData, type){
+      const response = await axios.post('{{@SITE.uri_auth}}/login', formData, {
+            headers: { 'Content-Type': 'application/json' }
+      })
+      .then((response) => {
+
+        if(response.data.status==='success'){ 
+          if(type==='auth'){ 
+            let step1 = document.querySelector('[data-step="1"]');
+            let step2 = document.querySelector('[data-step="2"]');
+            let authName = document.getElementById('auth');
+            let userName = document.getElementById('username'); 
+            let password = document.getElementById('password');
+ 
+            let emailValue = authName.value;
+            userName.value = emailValue;
+
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+            password.focus();
+
+          } else 
+          if(type==='login'){ 
+            if(response.data.message==="pass"){
+              let validAlert = document.getElementById('validAlert');
+              let validMsg = document.getElementById('successMsg');
+              if(validAlert && validMsg){
+                validMsg.innerText = "You are successfully logged in.";
+                validAlert.classList.remove('hidden');
+              } 
+              setTimeout(function(){
+                window.location.href = host + '/{{@SITE.uri_backend}}';
+              }, 1800); 
+            } else { 
+              let step2 = document.querySelector('[data-step="2"]');
+              let step3 = document.querySelector('[data-step="3"]'); 
+
+              step2.classList.add('hidden');
+              step3.classList.remove('hidden');
+              let message = response.data.message;
+ 
+
+              // Split the OTP options into an array
+              let otpOptions = message[1].otp.split(', ').filter(Boolean); // Split by comma and trim whitespace
+
+              // List of all possible choices
+              const allChoices = ['twofactor', 'passkey', 'pin'];
+
+              // Loop through all choices and show/hide them based on the response
+              allChoices.forEach(choice => {
+                let element = document.querySelector(`[data-choice="${choice}"]`);
+                
+                if (otpOptions.includes(choice)) {
+                  // Show the element if it is included in the otpOptions
+                  element.classList.remove('hidden');
+
+                  // Add event listener for click on each choice
+                  element.addEventListener('click', function() {
+                    // Remove 'active' class from all choices
+                    allChoices.forEach(item => {
+                      let itemElement = document.querySelector(`[data-choice="${item}"]`);
+                      itemElement.classList.remove('active');
+                    });
+                    
+                    // Add 'active' class to the clicked element
+                    element.classList.add('active');
+                    
+                    // Check the corresponding radio button
+                    let radioInput = document.getElementById(`${choice}-choice`);
+                    if (radioInput) {
+                      radioInput.checked = true;
+                    }
+
+                    // Check if any radio is selected and enable/disable the verify button
+                    checkRadioSelection();
+                  });
+                } else {
+                  // Hide the element if it is not included in the otpOptions
+                  element.classList.add('hidden');
+                }
+              }); 
+
+              // Initial check for radio selection (in case none is selected initially)
+              checkRadioSelection();
+            }
+
+            type = null;
+             
+          }
+        } else {  
+          showError(response.data.message);
+        } 
+      }, (error) => {
+        console.log(error);
+      }).finally(() => {
+        if(type){
+          toggleSubmit(false);
+        }
+       
+    }) 
+    } 
+
+    // Function to check if any radio button is selected
+    function checkRadioSelection() {
+      let isAnyRadioSelected = Array.from(document.querySelectorAll('input[name="choiceRadios"]')).some(radio => radio.checked);
+      let continueButton = document.getElementById('continueOtp');
+      // Enable or disable the verify button based on radio selection
+      continueButton.disabled = !isAnyRadioSelected;
+    }
+
+    const validateEmail = (email) => {
+      if(email==""){
+        return false;
+      } 
+      return email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+    };
+
+    function twofactorVerify(){
+      const twofactorCode = Array.from(twofactorInputs)
+        .map((input) => input.value)
+        .join("");
+      if (twofactorCode.length !== 6) { 
+        alert('You must enter a valid 6-digits code.');
+        return false;
+      }
+
+      let formData = new FormData();   
+      let inputUsername = document.getElementById('username').value;
+      let inputPassword = document.getElementById('password').value; 
+      let rememberme = document.getElementById('rememberme').checked;
+
+      formData.append('action', 'otp');
+      formData.append('token', "{{@TOKEN}}"); 
+      formData.append('username', inputUsername);
+      formData.append('crypt', btoa(inputPassword));
+      formData.append('rememberme', rememberme);
+      formData.append('twofactor', twofactorCode); 
+      fetchOtp(formData);
+    }
+    
+    function pinVerify(){
+      const pinCode = Array.from(pinInputs)
+        .map((input) => input.value)
+        .join("");
+      if (pinCode.length !== 6) { 
+        alert('You must enter a valid 6-digits code.');
+        return false;
+      }
+
+      let formData = new FormData();   
+      let inputUsername = document.getElementById('username').value;
+      let inputPassword = document.getElementById('password').value; 
+      let rememberme = document.getElementById('rememberme').checked;
+
+      formData.append('action', 'otp');
+      formData.append('token', "{{@TOKEN}}"); 
+      formData.append('username', inputUsername);
+      formData.append('crypt', btoa(inputPassword));
+      formData.append('rememberme', rememberme);
+      formData.append('pin', pinCode); 
+      fetchOtp(formData);
+    }
+
+    // WebAuthn: Log in
+    function AuthnLogin() { 
+
+      let formData = new FormData();   
+      let inputUsername = document.getElementById('username').value;
+      let inputPassword = document.getElementById('password').value; 
+      let rememberme = document.getElementById('rememberme').checked;
+
+      formData.append('action', 'otp');
+      formData.append('token', "{{@TOKEN}}"); 
+      formData.append('username', inputUsername);
+      formData.append('crypt', btoa(inputPassword));
+      formData.append('rememberme', rememberme);
+      waApp.username = inputUsername;
+      waApp.login()
+          .then((response) => { 
+              if (response && response.id) {
+
+              formData.append('passkey', response.id);
+              fetchOtp(formData);
+              
+              } else {
+                showError("Login failed: ");
+              }
+      })
+      .catch((err) => {
+        showError("Log in error: " + err.message);
+      });
+    }
+
+    async function fetchOtp(formData){
+      cleanError();
+      toggleSubmit(true);
+      const response = await axios.post('{{@SITE.uri_auth}}/login', formData, {
+            headers: { 'Content-Type': 'application/json' }
+      })
+      .then((response) => {
+        if(response.data.status === "success"){
+          let validAlert = document.getElementById('validAlert');
+          let validMsg = document.getElementById('successMsg');
+          if(validAlert && validMsg){
+            validMsg.innerText = "You are successfully logged in.";
+            validAlert.classList.remove('hidden');
+          }
+          setTimeout(function(){
+            window.location.href = host + '/{{@SITE.uri_backend}}';
+          }, 1800);
+        } else {
+          showError(response.data.message);
+        }
+
+      }, (error) => {
+        console.log(error);
+      }).finally(() => { 
+      toggleSubmit(false);
+      }) 
+
+    }
+
+    document.getElementById('continueOtp').addEventListener('click', function(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault(); 
+
+    // Get the checked radio value
+    let selectedChoice = Array.from(document.querySelectorAll('input[name="choiceRadios"]')).find(radio => radio.checked)?.value;
+
+    if (selectedChoice) {
+      // Hide the current step (step 3)
+      let step3 = document.querySelector('[data-step="3"]');
+      step3.classList.add('hidden');
+
+      // Show the next step (step 4)
+      let step4 = document.querySelector('[data-step="4"]');
+      step4.classList.remove('hidden'); 
+
+      // Create new divs inside step 4
+      let pinDiv = document.getElementById('pin-form');
+      let passkeyDiv = document.getElementById('passkey-form');
+      let twofactorDiv = document.getElementById('twofactor');
+
+      // Hide all choice divs initially
+      pinDiv.classList.add('hidden');
+      passkeyDiv.classList.add('hidden');
+      twofactorDiv.classList.add('hidden');
+
+      // Show the div based on the selected choice
+      switch (selectedChoice) {
+        case 'pin':
+          pinDiv.classList.remove('hidden'); 
+          loadPinInputs();
+          break;
+        case 'passkey':
+          passkeyDiv.classList.remove('hidden');
+          AuthnLogin();
+          break;
+        case 'twofactor':
+          twofactorDiv.classList.remove('hidden');
+          loadTwoFactorInputs();
+          break;
+        default:
+          // Handle cases where no valid choice is selected, if necessary
+          console.error('Invalid choice selected');
+      }
+    } else {
+      console.error('No radio button selected');
+    }
+  });
+
+  const choiceStepBack = document.querySelectorAll('.choiceStepBack');
+  if(choiceStepBack){
+    choiceStepBack.forEach(item => {
+        item.addEventListener('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+        
+          // Hide (step 4)
+          let step4 = document.querySelector('[data-step="4"]');
+          step4.classList.add('hidden'); 
+
+          // Show (step 3)
+          let step3 = document.querySelector('[data-step="3"]');
+          step3.classList.remove('hidden');
+
+        })
+    });
+  }
+
+
+  // Success & Error Alert Messages
+  function showError(message){
+    errorMsg.innerText = message;    
+    errorAlert.classList.remove('hidden');
+  }
+
+  function cleanError(){
+    errorAlert.classList.add('hidden');
+    errorMsg.innerText = "";
+  }
+
+  // Toggle Submit Button Disabled (on/off)
+  function toggleSubmit(display){
+    let submitBtns = document.querySelectorAll('button[type="submit"]');
+
+    submitBtns.forEach(ele => {
+      ele.setAttribute('aria-disabled', display);
+    }); 
+
+  }  
+
+  </script>

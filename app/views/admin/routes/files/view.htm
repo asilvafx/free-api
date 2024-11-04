@@ -1,0 +1,466 @@
+ 
+<div class="position-relative mb-4"> 
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+                <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body"> 
+                Are you sure you want to delete this user? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <form id="deleteFileForm">
+                <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" type="submit">Yes, delete it</button>
+                </form>
+            </div> 
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="renameModalLabel">Rename File</h5>
+              <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="renameFileForm">
+            <div class="modal-body">
+                <div class="d-flex bg-body flex-column mb-4">
+                <label for="fileName" class="mb-2 fw-bolder">Enter name</label>
+                <input class="form-control" type="text" id="fileName" name="fileName" value="" placeholder="File Name Here">
+                <input type="hidden" id="fileNameSave" name="fileNameSave" value="">
+                </div> 
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-secondary" role="button" data-ui-dismiss="modal" id="renameExit">Cancel</a>
+              <button class="btn btn-primary" type="submit">Save changes</button>
+            </div>
+          </form>
+          </div>
+        </div>
+    </div>
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="previewModalLabel">Preview File</h5>
+              <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body">
+                <img class="w-100" alt="Preview" width="500" height="500" src="" id="previewImg">
+                <div class="input-group my-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-link"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="text" id="previewUrl" name="previewUrl" placeholder="Preview Url" value="" required="">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-secondary" role="button" data-ui-dismiss="modal" id="renameExit">Close</a>
+              <button class="btn btn-primary" type="button" onclick="shareFile(); void(0);">Share</button>
+            </div> 
+          </div>
+        </div>
+    </div>
+ 
+    <div class="w-100 mb-4">
+        <span class="h1">Explorer</span>
+        <p class="text-body-secondary">Your digital workspace! Here, you can manage and navigate through your files in just a few clicks.</p>
+    </div>
+    <div class="file-manager pt-2"> 
+
+        <!-- Display any success or error messages -->
+        <div class="message">
+            <p>{{ @message }}</p>
+        </div>
+
+        <!-- File upload form --> 
+        <form id="uploadFileForm">
+        <label class="form-label" for="uploadFile">Choose a file to upload</label>
+        
+        <div class="input-group shadow-sm mb-3">
+            <input class="form-control" id="uploadFile" type="file">
+            <button type="submit" class="input-group-text btn btn-primary" for="uploadFile">
+                Upload
+            </button>
+        </div>
+           
+        </form>
+  
+    </div> 
+</div>
+
+<!-- File Explorer Page -->
+<div class="position-relative pb-4">
+ 
+    <div class="w-100 mb-4">
+        <span class="h1">File Manager</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+
+    <!-- Search Bar --> 
+    <div class="input-group mb-5">
+        <input class="form-control shadow-sm" type="text" id="searchBar" placeholder="Search files..." aria-label="Search" aria-describedby="searchFiles">
+        <button class="btn btn-primary" id="searchFiles" type="button">
+            <svg class="icon">
+                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-magnifying-glass"></use>
+            </svg>
+            Search
+        </button>
+    </div>
+
+    <!-- List of Files -->
+    <div class="row file-list">
+        <!-- Loop through the @files array to display the files -->
+        <repeat group="{{ @files }}" value="{{ @file }}">
+            <check if="{{ !@UTILS->isDir(@PUBLIC.'/uploads/'.@file.name) }}"> 
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 border-light shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-start flex-wrap text-truncate">
+                                    <svg class="icon me-2" width="36" height="36">
+                                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-file"></use>
+                                    </svg>
+                                    <span class="h5 text-truncate">{{ @file.name }}</span>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn bg-alt btn-sm dropdown-toggle" id="dropdownMenuButton" type="button" data-ui-toggle="dropdown" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" role="button" aria-label="Preview file" data-ui-toggle="modal" data-ui-target="#previewModal" data-ui-file="{{ @file.name }}">Preview</a></li>
+                                        <li><a class="dropdown-item" role="button" aria-label="Rename file" data-ui-toggle="modal" data-ui-target="#renameModal" data-ui-file="{{ @file.name }}">Rename</a></li>
+                                        <li><a class="dropdown-item" role="button" aria-label="Delete file" data-ui-toggle="modal" data-ui-target="#deleteModal" data-ui-file="{{ @file.name }}">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="card-text small text-body-secondary">File Size: <span class="text-muted">{{ @file.size }}</span></p>
+                            <p class="card-text small text-body-secondary">Last Modified: <span class="text-muted">{{ @file.last_modified }}</span></p>
+                            <button data-download="{{ @file.name }}" class="btn d-flex align-items-center justify-content-center text-center gap-2 bg-color border mt-auto btn-sm" aria-label="Download {{ @file.name }}">
+                                <svg class="icon text-primary">
+                                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-cloud-download"></use>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </check>
+        </repeat>
+        
+        
+    </div>
+</div> 
+
+<input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+ 
+<!-- Storage Manager -->
+<div class="position-relative pb-4"> 
+<div class="w-100 mb-4">
+    <span class="h1">Storage</span>
+    <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+</div> 
+
+<!-- Storage Overview Section -->
+<div class="row row-cols-1 row-cols-md-3 align-items-center mb-4">
+    <div class="col mb-3">
+        <div class="card p-3">
+            <div class="d-flex flex-md-column justify-content-between align-items-center">
+                <span class="fs-5">Total Space</span>
+                <span class="fs-5 fw-bold">{{@UTILS->formatBytes(@totalSpace)}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col mb-3">
+        <div class="card p-3">
+            <div class="d-flex flex-md-column justify-content-between align-items-center">
+                <span class="fs-5">Used Space</span>
+                <span class="fs-5 fw-bold">{{@UTILS->formatBytes(@totalSize)}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col mb-3">
+        <div class="card p-3">
+            <div class="d-flex flex-md-column justify-content-between align-items-center">
+                <span class="fs-5">Free Space</span>
+                <span class="fs-5 fw-bold">{{@UTILS->formatBytes(@totalFree)}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Storage Progress Bar -->
+<div class="w-100 mb-4">
+    <div class="card shadow p-4 bg-primary">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-5 fw-bolder">
+                <svg class="icon icon-lg">
+                <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-chart-pie"></use>
+            </svg>
+            Storage Usage</span>
+            <span id="storagePercentage" class="fs-5 fw-bold text-primary-alt"></span>
+        </div>
+        <div class="progress bg-alt" style="height: 30px;">
+            <div id="storageProgress" class="progress-bar bg-color" role="progressbar" aria-label="Storage used" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <p class="text-primary-alt mt-2">You have used <span id="usedPercentage"></span>% of your total storage space.</p>
+    </div>
+</div> 
+</div>
+
+
+<script>
+    "use strict" 
+    const token = document.querySelector('#token');     
+
+    const renameFileForm = document.getElementById('renameFileForm');
+    const deleteFileForm = document.getElementById('deleteFileForm');
+    const uploadFileForm = document.getElementById('uploadFileForm');
+    const uploadFile = document.getElementById('uploadFile');
+    const fileName = document.getElementById('fileName');
+    const fileNameSave = document.getElementById('fileNameSave');
+    const previewImg = document.getElementById('previewImg');
+    const previewUrl = document.getElementById('previewUrl');
+
+    const host = window.location.protocol + "//" + window.location.host;
+     
+    const renameModal = document.getElementById('renameModal');
+    renameModal.addEventListener('show.ui.modal', function (e) {
+        setFile(e.relatedTarget); 
+    });
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.ui.modal', function (e) { 
+        setFile(e.relatedTarget);
+    });
+    const previewModal = document.getElementById('previewModal');
+    previewModal.addEventListener('show.ui.modal', function (e) { 
+        setFile(e.relatedTarget);
+    });
+
+    function setFile(target) {
+    var file = target.getAttribute('data-ui-file');
+
+    // Split the string at the last dot (.)
+    var lastDotIndex = file.lastIndexOf('.');
+
+    // Extract the file name (everything before the last dot)
+    var fileNameInput = file.substring(0, lastDotIndex);
+
+    // Extract the file extension (everything after and including the last dot)
+    var fileExt = file.substring(lastDotIndex); 
+     
+    fileNameSave.value = file;
+    fileName.value = fileNameInput;
+    previewUrl.value = host + "{{@PUBLIC}}/uploads/" + file;
+
+    let isImage = [".png", ".gif", ".webp", ".svg", ".jpg", ".jpeg", ".avif"].includes(fileExt.toLowerCase());
+    if (isImage) {
+        previewImg.setAttribute('src', '{{@PUBLIC}}/uploads/' + file);
+    } else {
+        previewImg.setAttribute('src', '{{@PUBLIC}}/assets/img/file_na.png');
+    }
+    }
+
+    function shareFile(){ 
+
+        // Select the text field
+        previewUrl.select();
+        previewUrl.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(previewUrl.value);
+ 
+    }
+
+    if(renameFileForm){
+        renameFileForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            var file = fileNameSave.value;
+
+            // Split the string at the last dot (.)
+            var lastDotIndex = file.lastIndexOf('.'); 
+
+            // Extract the file extension (everything after and including the last dot)
+            var fileExt = file.substring(lastDotIndex); 
+
+            // Set new file name
+            var newFileName = fileName.value+fileExt;
+
+            const formData = new FormData();
+            formData.append('action', 'rename');
+            formData.append('file', fileNameSave.value); 
+            formData.append('name', newFileName); 
+
+            let uri_request = "files/manage";
+            fetchRequest(formData, uri_request, null, true);
+        });
+    } 
+    
+    if(deleteFileForm){
+        deleteFileForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('file', fileNameSave.value); 
+
+            let uri_request = "files/manage";
+            fetchRequest(formData, uri_request, null, true);
+        });
+    }
+
+    if(uploadFileForm){
+        uploadFileForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            let file = uploadFile.files[0];
+            if (!file) {
+                showAlert("error", "Upload empty. Select a file and try again.");
+                return false;
+            }
+
+            // Limit file size to 10MB
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                showAlert("error", "File size exceeds the 10MB limit.");
+                return false;
+            }
+
+            const formData = new FormData();
+            formData.append('action', 'upload');
+            formData.append('file', file);
+
+            let uri_request = "files/manage";
+            fetchRequest(formData, uri_request, null, true);
+
+        })
+    }
+  
+    async function fetchRequest(formData, url, event, reload = false) { 
+    hideAlerts();
+
+    try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Important for file uploads
+            },
+        });
+        // Success response handling
+        if (response.data.status == "success") {
+            if (reload) {
+                alert(response.data.message);
+                window.location.reload();
+                return false;
+            }
+
+            showAlert("success", response.data.message);
+        } else {
+            showAlert("error", response.data.message || "An error occurred.");
+        }
+        document.getElementById('renameExit').click();
+
+    } catch (error) {
+        console.error("Error: ", error);
+        showAlert("error", "Failed to process the request. Try again.");
+    }
+    } 
+
+    function toggleButtonState(button, state) {
+    if (state === "loading") {
+        button.disabled = true;
+        button.textContent = "Processing...";
+    } else {
+        button.disabled = false;
+        button.textContent = "Submit";
+    }   
+    }
+
+    // Assuming you have these variables available dynamically
+    const totalSpace = parseFloat("{{@totalSpace}}");  // Should be in bytes
+    const usedSpace = parseFloat("{{@totalSize}}");    // Should be in bytes
+    const freeSpace = parseFloat("{{@totalFree}}");    // Should be in bytes
+
+    // Function to calculate the used storage percentage
+    function calculatePercentage(used, total) {
+        // Check if total is greater than zero to avoid division by zero
+        if (total > 0) {
+            // Perform the calculation and ensure the result isn't extremely small
+            let percentage = ((used / total) * 100).toFixed(2);  
+            return percentage;
+        } else {
+            console.log("Total space is 0, cannot calculate percentage.");
+            return "0.00"; // Handle cases where total is zero
+        }
+    }
+
+    // Update the progress bar and percentage values 
+    let storagePercentage = calculatePercentage(usedSpace, totalSpace);
+    const storageProgress = document.getElementById('storageProgress');
+    const storagePercentageText = document.getElementById('storagePercentage');
+    const usedPercentageText = document.getElementById('usedPercentage');
+    
+    let storageTextValue = storagePercentage;
+    if(storageTextValue<1){
+        storageTextValue = "<1";
+        storagePercentage = 1;
+    }
+
+    // Update progress bar and text content
+    storageProgress.style.width = `${storagePercentage}%`;
+    storageProgress.setAttribute('aria-valuenow', storagePercentage);
+    storagePercentageText.textContent = `${storageTextValue}%`;
+    usedPercentageText.textContent = storageTextValue; 
+
+
+    function filterFiles() {
+        const searchInput = document.getElementById('searchBar');
+        const filter = searchInput.value.toLowerCase();
+        const fileList = document.querySelectorAll('.file-list .col');
+
+        fileList.forEach(file => {
+            const fileName = file.querySelector('.card-body .h5').textContent.toLowerCase();
+            if (fileName.includes(filter)) {
+                file.style.display = '';
+            } else {
+                file.style.display = 'none';
+            }
+        });
+    }
+
+    // Download file function 
+    const dataDownload = document.querySelectorAll('button[data-download]');
+
+    if (dataDownload) {
+        dataDownload.forEach(item => {
+
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var host = window.location.protocol + "//" + window.location.host;
+            var file = item.getAttribute('data-download');
+            var downloadLink = host + "{{@PUBLIC}}/uploads/" + file;
+
+            // Create an invisible link element and trigger the download
+            var a = document.createElement('a');
+            a.href = downloadLink;
+            a.setAttribute('download', file); // Force the browser to download the file
+            document.body.appendChild(a); // Append the link to the body
+
+            // Trigger the download
+            a.click();
+
+            // Clean up the DOM by removing the anchor element
+            document.body.removeChild(a);
+        });
+
+    });
+    }
+ 
+   
+</script>

@@ -1,0 +1,130 @@
+ 
+<div class="position-relative mb-4">
+  <div class="w-100 d-flex justify-content-between align-items-start">
+    <div class="col">
+      <div class="d-flex flex-column">
+        <span class="h1">Private Keys</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+      </div>
+    </div>
+    <div class="ms-auto">
+      <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/api/add" class="btn bg-primary">+ New key</a>
+    </div>
+  </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+          <div class="d-flex justify-content-between"> 
+            <span> Total: {{count(@apiAll)}}</span>
+            <span><a role="button" aria-label="View all" href="/cp-admin/api/keys">View all</a></span>
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+                <thead>
+                  <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Usage</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <repeat group="{{@apiList}}" value="{{@item}}">
+                  <tr> 
+                    <td> <a aria-label="View" href="/{{@SITE.uri_backend}}/api/keys/view?s={{base64_encode(@item.api_slug)}}">{{@item.api_slug}}</a></td>
+                    <td>{{substr(@item.api_key, 0, 4) . '...' . substr(@item.api_key, -5)}}</td>
+                    <td>{{@item.api_usage}}</td>
+                    <td>
+                      <check if="{{ @item.status===1 }}">
+                        <true>
+                          <span class="fw-bolder text-success">Active</span>
+                        </true>
+                        <false>
+                          <span class="fw-bolder text-muted">Inactive</span>
+                        </false>
+                      </check> 
+                    </td> 
+                    <td class="text-end pe-0">
+                      <div class="inline-flex">  
+                        <a role="button" aria-label="View" href="/{{@SITE.uri_backend}}/api/keys/view?s={{base64_encode(@item.api_slug)}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                          <svg class="icon icon-sm">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                          </svg> 
+                          View
+                        </a>
+                      </div>
+                    </td>
+                  </tr> 
+                </repeat>
+                </tbody>
+              </table>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="position-relative">
+  <div class="w-100 my-4">
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="col me-auto">
+        <span class="h1">Enable API</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+      </div>
+      <div class="ms-auto p-2">
+        <div class="form-check form-switch form-switch-2xl">
+          <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+          <input class="form-check-input" id="enableApi" type="checkbox" {{ @SITE.enable_api?'checked':'' }}> 
+        </div>
+      </div>
+    </div>
+    
+</div>
+</div>
+
+<script>
+  "use strict"
+
+  const enableApi = document.getElementById('enableApi');
+  const token = document.querySelector("#token"); 
+
+  if(enableApi){
+    enableApi.addEventListener('change', function(e){
+
+      let isChecked = e.target.checked?1:0;
+
+      const schema = {};  
+      schema['value'] = isChecked;
+
+      const payload = {
+          token: token.value, 
+          schema: schema, 
+      }  
+
+      let uri_request = "api?enable";
+      fetchRequest(payload, uri_request);
+ 
+    })
+  }
+
+  // Add Event Listeners
+  async function fetchRequest(formData, url) {
+    event.preventDefault();   
+
+    try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).then(response => {
+               //console.log(response.data);
+          });
+
+    } catch (error) {
+        alert("error", "Error creating user. Please try again later."); 
+    }
+  } 
+ 
+</script>

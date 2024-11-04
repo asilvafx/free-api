@@ -1,0 +1,53 @@
+ 
+<div class="position-relative mb-4">
+<check if="isset(@notfound)">
+    <true>
+        <div class="w-100 mb-4">
+            <span class="h1">Not Found</span>
+            <p class="text-body-secondary">Role was not found in our records.</p>
+        </div>  
+        <div class="position-relative">
+            <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
+        </div>
+    </true>
+    <false>
+
+        <div class="w-100 mb-4">
+            <span class="h1">Role: {{@role.name}}</span>
+            <p class="text-body-secondary">{{@role.description}}</p>
+        </div>
+
+        <div class="w-100 mb-4">
+            <div class="bg-color border rounded p-2 p-lg-3"> 
+                <div class="w-100 d-flex flex-wrap">
+                    <div class="col d-flex flex-column p-2">
+                        <span class="text-body-secondary mb-1">Permissions</span>
+                        <div class="d-flex flex-wrap">
+                            <span class="fw-bolder">{{@role.access}}</span>
+                        </div> 
+                    </div>  
+                </div>
+
+            </div>
+        </div>
+        <input type="hidden" id="roleId" name="roleId" value="{{@role.id}}">
+        <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+
+        <div class="w-100 d-flex justify-content-between align-items-center"> 
+            <div class="position-relative">
+                <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
+            </div>
+            <div class="position-relative inline-flex gap-2"> 
+            <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/roles/edit?id={{@role.id}}'; void(0);">
+                <svg class="icon">
+                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                </svg>
+                Edit role
+            </button>
+            </div>
+        </div>
+
+
+    </false>
+</check> 
+</div>

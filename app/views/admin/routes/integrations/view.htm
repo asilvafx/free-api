@@ -1,0 +1,194 @@
+
+<check if="isset(@viewIntegration)">
+    <true> 
+        <set integrationName = "{{ucfirst(@viewIntegration)}}"></set>
+ 
+        <div class="position-relative mb-4">
+            <div class="w-100 d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column"> 
+                    <span class="h1">{{@integration.title??'NA'}}</span> 
+                </div>  
+            </div>
+        </div> 
+        
+        <div class="position-relative mb-5">
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+                        <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                    </div> 
+                    <div class="modal-body"> 
+                        Are you sure you want to remove this package? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger" type="submit" onclick="removeIntegration(this); void(0);">Yes, remove it</button>
+                    </div> 
+                    </div>
+                </div>
+            </div>
+            <check if="{{ @viewIntegrationPath }}"> 
+                <include href="{{ @viewIntegrationPath }}"></include> 
+            </check>
+            <p>Integration is 
+              <check if="{{isset(@integration.enabled) && @integration.enabled}}">
+                <true>
+                  <span class="text-success">Enabled</span> 
+                </true>
+                <false> 
+                  <span class="text-danger">Disabled</span>
+                </false>
+              </check>
+            </p>
+            <p>Please, contact the application developer for further assistance.</p>   
+        </div>
+        <div class="position-relative">
+            <div class="w-100 d-flex flex-wrap gap-4 justify-content-between align-items-center"> 
+                <div class="position-relative">
+                    <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/integrations'; void(0);">← Go back</button>
+                </div> 
+                <div class="position-relative">
+                    <button class="btn btn-danger" type="button" aria-label="Remove Integration" data-ui-toggle="modal" data-ui-target="#deleteModal">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-trash"></use>
+                        </svg>
+                        Remove Integration
+                    </button>
+                </div> 
+            </div>
+        </div>
+    </true>
+    <false> 
+        <div class="position-relative mb-4">
+            <div class="w-100 d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column">
+                    <span class="h1">Integrations</span>
+                    <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+                </div>  
+            </div>
+            <div class="w-100 mb-5">
+                <div class="d-flex flex-wrap"> 
+
+                    <check if="{{ isset(@listIntegrations) && count(@listIntegrations) > 0 }}">
+                        <true>
+                            <repeat group="{{@listIntegrations}}" value="{{@integration}}"> 
+                                <div class="col-12 col-md-6 col-lg-4 mb-4 pe-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                        <div class="card-icon mb-2"> 
+                                            <img width="50" height="50" alt="{{@integration.title}}" src="{{@integration.icon}}">
+                                        </div>
+                                        <h5 class="card-title truncate">
+                                            {{@integration.title}}
+                                        </h5>
+                                        <p class="card-text truncate-3"> 
+                                            {{@integration.description}}
+                                        </p>
+                                        <a role="button" class="w-100 btn btn-primary d-flex justify-content-between" aria-label={{@integration.title}}" href="/{{@SITE.uri_backend}}/integrations?view={{@integration.id}}">
+                                            <span>{{@integration.title}}</span>
+                                            <span>→</span>
+                                        </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </repeat>
+                        </true>
+                        <false>
+                            <p class="text-body">No integrations found.</p>
+                        </false>
+                    </check> 
+            </div>
+            </div>
+
+            <div class="w-100 px-2">
+                <div class="w-100 d-flex flex-column mb-4"> 
+                    <span class="h1">Upload Package</span> 
+                    <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+                </div>  
+                <div class="position-relative">
+                    <form id="uploadPackageForm">    
+                        <div class="input-group mb-3">
+                        <input class="form-control" id="uploadPackageInput" type="file" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" required>
+                        <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+                        <button type="submit" class="input-group-text btn-primary" id="uploadPackageBtn" for="uploadPackageInput">
+                            Upload
+                        </button>
+                    </div>
+                    <p class="text-muted small">Only .zip files are accepted.</p>
+                    </form> 
+                </div>
+                 
+            </div>
+        </div>
+    </false>
+</check>
+
+
+<script>
+    "use strict"
+
+    const uploadPackageForm = document.getElementById('uploadPackageForm');
+    const uploadPackageBtn = document.getElementById('uploadPackageBtn');
+    const uploadPackageInput = document.getElementById('uploadPackageInput');
+
+    if (uploadPackageForm) {
+        uploadPackageForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        let file = uploadPackageInput.files[0];
+        if (!file) {
+            showAlert("error", "Upload empty. Select a file and try again.");
+            return false;
+        }
+
+        // Check if the file is a valid .zip file
+        const fileName = file.name;
+        const fileExtension = fileName.split('.').pop().toLowerCase();
+
+        if (fileExtension !== 'zip') {
+            showAlert("error", "Invalid file type. Only .zip files are accepted.");
+            return false;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        let uri_request = "integrations?upload";
+        fetchRequest(formData, uri_request);
+    });
+    }
+
+    async function fetchRequest(formData, url) { 
+    hideAlerts();
+
+    try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Important for file uploads
+            },
+        });
+        // Success response handling
+        if (response.data.status == "success") { 
+            showAlert("success", response.data.message);
+            setTimeout(function(){ window.location.reload() }, 1500);
+            return false;
+        } else {
+            showAlert("error", response.data.message || "An error occurred.");
+        } 
+
+    } catch (error) {
+        console.error("Error: ", error);
+        showAlert("error", "Failed to process the request. Try again.");
+    }
+    }
+
+    function removeIntegration(El){  
+        El.setAttribute('aria-disabled', true);
+        El.innerText = "Processing..";
+        window.location.reload(true);
+        return true;
+    }
+
+</script>

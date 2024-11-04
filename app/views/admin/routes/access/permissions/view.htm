@@ -1,0 +1,182 @@
+ 
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-start">
+      <div class="col">
+        <span class="h1">Permissions</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+      </div> 
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="card mb-4">
+            <div class="card-header"> 
+                <div class="d-flex justify-content-between"> 
+                <span>Total: {{count(@permissionsAll)}}</span> 
+                </div>
+            </div>
+            <div class="card-body pb-0">
+            <div class="table-responsive">
+                <table class="table table-hover m-0">
+                    <thead>
+                        <tr> 
+                        <th scope="col">Name</th> 
+                        <th scope="col" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <repeat group="{{@permissionsList}}" value="@item">
+                        <tr>
+                            <td>{{@item.name}}</td>
+                            <td class="text-end">
+                                <check if="{{@item.default != 1}}"> 
+                                    <a role="button" class="btn btn-danger btn-sm" aria-label="Delete" onclick="deletePermission('{{@item.id}}')">
+                                    <svg class="icon">
+                                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
+                                        </svg>
+                                    </a> 
+                                </check>
+                                
+                            </td>
+                        </tr>
+                    </repeat> 
+                    </tbody>
+                    </table>
+                </div> 
+                        
+            </div>
+        </div>   
+        </div>
+        <div class="col">
+            <!-- Success and Error Messages --> 
+            <p class="alert border text-success hidden mb-4" id="success-div">
+                <svg class="icon me-1">
+                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-check-alt"></use>
+                </svg>
+                <span id="success-msg"></span>
+            </p>  
+            <p class="alert border text-danger hidden" id="error-div">
+                <svg class="icon me-1">
+                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-warning"></use>
+                </svg>
+                <span id="error-msg"></span>
+            </p> 
+            <form id="newPermissionForm">
+                <div class="mb-4">
+                    <span class="fs-4 fw-bolder">Add New Permission</span>
+                </div>
+                
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                          <use xlink:href="/public/assets/icons/svg/free.svg#cil-shield-alt"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="text" id="name" name="name" placeholder="Permission name" required="">
+                </div>
+                <div class="d-flex">
+                    <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+                    <button type="submit" class="btn btn-primary">
+                        Add Permission</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  
+</div>
+
+<script>
+    "use strict"
+
+    // Initilization 
+    const newPermissionForm = document.getElementById('newPermissionForm'); 
+    const token = document.querySelector('#token');   
+
+    // Form Fields
+    const nameInput = document.getElementById('name');
+
+    function deletePermission($pid){
+        
+        if(confirm('Are you sure?\nThis action cannot be undone.')){ 
+            const schema = {};  
+            schema['id'] = $pid;
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "access/permissions?delete";
+
+            fetchRequest(payload, uri_request, null);
+        }
+
+        return false;
+    }
+
+
+    if(newPermissionForm){
+        newPermissionForm.addEventListener('submit', function(e){
+            e.preventDefault();
+            
+            const schema = {};  
+            schema['name'] = nameInput.value;
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "access/permissions?add";
+            fetchRequest(payload, uri_request, newPermissionForm);
+            
+        })
+    }
+
+
+      // Add Event Listeners
+      async function fetchRequest(formData, url, formEl) {
+        event.preventDefault();  
+        hideAlerts();
+
+        // Disable all inputs and submit button
+        let inputs = formEl;
+        if(inputs){
+            inputs = formEl.querySelectorAll('input, select, button');
+            inputs.forEach(input => input.disabled = true);
+        } 
+
+        try {
+            const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(response => {
+                const data = response.data;
+                if (data.status === "success") {
+                    showAlert("success", response.data.message); 
+                    // Clear form inputs if success
+                    if(inputs){
+                        clearForm(formEl);
+                    }
+                    window.location.reload();
+                } else {
+                    showAlert("error", response.data.message);
+                }
+            }).finally(() => {
+                // Re-enable all inputs and submit button
+                if(inputs){
+                    inputs.forEach(input => input.disabled = false);
+                }
+            });
+
+        } catch (error) {
+            showAlert("error", "Error creating user. Please try again later.");
+            // Re-enable all inputs and submit button in case of error
+            if(inputs){ 
+                inputs.forEach(input => input.disabled = false);
+            }
+        }
+    }
+ 
+</script>

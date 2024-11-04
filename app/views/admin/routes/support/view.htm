@@ -1,0 +1,227 @@
+ 
+
+<!-- Server Information Section -->
+<div class="position-relative mb-5">
+    <div class="w-100 mb-4">
+        <span class="h1">Server Information</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div> 
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>PHP Version</td>
+                <td>{{@phpVersion}}</td>
+            </tr>
+            <tr>
+                <td>Server Software</td>
+                <td>{{@serverSoftware}}</td>
+            </tr>
+            <tr>
+                <td>Document Root</td>
+                <td>{{@docRoot}}</td>
+            </tr> 
+            <tr>
+                <td>Max Upload Size</td>
+                <td>{{@maxUpload}}</td>
+            </tr>
+        </tbody>
+    </table> 
+</div>
+
+<!-- Site Backups Section -->
+<div class="position-relative mb-5"> 
+
+    <div class="w-100 mb-4">
+        <span class="h1">Site Backups</span>
+        <p class="text-body-secondary">Backup your website data and files periodically to ensure data integrity.</p>
+    </div>  
+
+    <!-- Check if a backup exists and display its info or a warning message -->
+    <div id="backupInfo">
+        <check if="{{@noBackup}}">
+            <true>
+                <p class="text-warning">No backups available yet.</p>
+            </true>
+            <false>
+                <p class="text-body">Latest backup: <strong>{{@lastBackup}}</strong> created on <strong>{{@lastBackupTime}}</strong>.</p>
+            </false>
+        </check> 
+    </div>
+
+    <!-- Download Latest Backup Button -->
+    <button id="downloadBackup" class="btn btn-primary" {{ @noBackup ? 'disabled' : '' }}>Download Latest Backup</button>
+
+    <!-- Create New Backup Button -->
+    <button id="createBackup" class="btn btn-secondary">Create New Backup</button> 
+</div>
+
+  <!-- Error Logs Section -->
+<div class="position-relative mb-5"> 
+    
+<div class="w-100 mb-4">
+    <span class="h1">Error Logs</span>
+    <p class="text-body-secondary">Review system and application error logs below:</p>
+</div>     
+<textarea class="form-control" rows="10" readonly>
+    {{@errorLogs}}
+</textarea>
+<button id="clearLogsButton" class="btn btn-danger mt-3">Clear Logs</button> 
+</div>
+
+<!-- Cache Section -->
+<div class="position-relative mb-5">   
+<div class="w-100 mb-4">
+    <span class="h1">Cache Management</span>
+    <p class="text-body-secondary">Manage cache files to ensure optimized performance.</p>
+</div>   
+
+<div class="d-flex flex-wrap gap-2">
+    <!-- Clean All Cache Button -->
+    <div class="position-relative">
+        <button id="cleanAllCache" class="btn btn-danger">Clean All Cache</button>
+    </div>
+    <!-- Clean Temporary Files Button -->
+    <div class="position-relative">
+        <button id="cleanTempFiles" class="btn btn-warning">Clean Temporary Files</button>
+    </div>
+    <!-- Clean User Sessions Button -->
+    <div class="position-relative">
+        <button id="cleanUserSessions" class="btn btn-warning">Clean User Sessions</button>
+    </div>
+</div> 
+
+</div>
+
+<!-- Technical Support Section -->
+<div class="position-relative mb-5">    
+<div class="w-100 mb-4">
+    <span class="h1">Need Help?</span> 
+</div>    
+<div class="alert alert-info mt-2"> 
+    <p class="text-body-secondary">If you're experiencing technical issues, feel free to reach out to our support team.</p>
+    <p class="text-body-secondary"><strong>Email:</strong> support@pigmil.com</p>
+    <p class="text-body-secondary"><strong>Phone:</strong> +33 610 291 986</p>
+    <button class="btn bg-alt">Contact Support</button>
+</div>
+</div> 
+    
+
+
+<script>
+    "use strict"
+
+       // Clean All Cache button handler
+       document.getElementById('cleanAllCache').addEventListener('click', function() {
+        if (confirm("Are you sure you want to clean all cache? This will remove all cache and session files.")) {
+            axios.post('/{{@SITE.uri_backend}}/support?clean-all-cache', { token: '{{@TOKEN}}' })
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        alert('All cache cleaned successfully.');
+                        window.location.reload();
+                    } else {
+                        alert('Failed to clean all cache: ' + response.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while cleaning all cache.');
+                });
+        }
+    });
+
+    // Clean Temporary Files button handler
+    document.getElementById('cleanTempFiles').addEventListener('click', function() {
+        if (confirm("Are you sure you want to clean temporary files?")) {
+            axios.post('/{{@SITE.uri_backend}}/support?clean-temp-files', { token: '{{@TOKEN}}' })
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        alert('Temporary files cleaned successfully.');
+                        window.location.reload();
+                    } else {
+                        alert('Failed to clean temporary files: ' + response.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while cleaning temporary files.');
+                });
+        }
+    });
+
+    // Clean User Sessions button handler
+    document.getElementById('cleanUserSessions').addEventListener('click', function() {
+        if (confirm("Are you sure you want to clean user session files?")) {
+            axios.post('/{{@SITE.uri_backend}}/support?clean-user-sessions', { token: '{{@TOKEN}}' })
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        alert('User sessions cleaned successfully.');
+                        window.location.reload();
+                    } else {
+                        alert('Failed to clean user sessions: ' + response.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while cleaning user sessions.');
+                });
+        }
+    });
+
+    // Download backup button handler
+    document.getElementById('downloadBackup').addEventListener('click', function() {
+        window.location.href = '/{{@SITE.uri_backend}}/support?download-backup&tkn={{@TOKEN}}';
+    });
+
+    // Create new backup button handler
+    document.getElementById('createBackup').addEventListener('click', function() {
+    const btn = this;
+    btn.innerHTML = 'Creating Backup...'; // Change text or add a spinner here
+    btn.disabled = true;
+
+    axios.post('/{{@SITE.uri_backend}}/support?create-backup', { token: '{{@TOKEN}}' })
+        .then(response => {
+        if (response.data.status === 'success') {
+            alert('New backup created successfully.');
+            window.location.reload();
+        } else {
+            alert('Failed to create new backup: ' + response.data.message);
+        }
+        })
+        .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating a new backup.');
+        })
+        .finally(() => {
+        btn.innerHTML = 'Create New Backup'; // Revert button text
+        btn.disabled = false;
+        });
+    });
+
+    document.getElementById('clearLogsButton').addEventListener('click', function() {
+        if (confirm("Are you sure you want to clear the logs? This action cannot be undone.")) {
+            axios.post('/{{@SITE.uri_backend}}/support?clear-logs', {
+                action: 'clearLogs',
+                token: '{{@TOKEN}}' // Include CSRF token for security
+            })
+            .then(function (response) {
+                if (response.data.status === 'success') {
+                    alert("Logs cleared successfully.");
+                    window.location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert("Failed to clear logs: " + response.data.message);
+                }
+            })
+            .catch(function (error) {
+                alert("An error occurred while clearing logs. Please try again.");
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>

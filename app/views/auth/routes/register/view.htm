@@ -1,0 +1,218 @@
+<div class="row justify-content-center px-4">
+  <div class="col-lg-8">
+    <div class="card-group d-block d-md-flex row">
+      <div class="card col-md-7 p-2 p-md-3 p-lg-4 mb-0">
+        <div class="card-body">
+          <div id="errorAlert" class="alert alert-dark hidden" role="alert">
+            <span class="text-danger fw-bolder">
+            <svg class="icon">
+              <use xlink:href="/public/assets/icons/svg/free.svg#cil-warning"></use>
+            </svg>
+            <span id="errorMsg"></span></span>
+          </div>
+
+          <div id="validAlert" class="alert hidden" role="alert">
+            <span class="text-success fw-bolder">
+              <svg class="icon">
+                <use xlink:href="/public/assets/icons/svg/free.svg#cil-check-alt"></use>
+              </svg>
+              <span id="successMsg"></span></span>
+          </div>
+
+          <!-- Register Step -->
+          <div class="step" data-step="1">
+            <h1>Register</h1>
+            <p class="text-body-secondary mb-4">Enter a valid email address to access your account.</p>
+            <form id="authForm"> 
+            <div class="input-group mb-4"><span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+                </svg></span>
+              <input class="form-control" type="text" id="displayName" name="displayName" placeholder="Full name" autofocus required> 
+            </div>
+            <div class="input-group mb-4"><span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-at"></use>
+                </svg></span>
+              <input class="form-control" type="email" id="auth" name="auth" placeholder="your@company.com" required>
+              <input class="form-control" type="text" id="pot" name="pot" value="" required>
+            </div>
+             <div class="input-group mb-4"><span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                </svg></span>
+              <input class="form-control" type="password" id="crypt" name="crypt" placeholder="New Password" onkeyup="validatePassword(this.value)" required> 
+                <span class="input-group-text password-toggle" onclick="togglePassword('currentPassword', this)">
+                    <svg class="icon eye-icon" id="eye-password">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                    </svg>
+                    <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                    </svg>
+                </span>
+            </div>
+            <!-- Password Requirements Checker -->
+            <div id="passwordRequirements">
+                <p class="mb-1 small">Password must include:</p>
+                <ul>
+                    <li id="length" class="invalid">At least 8 characters</li>
+                    <li id="lowercase" class="invalid">A lowercase letter (a-z)</li>
+                    <li id="extra" class="invalid">A number (0-9), special character (!@#$%^&*), or uppercase letter (A-Z)</li>
+                </ul>
+            </div>
+             <div class="input-group mb-4"><span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                </svg></span>
+              <input class="form-control" type="password" id="confirmCrypt" name="confirmCrypt" placeholder="Confirm Password" required> 
+              <span class="input-group-text password-toggle" onclick="togglePassword('currentPassword', this)">
+                  <svg class="icon eye-icon" id="eye-password">
+                      <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                  </svg>
+                  <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                      <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                  </svg>
+              </span>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <button class="btn btn-primary px-4" type="submit">Continue</button>
+              </div>
+              <div class="col-12 col-md-6 text-start text-md-end mt-4 mt-md-0">
+                <a aria-label="Sign in" href="/{{@SITE.uri_auth}}/login" class="btn btn-link px-0">Already have an account? Sign in</a>
+              </div>
+            </div>
+            </form>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  "use strict"
+
+    const pot = document.getElementById('pot'); 
+    if(pot){
+      pot.removeAttribute('required');
+      pot.setAttribute('type', 'hidden');
+    }
+
+    const authForm = document.getElementById('authForm');
+    const displayName = document.getElementById('displayName');
+    const email = document.getElementById('auth');
+    const crypt = document.getElementById('crypt');
+    const confirmCrypt = document.getElementById('confirmCrypt');
+
+    function emailIsValid (email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    }
+
+    if(authForm){
+      authForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        if(displayName.value === "" || email.value === "" || crypt.value === ""){
+          alert('Fill all required information fields and try again.');
+          return false;
+        } else 
+        if(!emailIsValid(email.value)){ 
+          alert('Enter a valid email address and try again.');
+          return false;
+        } else 
+        if(!validatePassword(crypt)){ 
+          alert('Password does not meet criteria.');
+          return false;
+        } else 
+        if(crypt.value!==confirmCrypt.value){
+          alert('Passwords do not match!');
+          return false;
+        } 
+
+        const formData = new FormData();
+        formData.append('token', '{{@TOKEN}}');
+        formData.append('username', email.value);
+        formData.append('displayName', displayName.value);
+        formData.append('crypt', btoa(crypt.value)); 
+         
+        fetchRegister(formData);
+        
+        return true;
+
+      })
+    } 
+
+    async function fetchRegister(formData){  
+      const response = await axios.post('{{@SITE.uri_auth}}/register?validate', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then((response) => {
+        if(response.data.status === "success"){
+          window.location.href = "/{{@SITE.uri_backend}}";
+        } else {
+          alert(response.data.message);
+        }
+
+      }, (error) => {
+        console.log(error);
+      }).finally(() => {  
+      }) 
+
+    }
+
+    function validatePassword(password) {
+    const length = document.getElementById('length');
+    const lowercase = document.getElementById('lowercase');
+    const extra = document.getElementById('extra');
+    const submitButton = document.querySelectorAll('button[type="submit"]')[0];
+    const displayName = document.getElementById('displayName');
+    const email = document.getElementById('auth');
+    const crypt = document.getElementById('crypt');
+    const confirmCrypt = document.getElementById('confirmCrypt');
+
+    // Regex patterns for validation
+    const lengthPattern = /.{8,}/; // At least 8 characters
+    const lowercasePattern = /[a-z]/; // At least one lowercase letter
+    const extraPattern = /[0-9]|[!@#$%^&*]|[A-Z]/; // At least one number, special character, or uppercase letter
+
+    // Validate the password against each pattern
+    length.className = lengthPattern.test(password) ? 'valid' : 'invalid';
+    lowercase.className = lowercasePattern.test(password) ? 'valid' : 'invalid';
+    extra.className = extraPattern.test(password) ? 'valid' : 'invalid';
+
+    // Enable the submit button only if all requirements are met
+    if (
+        lengthPattern.test(password) &&
+        lowercasePattern.test(password) &&
+        extraPattern.test(password) &&
+        displayName.value !== "" &&
+        email !== "" &&
+        confirmCrypt !== ""
+    ) {
+        submitButton.disabled = false;
+        return true;
+    } else {
+        submitButton.disabled = true;
+        return false;
+    }
+    }
+
+    function togglePassword(inputId, element) {
+        const input = document.getElementById(inputId);
+        const eyeIcon = element.querySelector('.eye-icon');
+        const eyeSlashIcon = element.querySelector('.eye-slash-icon');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeIcon.style.display = 'none';
+            eyeSlashIcon.style.display = 'inline-block';
+        } else {
+            input.type = 'password';
+            eyeIcon.style.display = 'inline-block';
+            eyeSlashIcon.style.display = 'none';
+        }
+    }
+
+</script>

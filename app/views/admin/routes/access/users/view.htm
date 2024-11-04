@@ -1,0 +1,96 @@
+ 
+ 
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-center">
+        <div class="col d-flex flex-column">
+            <span class="h1">Users</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div> 
+        <div>
+            <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/users/add" class="btn bg-primary">+ Add new user</a>
+        </div> 
+    </div>
+    <div class="card mb-4">
+        <div class="card-header"> 
+          <div class="d-flex justify-content-between"> 
+            <span>Total: {{@usersAll}}</span> 
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+                <thead>
+                  <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <repeat group="{{ @usersList }}" value="{{ @item }}" key="{{ @key }}"> 
+                    <set displayName="{{@item.displayName}}"></set>
+                    <set userEmail="{{@item.email}}"></set>
+                    <set userRole="{{@item.role}}"></set>
+                    <set userIsAdmin="{{@item.is_admin}}"></set>
+                    <set userIsSuper="{{@item.is_super_admin}}"></set>
+                    <set userIsDev="{{@item.is_developer}}"></set>
+                    <set userUid="{{@item.user_id}}"></set>
+                    <tr> 
+                      <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}"><span class="{{@userIsAdmin===1?'isAdminClr':''}}">
+                        <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1?'isAdminClr':''}}">
+                          <span>{{@userIsSuper===1?'★ ':''}}</span>
+                          <span>{{@displayName}}</span>
+                          <check if="{{@userIsDev===1}}">
+                            <span class="position-relative">
+                            <span class="badge text-uppercase bg-body">Dev</span>
+                            </span>
+                          </check>   
+                      </span></a></td>
+                      <td>{{@userEmail}}</td>
+                      <td>{{  getRoleNameById(@userRole) }}</td>
+                      <td class="text-end pe-0">
+                        <div class="inline-flex gap-1"> 
+                          <a role="button" aria-label="View" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-primary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg> 
+                            View
+                          </a>
+                          <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/users/edit?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                            </svg> 
+                            Edit
+                          </a>
+                        </div>
+                      </td>
+                    </tr> 
+                  </repeat>
+                </tbody>
+              </table>
+          </div>
+        </div>
+    </div>  
+    <div class="w-100 d-flex justify-content-center"> 
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+              <repeat group="{{@usersPagination}}" value="{{@value}}" key="{{@key}}">
+                 <li class="page-item">
+                    <check if="{{ @value === @usersCurrentPage }}">
+                        <true>
+                            <a class="page-link active" aria-label="Go to page {{@value}}" onclick="void(0);">{{@value}}</a>
+                        </true>
+                        <false>
+                            <a class="page-link" aria-label="Go to page {{@value}}" href="/{{@SITE.uri_backend}}/access/users?page={{@value}}">{{@value}}</a>
+                        </false>
+                    </check> 
+                </li>
+              </repeat> 
+              
+              <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,1021 @@
+ 
+
+<div class="position-relative mb-5">
+    <div class="w-100 mb-4">
+        <span class="h1">Two-factor Authentication</span>
+        <p class="text-body-secondary">Add an extra layer of security to your account by enabling at least one 2FA.</p>
+    </div>
+
+    <!-- Security Options -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    
+        <!-- 2FA Setup Section -->
+        <div class="col mb-4">
+            <div class="card bg-color">
+                <div class="card-body text-center">
+                    <h5 class="card-title d-flex flex-column align-items-center gap-2">
+                        <svg class="icon icon-xxl mb-2">
+                          <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-center-focus"></use>
+                        </svg>
+                        Authenticator App
+                    </h5>
+                    <p class="card-text">Secure your account using modern authentication applications.</p>
+                    <check if="{{@CXT->twofactor === 1}}">
+                        <true> 
+                            <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" data-ui-toggle="modal" data-ui-target="#twoFaRemoveModal">
+                                <span>Remove Authenticator</span><span>→</span>
+                            </button>
+                        </true>
+                        <false> 
+                            <button class="btn btn-primary d-flex justify-content-between w-100 text-truncate" data-ui-toggle="modal" data-ui-target="#setup2FAModal">
+                                <span>Setup Authenticator</span><span>→</span>
+                            </button>
+                        </false>
+                    </check>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Authn Setup Section -->
+        <div class="col mb-4">
+            <div class="card bg-color">
+                <div class="card-body text-center">
+                    <h5 class="card-title d-flex flex-column align-items-center gap-2">
+                      <svg class="icon icon-xxl mb-2">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-fingerprint"></use>
+                      </svg>
+                        Passkeys (Biometrics)
+                        <div class="position-relative"> 
+                        <span class="badge small border bg-body text-primary ms-2">Recommended</span>
+                        </div>
+                    </h5>
+                    <p class="card-text">Secure your account using modern authentication methods.</p>
+                    <check if="{{@CXT->passkey === 1}}">
+                        <true>
+                            <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#removeAuthnModal">
+                                <span>Remove Passkey</span><span>→</span>
+                            </button>
+                        </true>
+                        <false> 
+                            <button class="btn btn-primary d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#setupAuthnModal">
+                                <span>Setup Passkey</span><span>→</span>
+                            </button>
+                        </false>
+                    </check>
+                  
+                </div>
+            </div>
+        </div>
+
+        <!-- PIN Code Setup Section -->
+        <div class="col mb-4">
+            <div class="card bg-color">
+                <div class="card-body text-center">
+                    <h5 class="card-title d-flex flex-column align-items-center gap-2">
+                      <svg class="icon icon-xxl mb-2">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-dialpad"></use>
+                      </svg>
+                        PIN Code
+                    </h5>
+                    <p class="card-text">Secure your account using modern authentication methods.</p>
+                    <check if="{{@CXT->pin === 1}}">
+                        <true>
+                            <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#removePinModal">
+                                <span>Remove PIN Code</span><span>→</span>
+                            </button>
+                        </true>
+                        <false> 
+                            <button class="btn btn-primary d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#setupPinModal">
+                                <span>Setup PIN Code</span><span>→</span>
+                            </button>
+                        </false>
+                    </check>
+                  
+                </div>
+            </div>
+        </div>
+    
+    </div> 
+</div>
+ 
+
+<!-- Manage Account Options -->
+<div class="position-relative mb-5">  
+    <div class="w-100 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-start">
+          <div class="col-12 col-md-8 me-auto">
+            <span class="h1">Change Email</span>
+            <p class="text-body-secondary">Update your account email to receive the latest updates and important notifications related to your account.</p>
+          </div>
+          <div class="col-12 col-md-4 d-flex">
+            <div class="w-100 position-relative text-md-end p-2"> 
+                <button class="col-12 col-md-auto btn btn-primary" data-ui-toggle="modal" data-ui-target="#changeEmailModal">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-envelope-closed"></use>
+                    </svg>
+                    <span>Change Email</span>
+                </button>
+            </div>
+          </div>
+        </div> 
+    </div>
+    <div class="w-100">
+        <div class="d-flex flex-wrap justify-content-between align-items-start">
+          <div class="col-12 col-md-8 me-auto">
+            <span class="h1">Change Password</span>
+            <p class="text-body-secondary">Update your account password to enhance security.</p>
+          </div>
+          <div class="col-12 col-md-4 d-flex">
+            <div class="w-100 position-relative text-md-end p-2"> 
+                <button class="col-12 col-md-auto btn btn-primary" data-ui-toggle="modal" data-ui-target="#changePasswordModal">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                    </svg>
+                    <span>Change Password</span>
+                </button>
+            </div>
+          </div>
+        </div> 
+    </div>
+</div>
+
+<!-- Login Alert Options -->
+<div class="position-relative">  
+    <div class="w-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="col me-auto">
+            <span class="h1">Login Alerts</span>
+            <p class="text-body-secondary">Get notified when your account is accessed from an unrecognized device.</p>
+          </div>
+          <div class="ms-auto p-2">
+            <div class="position-relative"> 
+                <div class="form-check form-switch form-switch-2xl"> 
+                    <input class="form-check-input" id="loginAlertsToggle" type="checkbox" {{@CXT->login_alerts===1?'checked':''}}> 
+                  </div>
+            </div>
+          </div>
+        </div> 
+    </div> 
+</div>
+
+<!-- Change Email Modal -->
+<div class="modal fade" id="changeEmailModal" tabindex="-1" aria-labelledby="changeEmailModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form id="newEmailForm" class="modal-content"> 
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeEmailModalLabel">Change Email</h5>
+                <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body">  
+                  <p class="text-body-secondary">Current Email Address</p>
+                  <div class="input-group mb-4">
+                      <span class="input-group-text">
+                          <svg class="icon">
+                              <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-at"></use>
+                          </svg>
+                      </span>
+                      <input class="form-control" type="email" name="userEmail" placeholder="" value="{{@CXT->email}}" aria-disabled="true" disabled readonly>
+                  </div>
+                  <p class="text-body-secondary">Confirm your password</p>
+                  <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="newEmail_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('newEmail_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>  
+                <p class="text-body-secondary">Enter New Email</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-at"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="email" id="newEmail" name="newEmail" placeholder="your-new-email@company.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="emailChangeExit">Cancel</button>
+                <button class="btn btn-primary submitButton" type="submit">Save changes</button>
+            </div>  
+        </form>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form id="newPasswordForm" class="modal-content"> 
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body"> 
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="newPassword_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('newPassword_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="New Password" onkeyup="validatePassword(this.value)">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('password', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+                <!-- Password Requirements Checker -->
+                <div id="passwordRequirements">
+                    <p class="mb-1 small">Password must include:</p>
+                    <ul>
+                        <li id="length" class="invalid">At least 8 characters</li>
+                        <li id="lowercase" class="invalid">A lowercase letter (a-z)</li>
+                        <li id="extra" class="invalid">A number (0-9), special character (!@#$%^&*), or uppercase letter (A-Z)</li>
+                    </ul>
+                </div>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm New Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', this)">
+                        <svg class="icon eye-icon" id="eye-confirmPassword">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-confirmPassword" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="passwordChangeExit">Cancel</button>
+                <button class="btn btn-primary submitButton" id="submitPasswordButton" type="submit" disabled>Save changes</button>
+            </div>  
+        </form>
+    </div>
+</div>
+
+<!-- Setup 2FA Modal -->
+<div class="modal fade" id="setup2FAModal" tabindex="-1" aria-labelledby="setup2FAModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="setup2FAModalLabel">Setup Two-Factor Authentication</h5>
+                <a role="button" id="twofactorExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></a>
+            </div>
+            <div class="modal-body">
+                <p>Scan the QR code using your authenticator app and enter the 6-digit code below:</p>
+                <!-- Insert QR Code / Secret Here -->
+                 <div class="twofactorGroup text-center"> 
+                    <check if="{{isset(@qrCodeUrl)}}">
+                        <img width="400" height="400" class="qrCodeImg mb-4" alt="QRCode" src="{{@qrCodeUrl}}">
+                        <p class="text-body-secondary text-start">Enter your code bellow:</p>
+                        <div class="otp-input qrKeyCode mb-4">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                            <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required="">
+                        </div>
+                        <p class="text-body-secondary text-start">Confirm your password</p>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text">
+                                <svg class="icon">
+                                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                                </svg>
+                            </span>
+                            <input class="form-control currentPassword" type="password" id="twofactorSetup_cc" name="currentPassword" placeholder="Current Password">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('twofactorSetup_cc', this)">
+                                <svg class="icon eye-icon" id="eye-password">
+                                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                                </svg>
+                                <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="my-4"><span class="small">
+                            Unable to scan the code? <a class="text-primary" aria-label="Enter set up key manually">Enter set up key manually</a>
+                        </span></p>
+                    </check> 
+                 </div>
+                <button class="btn btn-primary w-100" onclick="twoFaRegister(this); void(0);">Enable 2FA</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove 2FA Modal -->
+<div class="modal fade" id="twoFaRemoveModal" tabindex="-1" aria-labelledby="twoFaRemoveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="twoFaRemoveModalLabel">Are you sure?</h5>
+                <button type="button" id="passkeyExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Enable strong authentication with Authenticator Apps.</p> 
+                <p class="text-body-secondary">Confirm your password</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="twofactorRemove_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('twofactorRemove_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer"> 
+                <button id="removeAuthnExit" class="btn btn-secondary" type="button" data-ui-dismiss="modal" aria-label="Close">
+                    Cancel
+                </button>  
+                <button class="btn btn-danger" type="button" onclick="twoFaRemove(this); void(0);">
+                    Yes, remove it
+                </button>  
+            </div>  
+        </div>
+    </div>
+</div>
+
+<!-- Setup Authn Modal -->
+<div class="modal fade" id="setupAuthnModal" tabindex="-1" aria-labelledby="setupAuthnModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="setupAuthnModalLabel">Setup Passkey</h5>
+                <button type="button" id="passkeyExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Enable strong authentication with FIDO or WebAuthn protocols.</p>  
+                <p class="text-body-secondary">Confirm your password</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="passkeySetup_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('passkeySetup_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button aria-label="Create Passkey" class="btn btn-primary w-100" type="button" onclick="AuthnRegister(this); void(0);">
+                    Create Passkey
+                </button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Authn Modal -->
+<div class="modal fade" id="removeAuthnModal" tabindex="-1" aria-labelledby="removeAuthnModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeAuthnModalLabel">Are you sure?</h5>
+                <button type="button" id="passkeyExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Enable strong authentication with FIDO or WebAuthn protocols.</p> 
+                <p class="text-body-secondary">Confirm your password</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="passkeyRemove_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('passkeyRemove_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer"> 
+                <button id="removeAuthnExit" class="btn btn-secondary" type="button" data-ui-dismiss="modal" aria-label="Close">
+                    Cancel
+                </button>  
+                <button class="btn btn-danger" type="button" onclick="AuthnLogin(this); void(0);">
+                    Yes, remove it
+                </button>  
+            </div>  
+        </div>
+    </div>
+</div>
+
+<!-- Setup Pin Modal -->
+<div class="modal fade" id="setupPinModal" tabindex="-1" aria-labelledby="setupPinModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="setupPinModalLabel">Setup PIN</h5>
+                <button type="button" id="passkeyExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"> 
+                <p class="text-body-secondary">Enter a 6-digit code of your preference:</p>  
+                <div class="otp-input pinCode mb-4">
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                    <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                </div> 
+                <p class="text-body-secondary">Confirm your password</p>  
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="pinSetup_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('pinSetup_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button aria-label="Create Passkey" class="btn btn-primary w-100" type="button" onclick="pinRegister(this); void(0);">
+                    Create PIN
+                </button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Pin Modal -->
+<div class="modal fade" id="removePinModal" tabindex="-1" aria-labelledby="removePinModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removePinModalLabel">Are you sure?</h5>
+                <a role="button" id="passkeyExit" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></a>
+            </div>
+            <div class="modal-body">
+                <p>Enable a person PIN code to unlock your account.</p> 
+                <p class="text-body-secondary">Confirm your password</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control currentPassword" type="password" id="pinRemove_cc" name="currentPassword" placeholder="Current Password">
+                    <span class="input-group-text password-toggle" onclick="togglePassword('pinRemove_cc', this)">
+                        <svg class="icon eye-icon" id="eye-password">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                        </svg>
+                        <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                            <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer"> 
+                <button id="removePinExit" class="btn btn-secondary" type="button" data-ui-dismiss="modal" aria-label="Close">
+                    Cancel
+                </button>  
+                <button class="btn btn-danger" type="button" onclick="pinRemove(this); void(0);">
+                    Yes, remove it
+                </button>  
+            </div>  
+        </div>
+    </div>
+</div>
+ 
+
+<script>
+    "use strict" 
+
+    const pinCodeInputs = document.querySelectorAll(".pinCode input");
+    const qrKeyCodeInputs = document.querySelectorAll(".qrKeyCode input");
+    const loginAlertsToggle = document.getElementById('loginAlertsToggle');
+
+    if(loginAlertsToggle){
+        loginAlertsToggle.addEventListener('change', function(e){ 
+        let reload = false;
+        const formData = new FormData(); 
+        formData.append('token', "{{@TOKEN}}");  
+        formData.append('loginAlert', loginAlertsToggle.checked);
+
+        axios.post('/{{@SITE.uri_backend}}/account/security?login-alerts', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            showAlert(response.data.status, response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            showAlert('error', error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => {
+        });  
+        return true;
+ 
+        })
+    }
+    function pinRemove(el){
+        let reload = true;
+
+        const currentPassword = document.getElementById('pinRemove_cc');
+        if(!currentPassword.value){
+          alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+          return false;
+        }
+
+        el.setAttribute('aria-disabled', true);
+
+        const formData = new FormData(); 
+        formData.append('token', "{{@TOKEN}}");  
+        formData.append('currentPassword', btoa(currentPassword.value));  
+
+        axios.post('/{{@SITE.uri_backend}}/account/security?pin-remove', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            showAlert(response.data.status, response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            showAlert('error', error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => {
+            el.removeAttribute('aria-disabled');
+        });  
+        return true;
+    }
+
+    function pinRegister(el){
+        let reload = true;
+        const formData = new FormData(); 
+        const pinCode = Array.from(pinCodeInputs)
+        .map((input) => input.value)
+        .join("");
+        if (pinCode.length !== 6) {
+            showAlert('error', 'You must enter a valid 6-digit code.');
+            return false;
+        } 
+
+        el.setAttribute('aria-disabled', true);
+
+        const currentPassword = document.getElementById('pinSetup_cc');
+        if(!currentPassword.value){
+          alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+          return false;
+        }
+
+        formData.append('token', "{{@TOKEN}}"); 
+        formData.append('currentPassword', btoa(currentPassword.value)); 
+        formData.append('pin', btoa(pinCode));
+
+        axios.post('/{{@SITE.uri_backend}}/account/security?pin-register', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            showAlert(response.data.status, response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            showAlert('error', error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => { 
+            el.removeAttribute('aria-disabled');
+        });  
+        return true;
+    }
+
+    function twoFaRemove(el){
+        let reload = true;
+        const currentPassword = document.getElementById('twofactorRemove_cc');
+        if(!currentPassword.value){
+          alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+          return false;
+        }
+ 
+        el.setAttribute('aria-disabled', true);
+
+        const formData = new FormData();
+        formData.append('token', "{{@TOKEN}}"); 
+        formData.append('currentPassword', btoa(currentPassword.value)); 
+
+        axios.post('/{{@SITE.uri_backend}}/account/security?twofactor-remove', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            showAlert(response.data.status, response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            showAlert('error', error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => { 
+            el.removeAttribute('aria-disabled');
+        });  
+        return true;
+    }
+
+    function twoFaRegister(el){ 
+        let reload = true;
+        const twoFactorCode = Array.from(qrKeyCodeInputs)
+        .map((input) => input.value)
+        .join("");
+        if (twoFactorCode.length !== 6) {
+            alert('You must enter a valid 6-digit code.');
+            return false;
+        } 
+
+        const currentPassword = document.getElementById('twofactorSetup_cc');
+        if(!currentPassword.value){
+          alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+          return false;
+        } 
+
+        el.setAttribute('aria-disabled', true);
+
+        const formData = new FormData();
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('currentPassword', btoa(currentPassword.value));
+        formData.append('twofactor_key', btoa(twoFactorCode));
+
+        axios.post('/{{@SITE.uri_backend}}/account/security?twofactor-register', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            alert(response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            alert(error.response.data.message || error.message);  
+        })
+        .finally(() => { 
+            el.removeAttribute('aria-disabled', true);
+        });  
+        return true;
+    }
+
+    function AuthnLogin(el) { 
+    // Close Modal
+    document.getElementById('removeAuthnExit').click();
+
+    const currentPassword = document.getElementById('passkeyRemove_cc');
+    if(!currentPassword.value){
+    alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+    return false;
+    }
+
+    el.setAttribute('aria-disabled', true);
+
+    // Log in to a previously registered account  
+    waApp.username = "{{@CXT->email}}";
+    waApp.login()
+        .then((response) => { 
+            if (response && response.id) {
+              AuthSendRequest(response, 'remove', false, btoa(currentPassword.value), el);
+            } else {
+                alert("Authn: Login failed: ");
+                el.removeAttribute('aria-disabled');
+            }
+        })
+        .catch((err) => {
+            alert("Authn: Log in error: " + err.message);
+            el.removeAttribute('aria-disabled');
+        });  
+    }
+
+    function AuthnRegister(el) {  
+    // Close Modal
+    document.getElementById('passkeyExit').click();
+
+    const currentPassword = document.getElementById('passkeySetup_cc');
+    if(!currentPassword.value){
+    alert('You must confirm your password to perform this action. Please, enter your password and try again.');
+    return false;
+    }
+
+    el.setAttribute('aria-disabled', true);
+
+    // Register a new device / account 
+    waApp.username = "{{@CXT->email}}";
+    waApp.register()
+        .then((response) => { 
+            if (response && response.id) { // Check if response has the id
+                AuthSendRequest(response, 'register', false, btoa(currentPassword.value), el); // Pass the response to send it
+            } else {
+                showAlert("error", "Registration error: ");
+                el.removeAttribute('aria-disabled');
+            }
+        })
+        .catch((err) => {
+            showAlert("error", "Registration error: " + err.message);
+            el.removeAttribute('aria-disabled');
+        }); 
+    }
+
+    function AuthSendRequest(responseObject, type, reload, password, btn) {
+        
+    const formData = new FormData();
+    let url = '/account/security';
+    if(!type){
+        alert('Authn: Invalid Method');
+        btn.removeAttribute('aria-disabled');
+        return false;
+    }
+
+    formData.append('token', '{{ @TOKEN }}'); // Make sure the CSRF token is correctly passed
+    formData.append('currentPassword', password); 
+    formData.append('userId', responseObject.id); // Use actual responseObject  
+
+    if(type==="register"){ 
+        formData.append('passkey', 1);
+        url = url+'?authn-register';
+        reload = true;
+    } else 
+    if(type==="remove"){  
+        url = url+'?authn-remove';
+        reload = true;
+    }
+
+    axios.post('/{{@SITE.uri_backend}}'+url, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then((response) => {
+        alert(response.data.message);  
+        if(response.data.status === "success" && reload){
+            setTimeout(function() {window.location.reload(); return false;}, 500);
+            return false;
+        }
+    })
+    .catch((error) => {
+        alert(error.response.data.message || error.message); // Improved error handling
+    })
+    .finally(() => {
+        btn.removeAttribute('aria-disabled');
+    });
+    }
+    const newPasswordForm = document.getElementById('newPasswordForm');
+    if(newPasswordForm){
+      newPasswordForm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        
+        const newPassword_cc = document.getElementById('newPassword_cc');
+        const newPassword = document.getElementById('password');
+        const confirmNewPassword = document.getElementById('confirmPassword');
+
+        if(!newPassword_cc.value || !newPassword.value || !confirmNewPassword.value ){
+          alert('Fill all required fields and try again.');
+          return false;
+        } else 
+        if(newPassword.value !== confirmNewPassword.value){
+          alert('Passwords do not match. Please re-enter your passwords and try again.');
+          return false;
+        }
+
+        var submitBtn = newPasswordForm.querySelector('button[type="submit"]');
+        submitBtn.setAttribute('aria-disabled', true);
+
+        let reload = true;
+        const formData = new FormData();
+        formData.append('password', btoa(newPassword.value));  
+        formData.append('currentPassword',btoa(newPassword_cc.value)); 
+        formData.append('token', "{{@TOKEN}}"); 
+
+        await axios.post('/{{@SITE.uri_backend}}/account/security?update-password', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            alert(response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false;}, 500);
+                return false;
+            }
+        })
+        .catch((error) => {
+            alert(error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => {
+          submitBtn.removeAttribute('aria-disabled');
+        }); 
+
+        return true;
+      });
+    }
+
+    const newEmailForm = document.getElementById('newEmailForm');
+    if(newEmailForm){
+      newEmailForm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        
+        const newEmail_cc = document.getElementById('newEmail_cc');
+        const newEmail = document.getElementById('newEmail'); 
+
+        if(!newEmail_cc.value || !newEmail.value ){
+          alert('Fill all required fields and try again.');
+          return false;
+        }
+
+        var submitBtn = newEmailForm.querySelector('button[type="submit"]');
+        submitBtn.setAttribute('aria-disabled', true);
+
+        let reload = true;
+        const formData = new FormData();
+        formData.append('email', newEmail.value); 
+        formData.append('currentPassword',btoa(newEmail_cc.value)); 
+        formData.append('token', "{{@TOKEN}}"); 
+
+        await axios.post('/{{@SITE.uri_backend}}/account/security?update-email', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        })
+        .then((response) => {
+            alert(response.data.message);  
+            if(response.data.status === "success" && reload){
+                setTimeout(function() {window.location.reload(); return false; }, 500);
+                return false;
+            } 
+        })
+        .catch((error) => {
+            alert(error.response.data.message || error.message); // Improved error handling
+        })
+        .finally(() => {
+          submitBtn.removeAttribute('aria-disabled');
+        }); 
+        
+        return true;
+      })
+    }
+
+
+    function validatePassword(password) {
+    const length = document.getElementById('length');
+    const lowercase = document.getElementById('lowercase');
+    const extra = document.getElementById('extra');
+    const submitButton = document.getElementById('submitPasswordButton');
+
+    // Regex patterns for validation
+    const lengthPattern = /.{8,}/; // At least 8 characters
+    const lowercasePattern = /[a-z]/; // At least one lowercase letter
+    const extraPattern = /[0-9]|[!@#$%^&*]|[A-Z]/; // At least one number, special character, or uppercase letter
+
+    // Validate the password against each pattern
+    length.className = lengthPattern.test(password) ? 'valid' : 'invalid';
+    lowercase.className = lowercasePattern.test(password) ? 'valid' : 'invalid';
+    extra.className = extraPattern.test(password) ? 'valid' : 'invalid';
+
+    // Enable the submit button only if all requirements are met
+    if (
+        lengthPattern.test(password) &&
+        lowercasePattern.test(password) &&
+        extraPattern.test(password)
+    ) {
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = true;
+    }
+    } 
+
+    pinCodeInputs.forEach((input, index) => {
+        input.addEventListener("input", (e) => {
+        if (e.target.value.length > 1) {
+            e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.length === 1 && index < pinCodeInputs.length - 1) {
+            pinCodeInputs[index + 1].focus();
+        }
+        });
+
+        input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+            pinCodeInputs[index - 1].focus();
+        }
+        if (e.key === "e") {
+            e.preventDefault();
+        }
+        });
+
+        // Listen for paste event to autofill pinCodeInputs
+        input.addEventListener("paste", (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        if (pasteData.length === pinCodeInputs.length && /^\d+$/.test(pasteData)) {
+            pinCodeInputs.forEach((input, i) => {
+            input.value = pasteData[i];
+            });
+        }
+        });
+    });
+
+    qrKeyCodeInputs.forEach((input, index) => {
+        input.addEventListener("input", (e) => {
+        if (e.target.value.length > 1) {
+            e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.length === 1 && index < qrKeyCodeInputs.length - 1) {
+            qrKeyCodeInputs[index + 1].focus();
+        }
+        });
+
+        input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+            qrKeyCodeInputs[index - 1].focus();
+        }
+        if (e.key === "e") {
+            e.preventDefault();
+        }
+        });
+
+        // Listen for paste event to autofill pinCodeInputs
+        input.addEventListener("paste", (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        if (pasteData.length === qrKeyCodeInputs.length && /^\d+$/.test(pasteData)) {
+            qrKeyCodeInputs.forEach((input, i) => {
+            input.value = pasteData[i];
+            });
+        }
+        });
+    });
+</script>

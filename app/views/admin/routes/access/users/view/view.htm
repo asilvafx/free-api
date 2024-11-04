@@ -1,0 +1,93 @@
+ 
+<div class="position-relative mb-4">
+
+    <check if="{{ isset(@notfound) }}">
+        <true>
+            <div class="w-100 mb-4">
+                <span class="h1">Not Found</span>
+                <p class="text-body-secondary">User was not found in our records.</p>
+            </div> 
+            <div class="position-relative">
+                <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access/users'; void(0);">← Go back</button>
+            </div>
+        </true>
+        <false> 
+            <check if="{{isset(@user)}}">
+            <set userIsAdmin="{{@user.is_admin===1?true:false}}"></set> 
+            <div class="w-100 mb-4">
+                <div class="d-flex align-items-center gap-4">
+                    <div class="my-auto">
+                        <img alt="{{@user.displayName}} - Avatar" width="68" height="68" class="rounded" src="{{@user.avatar}}">
+                    </div>
+                    <div class="d-flex flex-column"> 
+                        <span class="h1 mb-1">{{@user.displayName}}</span>
+                        <div class="d-flex flex-wrap gap-2"> 
+                            <span class="text-body-secondary mb-1">{{@user.email}}</span>
+                            <check if="{{ @user.confirmed === 1 }}">
+                                <true>
+                                    <div><span class="badge bg-success">Confirmed</span></div> 
+                                </true>
+                                <false>
+                                    <div><span class="badge bg-danger">Not confirmed</span></div> 
+                                </false> 
+                            </check> 
+                            <check if="{{ @userIsAdmin }}">
+                                <div><span class="badge bg-primary">Admin</span></div> 
+                            </check> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 mb-4">
+                <div class="bg-color border rounded p-2 p-lg-3"> 
+                    <div class="w-100 d-flex flex-wrap">
+                        <div class="col d-flex flex-column p-2">
+                            <span class="text-body-secondary mb-1">Role</span>
+                            <span class="fw-bolder">{{getRoleNameById(@user.role)}}</span>
+                        </div> 
+ 
+                        <div class="col d-flex flex-column p-2">
+                            <span class="text-body-secondary mb-1">Status</span>
+                            <check if="{{ @user.status===1 }}">
+                                <true>
+                                    <span class="fw-bolder text-success">Active</span>
+                                </true>
+                                <false>
+                                    <span class="fw-bolder text-danger">Inactive</span>
+                                </false>
+                            </check>
+                            
+                        </div> 
+ 
+                        <div class="col d-flex flex-column p-2">
+                            <span class="text-body-secondary mb-1">Member since</span>
+                            <div class="d-flex flex-column"> 
+                                <span class="fw-bolder">{{date('Y', @user.created_at)}}</span>
+                                <span class="small text-muted">{{date('d-m-Y H:i:s', @user.created_at)}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="w-100 d-flex justify-content-between align-items-center"> 
+                <div class="position-relative">
+                    <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
+                </div>
+                <div class="position-relative inline-flex gap-2"> 
+                    <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/users/edit?id={{@user.id}}'; void(0);">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                        </svg> Edit user
+                    </button>
+                </div>
+            </div>
+
+            </check>
+        </false>
+    </check>
+
+
+
+
+</div>

@@ -1,0 +1,201 @@
+ 
+<div class="position-relative mb-4"> 
+    <div class="w-100 mb-4">
+        <span class="h1">New User</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+    <form id="newUserForm"> 
+
+        <div class="input-group mb-4">
+        <span class="input-group-text">
+            <svg class="icon">
+              <use xlink:href="/public/assets/icons/svg/free.svg#cil-user"></use>
+            </svg>
+        </span>
+        <input class="form-control" type="text" id="displayName" name="displayName" placeholder="Full Name" required="">
+        </div>
+
+        <div class="input-group mb-4">
+        <span class="input-group-text">
+            <svg class="icon">
+              <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
+            </svg>
+        </span>
+        <input class="form-control" type="email" id="email" name="email" placeholder="user@company.com" required="">
+        </div>
+
+        <div class="input-group mb-4">
+            <span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                </svg>
+            </span>
+            <input class="form-control" type="password" id="crypt" name="crypt" placeholder="New Password" required="">
+        </div>
+        <div class="input-group mb-4">
+            <span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                </svg>
+            </span>
+            <input class="form-control" type="password" id="cryptConfirm" name="cryptConfirm" placeholder="Confirm Password" required="">
+        </div>
+
+        <div class="input-group mb-4">
+            <span class="input-group-text">
+                <svg class="icon">
+                  <use xlink:href="/public/assets/icons/svg/free.svg#cil-group"></use>
+                </svg>
+            </span>
+            <select class="form-select" id="role" name="role" required="">
+                <option value="" selected>Select Role</option>
+                <repeat group="{{@rolesAll}}" value="{{@role}}">
+                    <option value="{{@role.id}}">{{@role.name}}</option>
+                </repeat>
+            </select>
+        </div>
+
+        <div class="row row-cols-1 mb-4">
+          <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="position-relative">
+              <label class="text-body fw-bolder" for="isAdmin">Is Admin?</label>
+              <p class="text-body-secondary">Allow user administration access.</p>
+              </div>
+              <div class="position-relative">
+                <div class="form-check form-switch">
+                  <input class="form-check-input form-switch-xl" id="isAdmin" type="checkbox"> 
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="position-relative">
+              <label class="text-body fw-bolder" for="isSuperAdmin">Is Super Admin?</label>
+              <p class="text-body-secondary">Allow user full-administration access.</p>
+              </div>
+              <div class="position-relative">
+                <div class="form-check form-switch">
+                  <input class="form-check-input form-switch-xl" id="isSuperAdmin" type="checkbox"> 
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="position-relative">
+              <label class="text-body fw-bolder" for="isDeveloper">Is Developer?</label>
+              <p class="text-body-secondary">Allow user developer access.</p>
+              </div>
+              <div class="position-relative">
+                <div class="form-check form-switch">
+                  <input class="form-check-input form-switch-xl" id="isDeveloper" type="checkbox"> 
+                </div>
+              </div>
+            </div>
+          </div>   
+        </div> 
+
+        <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+
+        <div class="w-100 d-flex justify-content-between align-items-center"> 
+            <div class="position-relative">
+                <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
+            </div>
+            <div class="position-relative">
+              <button class="btn btn-primary" type="submit">Create user</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    "use strict"
+
+    // Initialization
+    const newUserForm = document.getElementById('newUserForm'); 
+    const token = document.querySelector('#token');   
+          
+    // Form Fields
+    const displayName = document.getElementById('displayName');
+    const email = document.getElementById('email');
+    const crypt = document.getElementById('crypt');
+    const cryptConfirm = document.getElementById('cryptConfirm');
+    const role = document.getElementById('role');
+    const isAdmin = document.getElementById('isAdmin');
+    const isSuperAdmin = document.getElementById('isSuperAdmin');
+    const isDeveloper = document.getElementById('isDeveloper');
+
+    // Submit Form
+    if(newUserForm){
+        newUserForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        if(crypt.value != cryptConfirm.value){
+            showAlert('error', 'Passwords do not match. Please, enter and confirm your password again.');
+            return false;
+        }
+        if(displayName.value==""||role.value==""||email==""||crypt==""){
+            showAlert('error', 'Form incomplete, please fill all required fields and try again.');
+            return false;
+        }
+
+        var is_admin = isAdmin.checked?1:0;
+        var is_super_admin = isSuperAdmin.checked?1:0;
+        var is_developer = isDeveloper.checked?1:0;
+
+        const schema = {};  
+        schema['displayName'] = displayName.value;
+        schema['email'] = email.value;
+        schema['crypt'] = crypt.value;
+        schema['role'] = role.value;
+        schema['is_admin'] = is_admin;
+        schema['is_super_admin'] = is_super_admin;
+        schema['is_developer'] = is_developer;
+
+        const payload = {
+            token: token.value, 
+            schema: schema, 
+        }  
+
+        let uri_request = "access/users/add?save";
+        fetchRequest(payload, uri_request, newUserForm);
+        });
+    }
+
+      // Add Event Listeners
+      async function fetchRequest(formData, url, formEl) {
+        event.preventDefault();  
+        hideAlerts();
+
+        // Disable all inputs and submit button
+        const inputs = newUserForm.querySelectorAll('input, select, button');
+        inputs.forEach(input => input.disabled = true);
+
+        try {
+            const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(response => {
+                const data = response.data;
+                if (data.status === "success") {
+                    showAlert("success", response.data.message);  
+                    // Clear form inputs if success
+                    clearForm(formEl);
+                } else {
+                    showAlert("error", response.data.message);
+                }
+            }).finally(() => {
+                // Re-enable all inputs and submit button
+                inputs.forEach(input => input.disabled = false);
+            });
+
+        } catch (error) {
+            showAlert("error", "Error creating user. Please try again later.");
+            // Re-enable all inputs and submit button in case of error
+            inputs.forEach(input => input.disabled = false);
+        }
+    } 
+</script>

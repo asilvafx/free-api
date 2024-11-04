@@ -1,0 +1,91 @@
+ 
+
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-center">
+        <div class="col d-flex flex-column">
+            <span class="h1">Private Keys</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div> 
+        <div>
+            <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/api/add" class="btn bg-primary">+ Add new key</a>
+        </div> 
+    </div>
+    <div class="card mb-4">
+        <div class="card-header"> 
+          <div class="d-flex justify-content-between"> 
+            <span>Total: {{@keysAll}}</span> 
+          </div>
+        </div>
+        <div class="card-body pb-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+                <thead>
+                  <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Key</th> 
+                    <th scope="col">Usage</th> 
+                    <th scope="col">Status</th> 
+                    <th scope="col" class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <repeat group="{{ @keysList }}" value="{{ @item }}" key="{{ @key }}"> 
+                    <set slug="{{@item.api_slug}}"></set>
+                    <set slugEncoded="{{base64_encode(@item.api_slug)}}"></set>
+                    <set apiKey="{{@item.api_key}}"></set> 
+                    <set usage="{{@item.api_usage}}"></set> 
+                    <set status="{{@item.status}}"></set> 
+                    <set keyId="{{@item.id}}"></set>
+                    <tr>
+                      <td> <a aria-label="View" href="/{{@SITE.uri_backend}}/api/keys/view?s={{@slugEncoded}}">{{@slug}}</a></td>
+                      <td>{{substr(@apiKey, 0, 4) . '...' . substr(@apiKey, -5)}}</td>
+                      <td>{{@usage}}</td> 
+                      <td>
+                        <check if="{{ @status===1 }}">
+                          <true>
+                            <span class="fw-bolder text-success">Active</span>
+                          </true>
+                          <false>
+                            <span class="fw-bolder text-muted">Inactive</span>
+                          </false>
+                        </check> 
+                      </td> 
+                      <td class="text-end pe-0">
+                        <div class="inline-flex gap-1"> 
+                          <a role="button" aria-label="View" href="/{{@SITE.uri_backend}}/api/keys/view?s={{@slugEncoded}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                            <svg class="icon icon-sm">
+                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                            </svg> 
+                            View
+                          </a> 
+                        </div>
+                      </td>
+                    </tr> 
+                  </repeat>
+                </tbody>
+              </table>
+          </div>
+        </div>
+    </div>  
+    <div class="w-100 d-flex justify-content-center"> 
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+              <repeat group="{{@keysPagination}}" value="{{@value}}" key="{{@key}}">
+                 <li class="page-item">
+                    <check if="{{ @value === @keysCurrentPage }}">
+                        <true>
+                            <a class="page-link active" aria-label="Go to page {{@value}}" onclick="void(0);">{{@value}}</a>
+                        </true>
+                        <false>
+                            <a class="page-link" aria-label="Go to page {{@value}}" href="/{{@SITE.uri_backend}}/api/keys?page={{@value}}">{{@value}}</a>
+                        </false>
+                    </check> 
+                </li>
+              </repeat> 
+              
+              <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

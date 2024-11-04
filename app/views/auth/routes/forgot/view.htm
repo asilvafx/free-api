@@ -1,0 +1,386 @@
+
+  <div class="row justify-content-center px-4">
+    <div class="col-lg-8">
+      <div class="card-group d-block d-md-flex row">
+        <div class="card col-md-7 p-2 p-md-3 p-lg-4 mb-0">
+          <div class="card-body">
+            <p><a class="fw-bolder" aria-label="Sign in" href="/{{@SITE.uri_auth}}">← Sign in</a></p>
+
+            <div id="errorAlert" class="alert alert-dark hidden" role="alert">
+              <span class="text-danger fw-bolder">
+               <svg class="icon">
+                 <use xlink:href="/public/assets/icons/svg/free.svg#cil-warning"></use>
+               </svg>
+               <span id="errorMsg"></span></span>
+             </div>
+            
+            <div class="step" data-step="1"> 
+              <h1>Reset Password</h1>
+              <p class="text-body-secondary mb-0">Enter the email address associated with your account.</p>
+              <p class="text-body-secondary mb-4">We'll send you a one-time code to reset your password.</p>
+              <form id="forgotForm">
+              <div class="input-group mb-4"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-user"></use>
+                  </svg></span>
+                <input class="form-control" type="email" id="username" name="username" placeholder="your@company.com" value="{{ isset(@GET.u)&&!empty(@GET.u)?base64_decode(@GET.u):'' }}" autofocus required>
+              </div>
+              
+              <div class="row">
+                <div class="col-6">
+                  <button class="btn btn-primary px-4" type="submit">Continue</button>
+                </div> 
+              </div>
+              </form>
+            </div>
+
+            <div class="step hidden" data-step="2"> 
+              <svg class="icon icon-3xl mb-4 mt-2">
+                <use xlink:href="/public/assets/icons/svg/free.svg#cil-envelope-letter"></use>
+              </svg>
+              <h1>Check Your Inbox</h1>
+              <p class="text-body-secondary mb-0">We sent you an email with a 6-digits one-time code.</p>
+              <p class="text-body-secondary">Check your inbox and junk/spam folders.</p>
+              <p class="text-body-secondary">Enter the OTP you received to <span id="email"></span></p>
+              <form id="otpForm">
+              <div class="otp-input">
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+                <input class="border shadow-sm" name="otp-number" type="number" min="0" max="9" placeholder="0" required>
+              </div>
+              <button class="btn btn-primary px-4" type="submit">Verify</button>
+              </form>
+              <div class="resend-text">
+                Didn't receive the code? 
+                <span id="timerSpan" class="resend-link" onclick="resendOTP()">Resend Code in</span>
+                <span id="timer"></span>
+              </div>
+            </div>
+
+            <div class="step hidden" data-step="3"> 
+              <h1>New Password</h1>
+              <p class="text-body-secondary">Enter and confirm your new password for your account.</p>
+              <form id="cryptForm"> 
+              <div class="input-group mb-4"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                  </svg></span>
+                <input class="form-control" id="password" name="password" type="password" placeholder="New Password" required>
+              </div> 
+              <div class="input-group mb-4"><span class="input-group-text">
+                  <svg class="icon">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                  </svg></span>
+                <input class="form-control" id="confirm_password" name="confirm_password" type="password" placeholder="Confirm Password" required>
+              </div> 
+              <p class="text-body-secondary">
+                Your password must be at least 8 characters.
+              </p>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <button class="btn btn-primary px-4" type="submit">Save changes</button>
+                </div> 
+              </div>
+              </form>
+            </div>
+
+            <div class="step hidden" data-step="4"> 
+              <h1>Password Changed</h1>
+              <p class="text-body-secondary">Your account password was updated successfully. You can now sign in using your new credentials.</p>
+              <div class="row"></div>
+                <div class="col-12 col-md-6">
+                  <a href="/{{@SITE.uri_auth}}" class="btn btn-primary px-4" >Sign in</a>
+                </div>   
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div> 
+ 
+  
+<script>
+    "use strict"
+
+    const forgotForm = document.getElementById('forgotForm');
+    const otpForm = document.getElementById('otpForm');
+    const cryptForm = document.getElementById('cryptForm');
+
+    let errorAlert = document.getElementById('errorAlert');
+    let errorMsg = document.getElementById('errorMsg');
+
+    const inputs = document.querySelectorAll(".otp-input input");
+    const timerDisplay = document.getElementById("timer");
+    const timerSpan = document.getElementById("timerSpan");
+    const emailSpan = document.getElementById("email");
+    let timeLeft = 120;
+    let timerId;
+    let canResend = false; 
+
+    function startTimer() {
+      timerId = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          timerDisplay.innerText = "";
+          timerSpan.textContent = "Request code";
+          timerSpan.classList.add("expired");
+          canResend = true;
+        } else {
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+          timerDisplay.textContent = `${minutes}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+          timeLeft--;
+        }
+      }, 1000);
+    }
+
+    function resendOTP() {
+      if (canResend) {
+        cleanError();
+        canResend = false;
+        timeLeft = 120; 
+        inputs[0].focus();
+        clearInterval(timerId);
+        
+        timerSpan.classList.remove("expired");
+        timerSpan.textContent = "Request code in";
+        
+        let formData = new FormData();
+        let input_username = document.getElementById('username').value; 
+        formData.append('action', 'forgot');
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('username', input_username); 
+
+        toggleSubmit(true);
+        fetchRequest(formData, 'resend');  
+      }  
+    }
+
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        if (e.target.value.length > 1) {
+          e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+        if (e.key === "e") {
+          e.preventDefault();
+        }
+      });
+
+      // Listen for paste event to autofill inputs
+      input.addEventListener("paste", (e) => {
+        const pasteData = e.clipboardData.getData("text");
+        if (pasteData.length === inputs.length && /^\d+$/.test(pasteData)) {
+          inputs.forEach((input, i) => {
+            input.value = pasteData[i];
+          });
+        }
+      });
+    });
+
+    function verifyOTP() {
+      const otp = Array.from(inputs)
+        .map((input) => input.value)
+        .join("");
+      if (otp.length === 6) { 
+          let formData = new FormData(); 
+          let input_username = document.getElementById('username').value; 
+          if(!validateEmail(input_username) ){
+            showError('You must enter a valid email address.'); 
+            return false;
+          }   
+
+          formData.append('action', 'otp');
+          formData.append('token', "{{@TOKEN}}");
+          formData.append('username', input_username);
+          formData.append('otp', otp);
+  
+          toggleSubmit(true);
+          fetchRequest(formData, 'otp');  
+      } else {
+          showError('Please fill all the digits of the OTP.'); 
+          return false; 
+      }
+    }
+ 
+    if(cryptForm){
+      cryptForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        cleanError();
+
+        let formData = new FormData(); 
+        let input_password = document.getElementById('password');
+        let confirm_password = document.getElementById('confirm_password'); 
+        let input_username = document.getElementById('username').value; 
+        const otp = Array.from(inputs)
+        .map((input) => input.value)
+        .join("");
+
+        if(!validateEmail(input_username) ){
+          showError('You must enter a valid email address.'); 
+          return false;
+        } else
+        if(input_password.value==""){
+          showError('Your password cannot be empty.');
+          return false;
+        } else
+        if(input_password.value!=confirm_password.value){ 
+          showError('Your passwords do not match.');
+          return false;
+        } else 
+        if(input_password.length<8){ 
+          showError('Your password does not match criteria.');
+          return false;
+        }
+
+        formData.append('action', 'crypt');
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('username', input_username);
+        formData.append('password', input_password.value);
+        formData.append('otp', otp);
+ 
+        toggleSubmit(true);
+        fetchRequest(formData, 'crypt');  
+
+      });
+    }
+
+    if(otpForm){
+      otpForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        cleanError();
+        verifyOTP();
+
+      });
+    }
+
+    if(forgotForm){
+      forgotForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        cleanError();
+
+        let formData = new FormData(); 
+        let input_username = document.getElementById('username').value; 
+        if(!validateEmail(input_username) ){
+          showError('You must enter a valid email address.'); 
+          return false;
+        }   
+
+        formData.append('action', 'forgot');
+        formData.append('token', "{{@TOKEN}}");
+        formData.append('username', input_username);
+ 
+        toggleSubmit(true);
+        fetchRequest(formData, 'forgot'); 
+      });
+    }
+
+
+    async function fetchRequest(formData, type){
+      const response = await axios.post('{{@SITE.uri_auth}}/forgot', formData, {
+            headers: { 'Content-Type': 'application/json' }
+      })
+      .then((response) => {
+        if(response.data.status==='success'){ 
+          if(type==='forgot'){ 
+            let step1 = document.querySelector('[data-step="1"]');
+            let step2 = document.querySelector('[data-step="2"]'); 
+            let userName = document.getElementById('username').value; 
+ 
+            emailSpan.textContent = userName; 
+
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+
+            startTimer(); 
+
+          } else 
+          if(type==='otp'){ 
+            let step2 = document.querySelector('[data-step="2"]');
+            let step3 = document.querySelector('[data-step="3"]');   
+
+            step2.classList.add('hidden');
+            step3.classList.remove('hidden');  
+        } else 
+        if(type==='resend'){  
+          inputs.forEach((input) => {
+            input.value = "";
+            input.disabled = false;
+          });
+          inputs[0].focus();  
+
+          startTimer();
+          alert("New OTP sent!");
+        } else 
+        if(type==='crypt'){ 
+          let step3 = document.querySelector('[data-step="3"]');
+          let step4 = document.querySelector('[data-step="4"]'); 
+
+          step3.classList.add('hidden');
+          step4.classList.remove('hidden'); 
+
+        }
+       } else {  
+        showError(response.data.message);
+      }  }, (error) => {
+        console.log(error);
+      }).finally(() => {
+        if(type){
+        toggleSubmit(false);
+      }
+       
+    }) 
+    }
+
+    const validateEmail = (email) => {
+      if(email==""){
+        return false;
+      } 
+      return email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+    };
+
+    function showError(message){
+      errorMsg.innerText = message;    
+      errorAlert.classList.remove('hidden');
+    }
+
+    function cleanError(){
+      errorAlert.classList.add('hidden');
+      errorMsg.innerText = "";
+    }
+
+
+    function toggleSubmit(display){
+      let submitBtns = document.querySelectorAll('button[type="submit"]');
+      let inputFields = document.querySelectorAll('input');
+
+      submitBtns.forEach(ele => {
+        ele.setAttribute('aria-disabled', display);
+      });
+      inputFields.forEach(ele => {
+        ele.setAttribute('aria-disabled', display);
+      });
+
+    }  
+
+  </script>

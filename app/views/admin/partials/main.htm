@@ -1,0 +1,22 @@
+<div class="wrapper d-flex flex-column min-vh-100">
+    <include href="partials/header.htm" />
+    
+    <div class="body">
+      <check if="{{ isset(@CONTENT) }}"> 
+
+        <!-- Breadcrumbs -->  
+        <include href="partials/breadcrumbs.htm" />
+  
+        <!-- Success and Error Alerts -->  
+        <include href="partials/alerts.htm" />
+       
+        <div class="container-lg px-3 mb-4">
+          <include href="{{ 'routes' . @CONTENT . '/view.htm' }}" />
+        </div>
+        <div class="section-space"></div>
+      </check>
+    </div>
+
+    <include href="partials/footer.htm" />
+  
+</div> 

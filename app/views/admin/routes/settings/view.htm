@@ -1,0 +1,636 @@
+ 
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="confirmModalLabel">Enter your password</h5>
+            <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+        </div> 
+        <div class="modal-body"> 
+            <p class="text-body-secondary small">Please enter your password to confirm the changes</p>
+            <div class="input-group mb-4">
+                <span class="input-group-text">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                    </svg>
+                </span>
+                <input class="form-control" type="password" id="currentPassword" name="currentPassword" placeholder="Current Password" required>
+                <span class="input-group-text password-toggle" onclick="togglePassword('currentPassword', this)">
+                    <svg class="icon eye-icon" id="eye-password">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye"></use>
+                    </svg>
+                    <svg class="icon eye-slash-icon" id="eye-slash-password" style="display: none;">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" id="confirmExit" data-ui-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" onclick="confirmedUpdate(); void(0);">Confirm changes</button>
+        </div> 
+        </div>
+    </div>
+</div>
+
+<div class="position-relative mb-4">
+    <div class="w-100">
+        <span class="h1">Settings</span>
+        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+    </div>
+    <div class="tab-content rounded-bottom">
+    <div class="tab-pane active preview" role="tabpanel">
+        <ul class="nav nav-underline-border mb-4" id="v-pills-tab" role="tablist">
+
+        <li class="nav-item" role="button">
+            <a class="nav-link active" id="v-pills-site-tab" data-ui-toggle="pill" data-ui-target="#v-pills-site" aria-controls="v-pills-site" role="tab" aria-selected="true">
+            Site
+            </a>
+        </li> 
+        <li class="nav-item" role="button">
+            <a class="nav-link" id="v-pills-mail-tab" data-ui-toggle="pill" data-ui-target="#v-pills-mail" aria-controls="v-pills-mail" role="tab" aria-selected="false">
+            Mail
+            </a>
+        </li> 
+        <li class="nav-item" role="button">
+            <a class="nav-link" id="v-pills-appearance-tab" data-ui-toggle="pill" data-ui-target="#v-pills-appearance" aria-controls="v-pills-appearance" role="tab" aria-selected="false">
+                Appearance
+            </a>
+        </li> 
+        <li class="nav-item" role="button">
+            <a class="nav-link" id="v-pills-routes-tab" data-ui-toggle="pill" data-ui-target="#v-pills-routes" aria-controls="v-pills-routes" role="tab" aria-selected="false">
+                Routes
+            </a>
+        </li> 
+        
+
+        </ul>
+        <div class="d-flex align-items-start"> 
+        <form id="updateSettingsForm" class="w-100">
+        <div class="tab-content pb-4" id="v-pills-tabContent">
+
+            <div class="tab-pane fade active show" id="v-pills-site" role="tabpanel" aria-labelledby="v-pills-site-tab">
+ 
+                <label for="siteName" class="text-body-secondary mb-2">Site Name</label>
+                <div class="input-group mb-4"> 
+                    <input class="form-control" type="text" id="siteName" name="siteName" maxlength="60" placeholder="Site Name Here" value="{{@SITE.name}}">
+                </div>
+                <label for="siteTitle" class="text-body-secondary mb-2">Site Title</label>
+                <div class="input-group mb-4"> 
+                    <input class="form-control" type="text" id="siteTitle" name="siteTitle" maxlength="60" placeholder="Site Title Here" value="{{@SITE.title}}">
+                </div> 
+                <label for="siteDescription" class="text-body-secondary mb-2">Site Description</label>
+                <div class="input-group mb-4 position-relative"> 
+                    <textarea class="form-control" id="siteDescription" name="siteDescription" aria-label="Enter Site Description here" maxlength="250">{{@SITE.description}}</textarea>
+                    <small id="charCount" class="position-absolute text-body-secondary bottom-0 end-0 m-2">250 characters remaining</small>
+                </div>
+                <label for="siteKeywords" class="text-body-secondary mb-2">Site Keywords</label>
+                <div class="input-group mb-4" id="divKeywords">
+                    <!-- Input for typing new keywords and holding the tags -->
+                    <div id="keywordsContainer" class="form-control d-flex flex-wrap align-items-center">
+                        <!-- Dynamic tags will be inserted here -->
+                        <input type="text" id="siteKeywords" aria-label="Enter Site Keywords here" autocomplete="off">
+                        <input type="hidden" id="siteKeywordsInput" name="siteKeywordsInput" value="{{@SITE.keywords}}" aria-label="Hidden keywords input">
+                    </div>
+                </div>
+                <div class="w-100 mb-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div class="col me-auto">
+                        <label class="form-check-label fw-bolder" for="siteFrontend">Enable Frontend</label>
+                        <p class="mb-0 text-body-secondary">Use to begin routing traffic for this site.</p>
+                      </div>
+                      <div class="ms-auto p-2">
+                        <div class="form-check form-switch form-switch-xl">
+                            <input class="form-check-input" id="siteFrontend" type="checkbox" {{@SITE.enable_frontend?'checked':''}}> 
+                        </div>
+                      </div>
+                    </div> 
+                </div> 
+                <div class="w-100 mb-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div class="col me-auto">
+                        <label class="form-check-label fw-bolder" for="siteFrontend">Enable Register</label>
+                        <p class="mb-0 text-body-secondary">Use to allow new users registration.</p>
+                      </div>
+                      <div class="ms-auto p-2">
+                        <div class="form-check form-switch form-switch-xl">
+                            <input class="form-check-input" id="siteRegister" type="checkbox" {{@SITE.enable_register?'checked':''}}> 
+                        </div>
+                      </div>
+                    </div> 
+                </div> 
+            
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-mail" role="tabpanel" aria-labelledby="v-pills-mail-tab">
+
+                <label for="mailHost" class="text-body-secondary mb-2">SMTP Host</label>
+                <div class="input-group mb-4"> 
+                    <input class="form-control" type="text" id="mailHost" name="mailHost" placeholder="SMTP Host" value="{{@SITE.smtp_host}}">
+                </div>
+                <label for="mailPort" class="text-body-secondary mb-2">SMTP Port</label>
+                <div class="input-group mb-4"> 
+                    <input class="form-control" type="tel" id="mailPort" name="mailPort" placeholder="Eg: 465" value="{{@SITE.smtp_port}}">
+                </div>
+                <label for="mailScheme" class="text-body-secondary mb-2">SMTP Scheme</label>
+                <div class="input-group mb-4"> 
+                    <select class="form-select" aria-label="Select Scheme" id="mailScheme" name="mailScheme">
+                        <option selected>Select one</option>
+                        <option value="SSL" {{@SITE.smtp_scheme==='SSL'?'selected':''}}>SSL</option>
+                        <option value="TSL" {{@SITE.smtp_scheme==='TSL'?'selected':''}}>TSL</option> 
+                    </select>
+                     
+                </div>
+                <label for="mailUsername" class="text-body-secondary mb-2">SMTP Username</label>
+                <div class="input-group mb-4"> 
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="email" id="mailUsername" name="mailUsername" placeholder="Eg: mail@domain.com" value="{{@SITE.smtp_user}}">
+                </div>
+                <label for="mailPassword" class="text-body-secondary mb-2">SMTP Password</label>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+                    <input class="form-control" type="password" id="mailPassword" name="mailPassword" placeholder="••••••••" value="{{@SITE.smtp_pass}}">
+                </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-appearance" role="tabpanel" aria-labelledby="v-pills-appearance-tab">
+                
+                <div class="col mb-4"> 
+                    <div class="input-group d-flex flex-column">
+                        <span class="input-group-text rounded-top rounded-bottom-0">
+                            Logo
+                        </span>
+                        <div class="d-flex align-items-center gap-2 p-2 m-0 border rounded-bottom">
+                            <img id="logoPreview" class="rounded m-2" src="{{@SITE.logo}}" alt="Admin">
+                            <div class="w-100 d-flex flex-wrap text-center align-items-center gap-2 justify-content-around">
+                                <div class="position-relative"> 
+                                    <input class="form-control hidden" id="logo" type="file" accept="image/*" style="display:none;">
+                                    <a id="uploadLogoButton" class="btn px-4 py-2 border bg-color d-flex align-items-center my-2">
+                                        <svg class="icon me-2">
+                                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-cloud-upload"></use>
+                                        </svg> 
+                                        Upload new logo
+                                    </a>
+                                </div>
+                                <p class="text-body-secondary">
+                                    At least 800x800 px recommended.<br>
+                                    JPG or PNG is allowed 
+                                </p>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                <div class="row row-cols-2">
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                               Primary Color
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorPrimary" name="colorPrimary" type="color" value="{{@SITE.color_primary}}" title="Choose color">         
+                        </div>
+                    </div>
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                            Primary Text Color
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorPrimaryText" name="colorPrimaryText" type="color" value="{{@SITE.color_primary_text}}" title="Choose color">         
+                        </div>
+                    </div>  
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                               Theme Light
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorLight" name="colorLight" type="color" value="{{@SITE.color_light}}" title="Choose color">         
+                        </div>
+                    </div>
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                               Theme Accent Light
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorLightSecondary" name="colorLightSecondary" type="color" value="{{@SITE.color_light_secondary}}" title="Choose color">         
+                        </div>
+                    </div>
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                            Theme Dark
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorDark" name="colorDark" type="color" value="{{@SITE.color_dark}}" title="Choose color">         
+                        </div>
+                    </div> 
+                    <div class="col mb-4"> 
+                        <div class="input-group d-flex flex-column">
+                            <span class="input-group-text rounded-bottom-0 rounded-top">
+                            Theme Accent Dark
+                            </span>
+                            <input class="w-100 form-control form-control-color rounded-bottom rounded-top-0 m-0" id="colorDarkSecondary" name="colorDarkSecondary" type="color" value="{{@SITE.color_dark_secondary}}" title="Choose color">         
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-routes" role="tabpanel" aria-labelledby="v-pills-routes-tab">
+
+                <p class="text-body-secondary mb-2">Base</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                       {{@SCHEME}}://
+                    </span>
+                    <input class="form-control" type="url" id="baseUrl" name="baseUrl" placeholder="{{@HOST}}" value="{{@HOST}}" readonly disabled>
+                </div>
+                <p class="text-body-secondary mb-2">Backend URI</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                       /
+                    </span>
+                    <input class="form-control" type="text" id="uriBackend" name="uriBackend" placeholder="cp-admin" value="{{@SITE.uri_backend}}">
+                </div>
+                <p class="text-body-secondary mb-2">Auth URI</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">
+                       /
+                    </span>
+                    <input class="form-control" type="text" id="uriAuth" name="uriAuth" placeholder="auth" value="{{@SITE.uri_auth}}">
+                </div>
+
+            </div>
+
+        </div>
+        <div class="w-100 position-relative">
+            <div class="position-relative">
+                <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+                <a id="confirmbtn" class="hidden" aria-label="Confirm changes" data-ui-toggle="modal" data-ui-target="#confirmModal"></a>
+                <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</a>
+            </div>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<script>
+    "use strict"
+
+    // Initialization
+    const updateSettingsForm = document.getElementById('updateSettingsForm');
+    const token = document.getElementById('token');    
+    let inputs = updateSettingsForm;
+    let keywords = updateSettingsForm;
+    
+    const logoInput = document.getElementById("logo");
+    const logoPreview = document.getElementById("logoPreview");
+    const uploadLogoButton = document.getElementById("uploadLogoButton"); 
+
+    const submitBtn = document.getElementById('submitBtn');
+    const submitOrignalTxt = submitBtn.innerText;
+
+    function sendUpdateRequest(){
+    // Site Input Fields
+    const siteName = document.getElementById('siteName');
+    const siteTitle = document.getElementById('siteTitle');
+    const siteDescription = document.getElementById('siteDescription');
+    const siteKeywords = document.getElementById('siteKeywordsInput');
+    const siteFrontend = document.getElementById('siteFrontend');
+    const siteRegister = document.getElementById('siteRegister');
+
+    // Mail Input Fields
+    const mailHost = document.getElementById('mailHost');
+    const mailPort = document.getElementById('mailPort');
+    const mailScheme = document.getElementById('mailScheme');
+    const mailUsername = document.getElementById('mailUsername');
+    const mailPassword = document.getElementById('mailPassword');
+
+    // Appearance Input Fields
+    const colorPrimary = document.getElementById('colorPrimary');
+    const colorPrimaryText = document.getElementById('colorPrimaryText');
+    const colorLight = document.getElementById('colorLight');
+    const colorLightSecondary = document.getElementById('colorLightSecondary');
+    const colorDark = document.getElementById('colorDark');
+    const colorDarkSecondary = document.getElementById('colorDarkSecondary');
+
+    // Routes Input Fields
+    const uriBackend = document.getElementById('uriBackend');
+    const uriAuth = document.getElementById('uriAuth');
+
+    const schema = {};   
+    schema['siteName'] = siteName.value; 
+    schema['siteTitle'] = siteTitle.value; 
+    schema['siteDescription'] = siteDescription.value; 
+    schema['siteKeywords'] = siteKeywords.value; 
+    schema['siteFrontend'] = siteFrontend.checked?1:0; 
+    schema['siteRegister'] = siteRegister.checked?1:0; 
+    schema['mailHost'] = mailHost.value; 
+    schema['mailPort'] = mailPort.value; 
+    schema['mailScheme'] = mailScheme.value; 
+    schema['mailUsername'] = mailUsername.value; 
+    schema['mailPassword'] = mailPassword.value; 
+    schema['colorPrimary'] = colorPrimary.value; 
+    schema['colorPrimaryText'] = colorPrimaryText.value; 
+    schema['colorLight'] = colorLight.value; 
+    schema['colorLightSecondary'] = colorLightSecondary.value; 
+    schema['colorDark'] = colorDark.value; 
+    schema['colorDarkSecondary'] = colorDarkSecondary.value; 
+    schema['uriBackend'] = uriBackend.value; 
+    schema['uriAuth'] = uriAuth.value; 
+
+    const logoUploaded = logoInput.files[0];
+    const payload = {
+    token: token.value, 
+    schema: schema, 
+    file: logoUploaded??null, 
+    }   
+
+    let uri_request = "settings?update";
+    fetchRequest(payload, uri_request, updateSettingsForm);
+    }
+
+
+    function confirmedUpdate(){
+      
+
+    const currentPassword = document.getElementById('currentPassword'); 
+    if(currentPassword.value==""){
+      alert('Enter your password and try again.');
+      return false;
+    }
+
+    hideAlerts();
+
+    submitBtn.innerText = 'Processing..'; 
+    document.getElementById('confirmExit').click();
+    
+    if(inputs){
+    // Disable all inputs and submit button 
+    inputs = document.querySelectorAll('input, select, button, textarea');
+    keywords = document.querySelectorAll('span.keyword');
+    inputs.forEach(input => input.disabled = true);
+    keywords.forEach(keyword => keyword.setAttribute('aria-disabled', true));
+    }
+ 
+    const formData = new FormData();
+    formData.append('token', '{{@TOKEN}}');
+    formData.append('crypt', btoa(currentPassword.value));
+    currentPassword.value = "";
+    
+    try {
+        const response = axios.post("/{{@SITE.uri_backend}}/settings?confirm-update", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data === "success") {
+                sendUpdateRequest();
+                return false;
+            } else {
+                showAlert("error", response.data.message);
+                submitBtn.innerText = submitOrignalTxt; 
+                submitBtn.disabled = false;
+                if(inputs){ inputs.forEach(input => input.disabled = false); }
+                keywords.forEach(keyword => keyword.removeAttribute('aria-disabled')); 
+            } 
+        });
+
+    } catch (error) {
+        console.log(error);
+        showAlert("error", "Error fetching the request. Please try again later.");
+        // Re-enable all inputs and submit button in case of error  
+        submitBtn.innerText = submitOrignalTxt; 
+        submitBtn.disabled = false;
+        if(inputs){ inputs.forEach(input => input.disabled = false); }
+        keywords.forEach(keyword => keyword.removeAttribute('aria-disabled'));
+    } 
+
+
+    } 
+
+    if(updateSettingsForm){
+        updateSettingsForm.addEventListener('keydown', function(e){
+            if(e.keyCode === 13){
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        updateSettingsForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            const confirmbtn = document.getElementById('confirmbtn'); 
+            confirmbtn.click(); 
+            
+        });
+    }
+
+    let originalLogoSrc = logoPreview.src; // Store the original logo src
+
+    // Simulate click on file input
+    if(uploadLogoButton){
+    uploadLogoButton.addEventListener("click", function () {
+        logoInput.click();
+    }); 
+    }
+
+    // Handle file selection
+    if(logoInput){
+    logoInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+
+        // Check if the selected file is an image
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                logoPreview.src = e.target.result; // Set the new image as preview 
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            showAlert("error", "Please upload a valid image file."); // Alert for invalid file
+            logoInput.value = ""; // Clear the input
+        }
+    });
+    } 
+
+    // Add Event Listeners
+    async function fetchRequest(formData, url, formEl, reload=null) {
+       event.preventDefault();  
+
+       try {
+           const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+               headers: {
+                   "Content-Type": "multipart/form-data", // Important for file uploads
+               },
+           }).then(response => {
+               const data = response.data;
+               if (data.status === "success") {
+                   showAlert("success", response.data.message);  
+                    // Clear cache and reload the page
+                   if(confirm('Some changes may need to reload the page to take effect. Do wish to reload now?')){
+                    window.location.reload(true);
+                    return false;
+                   }
+                  
+               } else {
+                   showAlert("error", response.data.message);
+               }
+           }).finally(() => {
+               // Re-enable all inputs and submit button
+               if(inputs){ inputs.forEach(input => input.disabled = false); }
+               keywords.forEach(keyword => keyword.removeAttribute('aria-disabled'));
+               submitBtn.innerText = submitOrignalTxt;
+           });
+
+       } catch (error) {
+           showAlert("error", "Error creating user. Please try again later.");
+           // Re-enable all inputs and submit button in case of error
+           if(inputs){  inputs.forEach(input => input.disabled = false); }
+       }
+    }
+   
+    // The entered keywords
+    var allKeywords = [];
+
+    // Max number of allowed keywords
+    var maxTags = 10;
+
+    // Initialize keywords from hidden input
+    function initializeKeywords() {
+        var hiddenInput = document.getElementById('siteKeywordsInput');
+        var initialKeywords = hiddenInput.value.trim();
+
+        if (initialKeywords) {
+            var keywordsArray = initialKeywords.split(',').map(function(word) {
+                return word.trim(); // Trim each keyword
+            });
+
+            keywordsArray.forEach(function(keyword) {
+                addWord(keyword);
+            });
+        }
+    }
+
+    // Delete a keyword
+    function deleteWord(element) {
+        var keywordElement = element.closest('.keyword');
+        var keywordText = keywordElement.textContent.trim();
+        
+        // Remove the 'X' from the keyword text
+        keywordText = keywordText.slice(0, keywordText.length - 1).trim();
+        
+        var index = allKeywords.indexOf(keywordText);
+        if (index !== -1) {
+            allKeywords.splice(index, 1);
+        }
+        keywordElement.remove();
+        
+        // Update the hidden input and re-enable the text input if tags are below maxTags
+        updateInputBox();
+    }
+
+    // Add a keyword
+    function addWord(word) {
+        if (!word || allKeywords.length >= maxTags || allKeywords.includes(word)) {
+            return;
+        }
+
+        allKeywords.push(word);
+
+        var keywordDiv = document.createElement('span');
+        keywordDiv.className = 'keyword badge border bg-color text-color p-2 d-flex align-items-center';
+        keywordDiv.innerHTML = word + '<a class="delete pe-cursor ms-2" onclick="deleteWord(this)">X</a>';
+
+        var keywordsContainer = document.getElementById('keywordsContainer');
+        var inputBox = document.getElementById('siteKeywords');
+
+        // Insert keyword before the input box
+        keywordsContainer.insertBefore(keywordDiv, inputBox);
+
+        // Clear the input field and update the hidden input
+        inputBox.value = ''; 
+
+        // Update the hidden input value and check if maxTags is reached
+        updateInputBox();
+    }
+
+    // Update the hidden input value with all keywords joined by a comma
+    function updateInputBox() {
+        var inputBox = document.getElementById('siteKeywords');
+        var hiddenInput = document.getElementById('siteKeywordsInput');
+        
+        // Set the value of the hidden input with comma-separated tags
+        hiddenInput.value = allKeywords.join(', ');
+
+        // Disable the input if max tags are reached, re-enable otherwise
+        inputBox.disabled = allKeywords.length >= maxTags;
+    }
+
+    // On focus out, add the word from the input
+    function addWordFromTextBox() {
+        var inputBox = document.getElementById('siteKeywords');
+        var val = inputBox.value.trim();
+
+        if (val) {
+            addWord(val);
+        }
+    }
+
+    // On key press, check for ',' or ';' or Enter key
+    function checkLetter(event) {
+        var inputBox = document.getElementById('siteKeywords');
+        var val = inputBox.value;
+
+        if (val.length > 0) {
+            var lastChar = val.slice(-1); // Check the last character
+            var keyPressed = event.key;   // Check the key pressed
+
+            if (lastChar === ',' || lastChar === ';' || keyPressed === 'Enter') {
+                var word = val.slice(0, -1).trim(); // Slice the value, excluding the last character
+
+                if (word.length > 0) {
+                    addWord(word);
+                }
+            }
+        } 
+    }
+
+    // Add event listeners
+    document.getElementById('siteKeywords').addEventListener('blur', addWordFromTextBox);
+    document.getElementById('siteKeywords').addEventListener('keyup', checkLetter);
+
+    // Initialize existing keywords when the page loads
+    initializeKeywords();
+
+    // Max character limit
+    var maxChars = 250;
+
+    // Get references to the textarea and the character count display
+    var siteDescription = document.getElementById('siteDescription');
+    var charCountDisplay = document.getElementById('charCount');
+
+    // Function to update the character counter
+    function updateCharCount() {
+        var remaining = maxChars - siteDescription.value.length;
+        charCountDisplay.textContent = remaining + " characters remaining";
+    }
+
+    // Add event listener to update character count as the user types
+    siteDescription.addEventListener('input', updateCharCount);
+
+    // Initialize the counter when the page loads
+    updateCharCount();
+
+</script>

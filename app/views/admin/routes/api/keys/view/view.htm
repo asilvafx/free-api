@@ -1,0 +1,466 @@
+ 
+<div class="position-relative mb-4">
+<check if="isset(@notfound)">
+    <true>
+        <div class="w-100 my-4">
+            <span class="h1">Not Found</span>
+            <p class="text-body-secondary">Key was not found in our records.</p>
+        </div>  
+        <div class="position-relative">
+            <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/api'; void(0);">← Go back</button>
+        </div>
+    </true>
+    <false>
+        <div class="modal fade" id="addDomainModal" tabindex="-1" aria-labelledby="addDomainModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addDomainModalLabel">Add New Domain</h5>
+                  <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="newDomainForm">
+                <div class="modal-body">
+                    <div class="d-flex bg-body flex-column mb-4">
+                    <label for="apiUrl" class="mb-2 fw-bolder">Enter URL/IP</label>
+                    <input class="form-control" type="text" id="apiUrl" name="apiUrl" value="" placeholder="Eg: 73.227.130.85">
+                    </div> 
+                    <p class="text-body-secondary small">Use an asterix (*) to allow all domains. (Not recommended)</p>
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="addDomainExit">Cancel</a>
+                  <button class="btn btn-primary" type="submit">Add domain</button>
+                </div>
+              </form>
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="renameModalLabel">Rename Key</h5>
+                  <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="renameKeyForm">
+                <div class="modal-body">
+                    <div class="d-flex bg-body flex-column mb-4">
+                    <label for="apiUrl" class="mb-2 fw-bolder">Enter name</label>
+                    <input class="form-control" type="text" id="apiName" name="apiName" value="{{@api.slug}}" placeholder="API Key Name Here">
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-secondary" role="button" data-ui-dismiss="modal" id="renameExit">Cancel</a>
+                  <button class="btn btn-primary" type="submit">Save changes</button>
+                </div>
+              </form>
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+                  <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="deleteKeyForm">
+                <div class="modal-body">
+                     
+                Are you sure you want to delete this user? This action cannot be undone.
+            
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-ui-dismiss="modal">Cancel</button>
+                  <button class="btn btn-danger" type="submit">Yes, delete it</button>
+                </div>
+              </form>
+              </div>
+            </div>
+        </div> 
+        <div class="w-100 my-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex "> 
+                    <span class="h1">Key: <span id="apiKeyName">{{@api.slug}}</span></span>
+                </div>
+                <div class="d-flex"> 
+                    <div class="form-check form-switch form-switch-2xl"> 
+                        <input class="form-check-input" id="enableApi" type="checkbox" {{ @api.status===1?'checked':'' }}> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-100 my-4">
+            <div class="bg-color border rounded p-2 p-lg-3"> 
+                <div class="w-100 d-flex flex-wrap">
+                    <div class="col d-flex flex-column p-2">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="position-relative"> 
+                                <span class="text-body-secondary mb-2">Private Key</span>
+                            </div>
+                            <div class="position-relative"> 
+                                <button aria-label="Show Key" type="button" class="btn btn-sm bg-color border text-body" id="showKey" onclick="showKey(true); void(0);">
+                                    <svg class="icon icon-sm">
+                                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye"></use>
+                                    </svg>
+                                    Show key
+                                </button>
+                                <button aria-label="Hide Key" type="button" class="btn btn-sm bg-color border text-body-secondary hidden" id="hideKey" onclick="showKey(false); void(0);">
+                                    <svg class="icon icon-sm">
+                                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-eye-slash"></use>
+                                    </svg>
+                                    Hide key
+                                </button> 
+                            </div>
+                        </div>
+                        <div class="position-relative"> 
+                            <div id="short_key">
+                                <span class="fw-bolder inline-flex gap-1 align-items-center justify-content-start">
+                                    {{substr(@api.key, 0, 4) . '...' . substr(@api.key, -5)}} 
+                                </span>
+                            </div> 
+                            <div class="hidden" id="full_key">
+                                <span class="w-100 fw-bolder inline-flex gap-1 align-items-center justify-content-start">  
+                                <input class="w-100 bg-transparent border-0 pe-none p-0 text-truncate" type="text" id="key" name="key" value="{{@api.key}}" readonly>
+                                <a onclick="copyKey(); void(0);" role="button" aria-label="Copy key" class="inline-flex align-items-center gap-1 btn">
+                                    <svg class="icon">
+                                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-clone"></use>
+                                </svg></a>
+                                </span>
+                            </div> 
+                        </div> 
+                    </div>  
+                </div> 
+            </div>
+        </div>
+        <div class="w-100 my-4">
+            <div class="row row-cols-1 row-cols-md-3">
+                <div class="col mb-4"> 
+                    <div class="bg-color border rounded p-2 p-lg-3"> 
+                        <div class="w-100 d-flex flex-wrap">
+                            <div class="col d-flex flex-column p-2">
+                                <span class="text-body-secondary mb-1">Usage</span>
+                                <div class="d-flex flex-wrap">
+                                    <span class="fw-bolder">{{@api.usage}}</span>
+                                </div> 
+                            </div>  
+                        </div> 
+                    </div>
+                </div>
+                <div class="col mb-4"> 
+                    <div class="bg-color border rounded p-2 p-lg-3"> 
+                        <div class="w-100 d-flex flex-wrap">
+                            <div class="col d-flex flex-column p-2 text-truncate">
+                                <span class="text-body-secondary mb-1">Created by</span>
+                                <div class="d-flex flex-wrap">
+                                    <span class="fw-bolder">{{getUserNameById(@api.created_by)}}</span>
+                                </div> 
+                            </div>  
+                        </div> 
+                    </div>
+                </div>
+                <div class="col mb-4"> 
+                    <div class="bg-color border rounded p-2 p-lg-3"> 
+                        <div class="w-100 d-flex flex-wrap">
+                            <div class="col d-flex flex-column p-2 text-truncate">
+                                <span class="text-body-secondary mb-1">Created at</span>
+                                <div class="d-flex flex-wrap">
+                                    <span class="fw-bolder">{{date('d-m-Y H:i:s', @api.created_at)}}</span>
+                                </div> 
+                            </div>  
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-100 my-4">
+            <span class="h1">Allowed Domains</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div>
+        <div class="w-100 my-4">
+            <div class="card mb-4">
+            <div class="card-header"> 
+            <div class="d-flex justify-content-between"> 
+                <span>Total: 2</span> 
+            </div>
+            </div>
+            <div class="card-body pb-0">
+            <div class="table-responsive">
+                <table class="table m-0">
+                    <thead>
+                    <tr> 
+                        <th scope="col">URL/IP</th> 
+                        <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody> 
+                        <repeat group="{{@api.allowed_domains}}" value="{{@domain}}"> 
+                            <check if="{{ @domain }}"> 
+                                <tr> 
+                                    <td>{{@domain}}</td>
+                                    <td class="text-end pe-0">
+                                        <div class="inline-flex gap-1">  
+                                        <a onclick="removeDomain('{{@domain}}'); void(0);" role="button" aria-label="Delete" class="inline-flex align-items-center gap-1 btn btn-sm bg-color border">
+                                            <svg class="icon icon-sm">
+                                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
+                                            </svg> 
+                                            Delete
+                                        </a>
+                                        </div>
+                                    </td>
+                                </tr> 
+                            </check>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        
+        <div class="w-100 d-flex justify-content-start align-items-center"> 
+            <div class="position-relative mb-4">
+            <button class="btn btn-primary" type="button" aria-label="Add domain" data-ui-toggle="modal" data-ui-target="#addDomainModal">+ Add domain</button>
+            </div>
+        </div> 
+        
+        <div class="w-100 my-4">
+            <span class="h1">Manage Key</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div>
+        <div class="w-100 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            <div class="position-relative">
+                <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/api/keys'; void(0);">← Go back</button>
+            </div>
+            <div class="inline-flex gap-2">
+            <div class="position-relative">
+                <button class="btn btn-danger" type="button" aria-label="Delete Key" data-ui-toggle="modal" data-ui-target="#deleteModal">
+                    <svg class="icon">
+                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+            <div class="position-relative">
+                <button class="btn btn-info" type="button" aria-label="Rename Key" data-ui-toggle="modal" data-ui-target="#renameModal">
+                    <svg class="icon">
+                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                    </svg>
+                    Rename
+                </button>
+            </div>
+          
+            </div>
+        </div>
+
+        <input type="hidden" id="keySlug" name="keySlug" value="{{@GET.s}}">
+        <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+
+    </false>
+</check>
+</div>
+
+<script>
+    "use strict"
+ 
+    const token = document.querySelector('#token');     
+
+    const renameKeyForm = document.getElementById('renameKeyForm');
+    const deleteKeyForm = document.getElementById('deleteKeyForm');
+    const newDomainForm = document.getElementById('newDomainForm');
+    const enableApi = document.getElementById('enableApi'); 
+    const keySlug = document.getElementById('keySlug');
+
+    function copyKey(){
+        const keyInput = document.getElementById("key");
+
+        // Select the text field
+        keyInput.select();
+        keyInput.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(keyInput.value);
+
+        // Alert the copied text 
+        showAlert("success", "API Key was succefully copied to the clipbard.");   
+    }
+
+    function showKey($display){ 
+        const showKeyBtn = document.getElementById('showKey');
+        const hideKeyBtn = document.getElementById('hideKey');
+        const short_key = document.getElementById('short_key');
+        const full_key = document.getElementById('full_key');
+
+        if($display){
+            showKeyBtn.classList.add('hidden');
+            short_key.classList.add('hidden');
+            hideKeyBtn.classList.remove('hidden');  
+            full_key.classList.remove('hidden');  
+        } else {  
+            hideKeyBtn.classList.add('hidden');  
+            full_key.classList.add('hidden');
+            showKeyBtn.classList.remove('hidden');
+            short_key.classList.remove('hidden');  
+        }
+    } 
+
+    if(enableApi){
+        enableApi.addEventListener('change', function(e){ 
+            let apiName = document.getElementById('apiName');
+
+            const schema = {};  
+            schema['slug'] = keySlug.value; 
+            schema['status'] = e.target.checked?1:0; 
+     
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+    
+            let uri_request = "api/keys/edit?status";
+            fetchRequest(payload, uri_request, null, false); 
+
+        })
+    }
+
+    if(renameKeyForm){
+        renameKeyForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            let apiName = document.getElementById('apiName');
+
+            const schema = {};  
+            schema['slug'] = keySlug.value;
+            schema['name'] = apiName.value; 
+     
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+    
+            let uri_request = "api/keys/edit?rename";
+            fetchRequest(payload, uri_request, renameKeyForm, false); 
+        })
+    }
+    function updateKeyName($name){
+        const renameExit = document.getElementById('renameExit');
+        const apiKeyName = document.getElementById('apiKeyName');
+
+        apiKeyName.innerText = $name;
+        renameExit.click();
+    }
+
+    if(deleteKeyForm){
+        deleteKeyForm.addEventListener('submit', function(e){
+            e.preventDefault();
+             
+            const schema = {};  
+            schema['slug'] = keySlug.value; 
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "api/keys/edit?delete";
+            fetchRequest(payload, uri_request, deleteKeyForm, true);
+
+        })
+    }
+    if(newDomainForm){
+        newDomainForm.addEventListener('submit', function(e){
+            e.preventDefault();
+             let apiUrl = document.getElementById('apiUrl');
+
+             if(apiUrl.value === ""){
+                alert('URL cannot be empty.');
+                return false;
+             }
+
+            const schema = {};  
+            schema['slug'] = keySlug.value; 
+            schema['domain'] = apiUrl.value; 
+
+            const payload = {
+                token: token.value, 
+                schema: schema, 
+            }  
+
+            let uri_request = "api/keys/edit?addDomain";
+            fetchRequest(payload, uri_request, newDomainForm, true);
+        })
+    }
+    function removeDomain(domain){ 
+
+        if(domain === ""){
+        alert('Domain invalid.');
+        return false;
+        }
+
+        const schema = {};  
+        schema['slug'] = keySlug.value; 
+        schema['domain'] = domain; 
+
+        const payload = {
+        token: token.value, 
+        schema: schema, 
+        }  
+
+        let uri_request = "api/keys/edit?removeDomain";
+        fetchRequest(payload, uri_request, null, true);
+    }
+
+    // Add Event Listeners
+    async function fetchRequest(formData, url, dataForm, reload=false) {
+        event.preventDefault();  
+        hideAlerts();
+ 
+        // Disable all inputs and submit button
+        let inputs = dataForm;
+        if(inputs){
+            inputs = inputs.querySelectorAll('input, select, button');
+            inputs.forEach(input => input.disabled = true);
+        }  
+ 
+        try {
+            const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(response => {
+                const data = response.data;
+                if (data.status === "success") {
+                    showAlert("success", response.data.message);  
+
+                    if(dataForm===renameKeyForm){ 
+                        updateKeyName(formData.schema.name);
+                    }
+                    if(reload){
+                        window.location.reload();
+                        return false;
+                    } 
+                } else {
+                    showAlert("error", response.data.message);
+                } 
+                
+            }).finally(() => {
+                // Re-enable all inputs and submit button
+                if(inputs){
+                    inputs.forEach(input => input.disabled = false);
+                }
+               
+                if(dataForm===newDomainForm){
+                    let addDomainExit = document.getElementById('addDomainExit');
+                    addDomainExit.click();
+                }
+            });
+ 
+        } catch (error) {
+            showAlert("error", "Error fetching the request. Please try again later.");
+            // Re-enable all inputs and submit button in case of error
+            if(inputs){
+            inputs.forEach(input => input.disabled = false);
+            }
+        }
+    } 
+ 
+
+</script>

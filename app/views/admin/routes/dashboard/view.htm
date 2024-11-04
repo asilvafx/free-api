@@ -1,0 +1,98 @@
+
+<check if="{{@CXT->confirmed==0}}">
+<!-- Email Confirmation Modal -->
+<div class="modal fade" id="emailConfirmationModal" tabindex="-1" aria-labelledby="emailConfirmationModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="emailConfirmationModalLabel">Email Confirmation</h5>
+            <button type="button" class="btn-close" data-ui-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div data-confirm-step="1"> 
+            <p>We will send you a one-time passcode to your registered email address. Please check your inbox and enter the 6-digits code to verify your email.</p>
+            <button type="button" aria-label="Send Email" class="btn btn-primary w-100" onclick="confirmEmail(1, this); void(0);">Send Email</button>
+            </div>
+            <div class="hidden" data-confirm-step="2"> 
+                <p>OTP sent to {{@CXT->email}}. Check your email inbox and spam/junk folders. </p>
+                <p class="text-body-secondary small">Enter the 6-digits code:</p>
+              <div class="otp-input confirmInputs mb-4">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                    <input class="border shadow-sm" type="number" min="0" max="9" required="" placeholder="0">
+                </div>
+                <button type="button" aria-label="Verify" class="btn btn-primary w-100" onclick="confirmEmail(2, this); void(0);">Verify</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</check>
+
+<div class="position-relative mb-4">
+
+    <div class="w-100 d-flex justify-content-between align-items-start">
+      <div class="d-flex flex-column">
+        <span class="h1" id="greeting"></span>
+        <p class="lead text-body-secondary">Your digital workspace! Here, you can manage and navigate through your files in just a few clicks.</p>
+      </div> 
+    </div>
+
+      <check if="{{@CXT->confirmed==0}}">
+  <div class="alert alert-dismissible border fade show mb-4" role="alert">  
+      <p>
+        <h5 class="text-warning">
+        <svg class="icon">
+          <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-envelope-letter"></use>
+        </svg>
+        Email Confirmation
+        </h5>
+      </p>
+      <p>You haven't confirmed your email address yet. Please ensure it is verified to receive important notifications. </p>
+      <p>
+      <a class="btn btn-primary btn-sm" aria-label="Verify Email" role="button" data-ui-toggle="modal" data-ui-target="#emailConfirmationModal" class="alert-link">
+        Verify Now
+      </a>
+      </p>
+      <a role="button" class="btn-close" data-ui-dismiss="alert" id="confirmExit" aria-label="Close"></a>
+    </div> 
+    </check>
+
+
+    <div class="alert alert-dismissible border fade show mb-4" role="alert">
+      <span class="badge badge-sm bg-primary me-1">NEW</span>
+      <strong>New Updates Available!</strong> Click <a href="/updates" class="alert-link">here</a> to see more.
+      <button type="button" class="btn-close" data-ui-dismiss="alert" aria-label="Close"></button>
+    </div> 
+</div>
+
+<script>
+  "use strict"
+
+  function displayGreeting() {
+      const greetingElement = document.getElementById('greeting');
+      const now = new Date();
+      const hours = now.getHours(); // Get current hour (0-23)
+
+      let greetingMessage = "";
+      
+      if (hours >= 5 && hours < 12) {
+          greetingMessage = "Good Morning!";
+      } else if (hours >= 12 && hours < 17) {
+          greetingMessage = "Good Afternoon!";
+      } else if (hours >= 17 && hours < 21) {
+          greetingMessage = "Good Evening!";
+      } else {
+          greetingMessage = "Good Night!";
+      }
+
+      greetingElement.textContent = greetingMessage;
+  } 
+
+// Call the function to display the greeting
+displayGreeting();
+  
+</script>

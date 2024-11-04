@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="FreeAPI - Open Source CMS">
+  <meta name="author" content="PIGMIL.COM">
+  <meta name="keyword" content="Fatfree,Admin,Open,Source,CMS,Dashboard,PHP,CSS,JS,HTML,SQL">
+  <meta name="theme-color" content="currentColor">
+  <title>Setup Wizard</title> 
+  <link href="public/client/app.css?v={{time()}}" rel="stylesheet">
+  <script src="public/client/app.js?v={{time()}}"></script>
+  <style> 
+    .hidden {
+      display: none;
+    }
+    .visible {
+      display: block;
+    }  
+    .progress {
+      background-color: #6261cc;
+      width: 25%;
+      height: 5px;
+      transition: width 0.5s;
+    }
+    .data-forms {
+      margin-top: 2rem;
+    }
+    .form-group {
+      position: relative;
+    } 
+  </style>
+</head>
+<body>
+  <div class="min-vh-100 d-flex flex-row align-items-center">
+    <div class="container">
+      <div id="progressBarContainer">
+        <div id="progressBar" class="progress"></div>
+      </div>
+      <section class="data-forms"> 
+      <!-- Step 1: Site Information -->
+      <div id="step1" class="visible">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Site Information</h2>
+        <input type="text" id="siteName" placeholder="Site Name" class="form-control px-4 py-2" />
+        <input type="text" id="siteUrl" placeholder="Site URL" class="form-control px-4 py-2" value="{{@SCHEME.'://'.@HOST}}" />
+        <p class="text-sm text-gray-500 mt-2">Please enter the name and URL of your site.</p>
+        <div class="input-group mb-3">
+          <input class="form-control" id="logoFile" type="file">
+          <label class="input-group-text" for="logoFile">Upload logo</label>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 2: SMTP Settings -->
+      <div id="step2" class="hidden">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">SMTP Settings</h2>
+        <input type="text" id="smtpHost" placeholder="SMTP Host" class="form-control px-4 py-2" />
+        <input type="number" id="smtpPort" placeholder="SMTP Port" class="form-control px-4 py-2" />
+        <input type="text" id="smtpUser" placeholder="SMTP User" class="form-control px-4 py-2" />
+        <input type="password" id="smtpPassword" placeholder="SMTP Password" class="form-control px-4 py-2" />
+        <select id="smtpScheme" class="form-select px-4 py-2">
+          <option value="SSL">SSL</option>
+          <option value="TLS">TLS</option>
+        </select>
+        <p class="text-sm text-gray-500 mt-2">Provide your SMTP settings for email configuration.</p>
+        <div class="flex justify-between mt-6">
+          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 3: User Credentials -->
+      <div id="step3" class="hidden">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">User Credentials</h2>
+        <input type="text" id="userName" placeholder="Display Name" class="form-control px-4 py-2" />
+        <input type="email" id="userEmail" placeholder="Email (eg: example@mail.com)" class="form-control px-4 py-2" />
+        <input type="password" id="userPassword" placeholder="Password" class="form-control px-4 py-2" />
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" class="form-control px-4 py-2" />
+        <p class="text-sm text-gray-500 mt-2">Enter your email and password for the setup.</p>
+        <div class="flex justify-between mt-6">
+          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Summary -->
+      <div id="step4" class="hidden">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Summary</h2>
+        <p id="summarySiteName" class="text-lg text-gray-700 mb-2"></p>
+        <p id="summarySiteUrl" class="text-lg text-gray-700 mb-2"></p>
+        <p id="summarySmtpHost" class="text-lg text-gray-700 mb-2"></p>
+        <p id="summaryUserEmail" class="text-lg text-gray-700 mb-2"></p>
+        <p class="text-sm text-gray-500 mb-4">Review your settings and finish the setup.</p>
+        <div class="flex justify-between mt-6">
+          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary px-4" onclick="finishSetup()">Finish</button>
+        </div>
+      </div>
+      </section>
+    </div>
+  </div> 
+  <script>
+  "use strict"
+  let step = 1;
+  let formData = {
+    siteName: '',
+    siteUrl: '',
+    smtpHost: '',
+    smtpPort: '',
+    smtpUser: '',
+    smtpPassword: '',
+    smtpScheme: 'SSL',
+    userName: '',
+    userEmail: '',
+    userPassword: '',
+    confirmPassword: ''
+  };
+
+  const progressBar = document.getElementById('progressBar');
+  const steps = ['step1', 'step2', 'step3', 'step4'];
+
+  function nextStep() {
+    if (validateStep()) {
+      step++;
+      updateStep();
+    }
+  }
+
+  function prevStep() {
+    step--;
+    updateStep();
+  }
+
+  function updateStep() {
+    steps.forEach((s, i) => {
+      document.getElementById(s).classList.toggle('hidden', i + 1 !== step);
+      document.getElementById(s).classList.toggle('visible', i + 1 === step);
+    });
+    progressBar.style.width = `${(step / 4) * 100}%`;
+    if (step === 4) {
+      displaySummary();
+    }
+  }
+
+  function validateStep() {
+    if (step === 1) {
+      formData.siteName = document.getElementById('siteName').value;
+      formData.siteUrl = document.getElementById('siteUrl').value;
+      if (!formData.siteName || !isValidUrl(formData.siteUrl)) {
+        alert('Please enter valid site information.');
+        return false;
+      }
+    } else if (step === 2) {
+      formData.smtpHost = document.getElementById('smtpHost').value;
+      formData.smtpPort = document.getElementById('smtpPort').value;
+      formData.smtpUser = document.getElementById('smtpUser').value;
+      formData.smtpPassword = document.getElementById('smtpPassword').value;
+      formData.smtpScheme = document.getElementById('smtpScheme').value;
+      if (!formData.smtpHost || !formData.smtpPort || !formData.smtpUser || !formData.smtpPassword) {
+        alert('Please fill out all SMTP fields.');
+        return false;
+      }
+      if (!isValidEmail(formData.smtpUser)) {
+        alert('Please enter a valid SMTP email.');
+        return false;
+      }
+    } else if (step === 3) {
+      formData.userName = document.getElementById('userName').value;
+      formData.userEmail = document.getElementById('userEmail').value;
+      formData.userPassword = document.getElementById('userPassword').value;
+      formData.confirmPassword = document.getElementById('confirmPassword').value;
+      if (!formData.userName || !formData.userEmail || !formData.userPassword || !formData.confirmPassword) {
+        alert('Please fill out all user fields.');
+        return false;
+      }
+      if (formData.userPassword !== formData.confirmPassword) {
+        alert('Passwords do not match.');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function displaySummary() {
+    document.getElementById('summarySiteName').innerText = 'Site Name: ' + formData.siteName;
+    document.getElementById('summarySiteUrl').innerText = 'Site URL: ' + formData.siteUrl;
+    document.getElementById('summarySmtpHost').innerText = 'SMTP Host: ' + formData.smtpHost;
+    document.getElementById('summaryUserEmail').innerText = 'User Email: ' + formData.userEmail;
+  }
+
+  async function fetchRequest() {
+    // Create a new FormData instance
+    const form = new FormData();
+    
+    // Append text fields
+    for (const key in formData) {
+      form.append(key, formData[key]);
+    }
+    
+    // Append the logo file separately
+    const siteLogoFile = document.getElementById('logoFile').files[0];
+    if (siteLogoFile) {
+      form.append('siteLogo', siteLogoFile);
+    }
+
+    try {
+      const response = await axios.post('/setup/post', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (response.data.status === 'success') { 
+        alert('Setup completed!');
+        window.location.href = response.data.message;
+      } else { 
+        console.log(response.data.message);
+        alert('Setup Failed. Please try again later.');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function finishSetup() {
+    if (validateStep()) {
+      fetchRequest(); // Call fetchRequest without passing formData directly
+    }
+  }
+
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.toLowerCase());
+  }
+
+  function isValidUrl(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+</script>
+  
+</body>
+</html>

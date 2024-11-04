@@ -1,0 +1,28 @@
+<div class="container-fluid px-4 mb-4">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb my-0">
+    <li class="breadcrumb-item">
+        <a aria-label="Home" href="/{{ @SITE.uri_backend }}/">
+        <svg class="icon text-primary">
+            <use xlink:href="/public/assets/icons/svg/free.svg#cil-home"></use>
+        </svg>
+        Home
+    </a>
+    </li>
+    <check if="{{ isset(@breadcrumbs) }}">
+    <repeat group="{{ @breadcrumbs }}" value="{{ @crumb }}" key="{{ @idx }}">
+        <check if="{{ @idx < count(@breadcrumbs) - 1 }}">
+        <li class="breadcrumb-item">
+            <a aria-label="{{ @crumb['name'] }}" href="/{{ @SITE.uri_backend }}/{{ @crumb['slug'] }}">{{ @crumb['name'] }}</a>
+        </li>
+        </check>
+        <check if="{{ @idx == count(@breadcrumbs) - 1 }}">
+        <li class="breadcrumb-item active">
+            <span>{{ @crumb['name'] }}</span>
+        </li>
+        </check>
+    </repeat>
+    </check>
+    </ol>
+</nav>
+</div>

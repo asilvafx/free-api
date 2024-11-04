@@ -1,0 +1,100 @@
+.hidden {
+    display: none;
+}
+.otp-input {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+.otp-input input {
+  width: 100%;
+  height: 50px;
+  margin: 0 3px;
+  text-align: center;
+  font-size: 1.5rem; 
+  border-radius: 12px;  
+  transition: all 0.3s ease;
+} 
+
+.otp-input input:focus { 
+  box-shadow: 0 0 0 2px rgba(166, 86, 246, 0.3);
+  outline: none;
+}
+.otp-input input::-webkit-outer-spin-button,
+.otp-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.otp-input input[type="number"] {
+    appearance: textfield;
+  -moz-appearance: textfield;
+} 
+#timer {
+  font-size: 1rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-left: 3px;
+}
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.expired {
+  animation: pulse 2s infinite;
+  color: #ff4444;
+}
+.resend-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #b0b0b0;
+}
+.resend-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.resend-link:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+#email {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+#passwordRequirements {
+  margin-bottom: 15px;
+}
+
+#passwordRequirements p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+#passwordRequirements ul {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+#passwordRequirements li {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#passwordRequirements .invalid {
+  color: #e74c3c;
+}
+
+#passwordRequirements .valid {
+  color: #2ecc71;
+}
