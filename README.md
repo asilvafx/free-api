@@ -32,7 +32,7 @@ To get started with the Free API, follow these steps:
 2. **Install Dependencies**:
   ```bash 
     composer install
-    npm install
+ 
      
     Upload the files to your FTP server, and follow the setup wizzard instructions on your browser!
     All done!
