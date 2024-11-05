@@ -3,8 +3,24 @@
 // Load core of the framework
 $f3 = require_once(ROOT . 'lib/base.php');
 
-// Load server configuration files
-$f3->config(ROOT . 'config/server.ini');
+// Load server configuration files 
+$f3->set('VERSION', '1.0');
+$f3->set('DEBUG', 1);
+$f3->set('AUTOLOAD', "app/core/controllers/|app/core/models/|app/core/functions/");
+$f3->set('BASE', "");
+$f3->set('LOGS', "app/logs/");
+$f3->set('TEMP', "app/tmp/cache/");
+$f3->set('ONERROR', "Report->error");
+$f3->set('UI', "ui/");
+$f3->set('BUILD', "ui/");
+$f3->set('UPLOADS', "public/uploads/");
+$f3->set('db', "sqlite");
+$f3->set('dbPath', "app/data/db/cms.db");
+$f3->set('auto_logout', 14400);
+$f3->set('TIMEOUT', 86400);
+$f3->set('expiry', 24);
+$f3->set('time_format', "d M Y h:ia"  );
+$f3->set('eurocookie', FALSE);
 
 // Server errors
 $debug = 0;
