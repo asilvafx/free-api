@@ -3,24 +3,24 @@
 // Load core of the framework
 $f3 = require_once(ROOT . 'lib/base.php');
 
-// Load server configuration files 
-$f3->set('VERSION', '1.0');
-$f3->set('DEBUG', 1);
-$f3->set('AUTOLOAD', "app/core/controllers/|app/core/models/|app/core/functions/");
-$f3->set('BASE', "");
-$f3->set('LOGS', "app/logs/");
-$f3->set('TEMP', "app/tmp/cache/");
-$f3->set('ONERROR', "Report->error");
-$f3->set('UI', "ui/");
-$f3->set('BUILD', "ui/");
-$f3->set('UPLOADS', "public/uploads/");
-$f3->set('db', "sqlite");
-$f3->set('dbPath', "app/data/db/cms.db");
-$f3->set('auto_logout', 14400);
-$f3->set('TIMEOUT', 86400);
-$f3->set('expiry', 24);
-$f3->set('time_format', "d M Y h:ia"  );
-$f3->set('eurocookie', FALSE);
+// Load server configuration files
+$f3->set('VERSION', '1.0'); // App Version
+$f3->set('DEBUG', 1); // App Debug (0-Live / 1-Dev)
+$f3->set('AUTOLOAD', "app/core/controllers/|app/core/models/|app/core/functions/"); //Where the framework autoloader will look for app files
+$f3->set('BASE', ""); // Host base path (default: empty)
+$f3->set('LOGS', "app/logs/"); // Where errors are logged
+$f3->set('TEMP', "app/tmp/cache/"); // Where errors are logged
+$f3->set('ONERROR', "Report->error"); // Our custom error handler, so we also get a pretty page for our users
+$f3->set('UI', "ui/"); // Where the framework will look for templates and related HTML-support files
+$f3->set('BUILD', "ui/"); // Where the framework will look for public build files
+$f3->set('UPLOADS', "public/uploads/"); // Where uploads will be saved
+$f3->set('db', "sqlite"); // Database DSN (sqlite/mysql)
+$f3->set('dbPath', "app/data/db/cms.db"); // Database Path
+$f3->set('auto_logout', 14400); // Automatically logout after this many seconds of inactivity
+$f3->set('TIMEOUT', 86400); // Define cookies timeout (in seconds, default: 24h > 86400)
+$f3->set('expiry', 24); // Number of hours before session expires
+$f3->set('time_format', "d M Y h:ia"  ); // How timestamps look like on the pages
+$f3->set('eurocookie', FALSE); // Display eurocookie notices
 
 // Server errors
 $debug = 0;
@@ -155,7 +155,7 @@ if ($site->dry()) {
     $folderName = basename($folder);
 
     // Build the full path to the file you're checking
-    $loadFile = INTEGRATIONS.$folderName.'/autoload.php';
+    $loadFile = INTEGRATIONS.$folderName.'/index.php';
 
     if(file_exists($loadFile)){
       require_once($loadFile);

@@ -54,16 +54,16 @@ class Api extends PostController
     }
   }
 
-  function Base($f3, $args)
+  function Base($f3, $args): void
   {
     global $siteDb;
     $body = json_decode(file_get_contents('php://input'), true);
     $slug = empty($args['slug']) ? '' : htmlspecialchars_decode($args['slug']);
     $search = empty($args['search']) ? '' : htmlspecialchars_decode($args['search']);
     $value = empty($args['value']) ? '' : htmlspecialchars_decode($args['value']);
-    $limit = isset($body['limit']) ? $body['limit'] : $f3->get('GET.limit');
-    $data = isset($body['data']) ? $body['data'] : $f3->get('POST.data');
-    $values = isset($body['values']) ? $body['values'] : $f3->get('POST.values');
+    $limit = $body['limit'] ?? $f3->get('GET.limit');
+    $data = $body['data'] ?? $f3->get('POST.data');
+    $values = $body['values'] ?? $f3->get('POST.values');
     $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
     $requestData = array();
     $response = new Response;
@@ -133,9 +133,9 @@ class Api extends PostController
       }
 
       } elseif ($requestData["method"] === 'post') {
-          if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+          if ($requestData["collection"] === 'UPLOAD' && isset($_FILES['file'])) {
               $utils = new Utils;
-              $dir = isset($body['dir']) ? $body['dir'] : $f3->get('POST.dir');
+              $dir = $body['dir'] ?? $f3->get('POST.dir');
               $uploadDir = !empty($dir) ? $dir : 'public/uploads/'; // Directory where files will be uploaded
 
               $uploadResult = $utils->uploadFile($_FILES['file'], $uploadDir); // Call the uploadFile function
@@ -212,7 +212,7 @@ class Api extends PostController
                   $value = trim($matches[2]); // The value (could be a string or a number)
 
                   // Add quotes if the value is a string
-                  if (strpos($value, "'") === false && !is_numeric($value)) {
+                  if (!str_contains($value, "'") && !is_numeric($value)) {
                       $valueToUpdate = "$field = '$value'"; // Quote the string value
                   } else {
                       $valueToUpdate = "$field = $value"; // Keep as is
