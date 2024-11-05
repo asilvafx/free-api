@@ -3,7 +3,7 @@
 // Load core of the framework
 $f3 = require_once(ROOT . 'lib/base.php');
 
-// Load server configuration files
+// Load default server configuration
 $f3->set('VERSION', '1.0'); // App Version
 $f3->set('DEBUG', 1); // App Debug (0-Live / 1-Dev)
 $f3->set('AUTOLOAD', "app/core/controllers/|app/core/models/|app/core/functions/"); //Where the framework autoloader will look for app files
@@ -11,8 +11,7 @@ $f3->set('BASE', ""); // Host base path (default: empty)
 $f3->set('LOGS', "app/logs/"); // Where errors are logged
 $f3->set('TEMP', "app/tmp/cache/"); // Where errors are logged
 $f3->set('ONERROR', "Report->error"); // Our custom error handler, so we also get a pretty page for our users
-$f3->set('UI', "ui/"); // Where the framework will look for templates and related HTML-support files
-$f3->set('BUILD', "ui/"); // Where the framework will look for public build files
+$f3->set('UI', "ui/"); // Where the framework will look for templates and related HTML-support filess
 $f3->set('UPLOADS', "public/uploads/"); // Where uploads will be saved
 $f3->set('db', "sqlite"); // Database DSN (sqlite/mysql)
 $f3->set('dbPath', "app/data/db/cms.db"); // Database Path
@@ -114,7 +113,12 @@ if ($site->dry()) {
     if ($site->enable_register > 0) {
         $enable_register = true;
     }
-    $f3->set('SITE.enable_register', $enable_register);  // Enable `Register` (true/false) 
+    $f3->set('SITE.enable_register', $enable_register);  // Enable `Register` (true/false)
+
+    // Custom server configuration
+    $f3->set('VERSION', '1.0');
+    $f3->set('DEBUG', 1);
+    $f3->set('auto_logout', 14400);
 
     // Load frontend routes
     $f3->route('GET|POST|PUT /', 'Frontend->Base');
