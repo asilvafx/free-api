@@ -1,8 +1,7 @@
 # Free API
 
 ![Maintenance](https://img.shields.io/maintenance/yes/2024?logo=github)
-![Build Status](https://github.com/asilvafx/free-api/actions/workflows/deploy.yml/badge.svg)
-![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-blue)
+![PHP Version](https://img.shields.io/badge/php-%3E%3D8.0-blue)
 ![SQLite](https://img.shields.io/badge/sqlite-v3.36.0-green)
 
 ## Overview
