@@ -7,24 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
+# Important directories and files
+node_modules 
+.gitignore
+package-lock.json
 .env
-.env.local
-
-# Mac OS X
-.DS_Store
-._.*
-._*
-
-# Compiler files
-node_modules/
-*.lock 
 *.local
-
-# DB Files
-app/data/*.db
-*.db
 
 # Editor directories and files
 .vscode/*
