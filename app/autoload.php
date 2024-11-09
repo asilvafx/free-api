@@ -3,23 +3,8 @@
 // Load core of the framework
 $f3 = require_once(ROOT . 'lib/base.php');
 
-// Load default server configuration
-$f3->set('VERSION', '1.0'); // App Version
-$f3->set('DEBUG', 1); // App Debug (0-Live / 1-Dev)
-$f3->set('AUTOLOAD', "app/core/controllers/|app/core/models/|app/core/functions/"); //Where the framework autoloader will look for app files
-$f3->set('BASE', ""); // Host base path (default: empty)
-$f3->set('LOGS', "app/logs/"); // Where errors are logged
-$f3->set('TEMP', "app/tmp/cache/"); // Where errors are logged
-$f3->set('ONERROR', "Report->error"); // Our custom error handler, so we also get a pretty page for our users
-$f3->set('UI', "ui/"); // Where the framework will look for templates and related HTML-support filess
-$f3->set('UPLOADS', "public/uploads/"); // Where uploads will be saved
-$f3->set('db', "sqlite"); // Database DSN (sqlite/mysql)
-$f3->set('dbPath', "app/data/db/cms.db"); // Database Path
-$f3->set('auto_logout', 14400); // Automatically logout after this many seconds of inactivity
-$f3->set('TIMEOUT', 86400); // Define cookies timeout (in seconds, default: 24h > 86400)
-$f3->set('expiry', 24); // Number of hours before session expires
-$f3->set('time_format', "d M Y h:ia"  ); // How timestamps look like on the pages
-$f3->set('eurocookie', FALSE); // Display eurocookie notices
+// Load server configuration files
+$f3->config(ROOT . 'config/server.ini');
 
 // Server errors
 $debug = 0;
@@ -52,6 +37,7 @@ $f3->set('PUBLIC', 'public');
 // Load Site Db
 $dbConn = $f3->get('db') . ':' . $f3->get('dbPath');
 $db = new DB\SQL($dbConn);
+$f3->set('ROOT.db', $db);
 $siteDb = null;
 
 $site = new DB\SQL\Mapper($db, 'site');
@@ -113,12 +99,7 @@ if ($site->dry()) {
     if ($site->enable_register > 0) {
         $enable_register = true;
     }
-    $f3->set('SITE.enable_register', $enable_register);  // Enable `Register` (true/false)
-
-    // Custom server configuration
-    $f3->set('VERSION', '1.0');
-    $f3->set('DEBUG', 1);
-    $f3->set('auto_logout', 14400);
+    $f3->set('SITE.enable_register', $enable_register);  // Enable `Register` (true/false) 
 
     // Load frontend routes
     $f3->route('GET|POST|PUT /', 'Frontend->Base');
@@ -134,8 +115,8 @@ if ($site->dry()) {
     $f3->route('GET|POST /' . $f3->get('SITE.uri_backend') . '/@slug*', 'Backend->Base');
 
     // Load api routes
-    $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
-    $f3->route('GET /v1/@slug/@search/@value', 'Api->Base');
+    $f3->route('GET|POST|DELETE /v1/@slug', 'Api->Base');
+    $f3->route('GET|PUT /v1/@slug/@search/@value', 'Api->Base');
 
     // Load WebAuthn Routes
     $f3->route('GET|POST /web/authn/attestation/options', 'WebAuthn->Options');
@@ -159,15 +140,17 @@ if ($site->dry()) {
     $folderName = basename($folder);
 
     // Build the full path to the file you're checking
-    $loadFile = INTEGRATIONS.$folderName.'/index.php';
+    $loadFile = INTEGRATIONS.$folderName.'/autoload.php';
 
     if(file_exists($loadFile)){
       require_once($loadFile);
     }
   }
 }
+$f3->set('SITE.db', $siteDb);
 
 $f3->route('GET /public/@slug*', 'Frontend->Public');
+$f3->route('GET /secure/dl/*', 'Frontend->SecureDl');
 
 if (empty($f3->get('SESSION.loggedin'))) {
     $f3->set('SESSION.loggedin', false);

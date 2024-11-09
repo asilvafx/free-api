@@ -54,16 +54,16 @@ class Api extends PostController
     }
   }
 
-  function Base($f3, $args): void
+  function Base($f3, $args)
   {
     global $siteDb;
     $body = json_decode(file_get_contents('php://input'), true);
     $slug = empty($args['slug']) ? '' : htmlspecialchars_decode($args['slug']);
     $search = empty($args['search']) ? '' : htmlspecialchars_decode($args['search']);
     $value = empty($args['value']) ? '' : htmlspecialchars_decode($args['value']);
-    $limit = $body['limit'] ?? $f3->get('GET.limit');
-    $data = $body['data'] ?? $f3->get('POST.data');
-    $values = $body['values'] ?? $f3->get('POST.values');
+    $limit = isset($body['limit']) ? $body['limit'] : $f3->get('GET.limit');
+    $data = isset($body['data']) ? $body['data'] : $f3->get('POST.data');
+    $values = isset($body['values']) ? $body['values'] : $f3->get('POST.values');
     $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
     $requestData = array();
     $response = new Response;
@@ -133,9 +133,9 @@ class Api extends PostController
       }
 
       } elseif ($requestData["method"] === 'post') {
-          if ($requestData["collection"] === 'UPLOAD' && isset($_FILES['file'])) {
+          if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
               $utils = new Utils;
-              $dir = $body['dir'] ?? $f3->get('POST.dir');
+              $dir = isset($body['dir']) ? $body['dir'] : $f3->get('POST.dir');
               $uploadDir = !empty($dir) ? $dir : 'public/uploads/'; // Directory where files will be uploaded
 
               $uploadResult = $utils->uploadFile($_FILES['file'], $uploadDir); // Call the uploadFile function
@@ -154,9 +154,6 @@ class Api extends PostController
               // Extract columns and values dynamically
               $columns = array_keys($body); // Get column names
               $values = array_values($body); // Get corresponding values
-
-              // Prepare SQL statement with placeholders
-              $placeholders = rtrim(str_repeat('?,', count($values)), ','); // Create placeholders
 
               // Quote string values manually and convert arrays/objects to JSON
               $quotedValues = array_map(function($value) {
@@ -184,51 +181,38 @@ class Api extends PostController
               exit;
           }
       } elseif ($requestData["method"] === 'put') {
-          if ($data && $values) {
-              $collection = $requestData["collection"]; // Get the collection/table name
-              $fieldsToUpdate = $data; // Get the data to update
-              $valueToUpdate = $values; // Get the condition (e.g., user_id=1)
-              $params = []; // Array to hold the values for binding
-              $setClause = [];
+          if (!empty($search) && !empty($value) && !empty($body) && is_array($body)) {
+              $tableName = $requestData["collection"];
 
-              // Use prepared statements to avoid SQL injection
-              foreach ($fieldsToUpdate as $field => $value) {
-                  // Assume the value is already JSON from the client
-                  if (is_array($value)) {
-                      $value = json_encode($value); // Encode the array as JSON if needed
-                  }
-                  $setClause[] = "$field = :$field"; // Prepare the SET clause with named params
-                  $params[":$field"] = $value; // Bind the values safely
-              }
+              // Extract columns and values dynamically
+              $columns = array_keys($body); // Get column names
+              $values = array_values($body); // Get corresponding values
 
-              if (empty($setClause)) {
-                  $response->json('error', 'No valid fields to update.');
-                  exit;
-              }
-
-              // Check if the value in the WHERE clause is a string, and add quotes if necessary
-              if (preg_match('/^([\w]+)\s*=\s*(.*)$/', $valueToUpdate, $matches)) {
-                  $field = $matches[1]; // The field name
-                  $value = trim($matches[2]); // The value (could be a string or a number)
-
-                  // Add quotes if the value is a string
-                  if (!str_contains($value, "'") && !is_numeric($value)) {
-                      $valueToUpdate = "$field = '$value'"; // Quote the string value
+              // Prepare the SET part of the SQL statement
+              $setParts = [];
+              foreach ($columns as $index => $column) {
+                  if (is_array($values[$index]) || is_object($values[$index])) {
+                      // Convert arrays/objects to JSON
+                      $setParts[] = "$column = '" . addslashes(json_encode($values[$index])) . "'";
+                  } elseif (is_string($values[$index])) {
+                      // Quote string values
+                      $setParts[] = "$column = '" . addslashes($values[$index]) . "'";
                   } else {
-                      $valueToUpdate = "$field = $value"; // Keep as is
+                      // Leave other types (numbers) as is
+                      $setParts[] = "$column = " . $values[$index];
                   }
               }
+              $setString = implode(", ", $setParts);
 
-              // Join the SET clause with commas
-              $setClauseString = implode(', ', $setClause);
+              // Prepare the SQL statement
+              $sql = "UPDATE $tableName SET $setString WHERE $search = :value";
 
-              // Prepare the SQL query
-              $sql = "UPDATE $collection SET $setClauseString WHERE $valueToUpdate";
-
+              // Prepare and execute the statement
               $stmt = $siteDb->prepare($sql);
+              $stmt->bindParam(':value', $value); // Bind the search value
+              $result = $stmt->execute();
 
-              // Execute the query with bound parameters
-              if ($stmt->execute($params)) {
+              if ($result) {
                   $response->json('success', 'Data updated successfully.');
               } else {
                   $response->json('error', 'Failed to update data.');
