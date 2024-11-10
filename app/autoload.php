@@ -52,7 +52,13 @@ $f3->set('PUBLIC', 'public');
 // Load Site Db
 $dbConn = $f3->get('db') . ':' . $f3->get('dbPath');
 $db = new DB\SQL($dbConn);
-$f3->set('ROOT.db', $db);
+if (file_exists(ROOT.'data/db/setup.sql')) {
+	// Initialize database with default setup
+	$db->exec(explode(';',$f3->read(ROOT.'data/db/setup.sql')));
+	// Make default setup inaccessible
+	rename(ROOT.'data/db/setup.sql',ROOT.'data/db/setup.$ql');
+}
+
 $siteDb = null;
 
 $site = new DB\SQL\Mapper($db, 'site');
