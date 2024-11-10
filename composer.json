@@ -15,7 +15,7 @@
             "php-http/discovery": true
         }
     },
-        "autoload": {
+    "autoload": {
         "psr-4": {
             "Pigmilcom\\Webapp\\": "app/vendor/src"
         }
@@ -33,10 +33,8 @@
             "role": "Developer"
         }
     ],
-    {
     "support": {
         "email": "support@pigmil.com"
-    }
     },
     "require": {
         "pragmarx/google2fa": "^8.0",
