@@ -133,7 +133,7 @@ class Api extends PostController
       }
 
       } elseif ($requestData["method"] === 'post') {
-          if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+          if ($requestData["collection"] === 'UPLOAD' && isset($_FILES['file'])) {
               $utils = new Utils;
               $dir = isset($body['dir']) ? $body['dir'] : $f3->get('POST.dir');
               $uploadDir = !empty($dir) ? $dir : 'public/uploads/'; // Directory where files will be uploaded
