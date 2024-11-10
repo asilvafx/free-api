@@ -1,6 +1,14 @@
 {
     "name": "pigmilcom/webapp",
     "type": "project",
+    "description": "Composer helps you declare, manage and install dependencies of PHP projects. It ensures you have the right stack everywhere.",
+    "keywords": [
+        "package",
+        "dependency",
+        "autoload"
+    ],
+    "homepage": "https://pigmil.com/",
+    "license": "MIT",
     "config": {
         "vendor-dir": "app/vendor/",
         "allow-plugins": {
@@ -14,9 +22,17 @@
     },
     "authors": [
         {
-            "name": "pigmilcom"
+            "name": "pigmilcom",
+            "email": "hello@pigmil.com",
+            "homepage": "https://www.pigmil.com",
+            "role": "Developer"
         }
     ],
+    {
+    "support": {
+        "email": "support@pigmil.com"
+    }
+    },
     "require": {
         "pragmarx/google2fa": "^8.0",
         "yohang88/letter-avatar": "^2.3",
