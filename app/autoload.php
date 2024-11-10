@@ -17,7 +17,6 @@ $f3->set('db', "sqlite"); // Database DSN (sqlite/mysql)
 $f3->set('dbPath', "app/data/db/cms.db"); // Database Path
 $f3->set('auto_logout', 14400); // Automatically logout after this many seconds of inactivity
 $f3->set('TIMEOUT', 86400); // Define cookies timeout (in seconds, default: 24h > 86400)
-$f3->set('expiry', 24); // Number of hours before session expires
 $f3->set('time_format', "d M Y h:ia"  ); // How timestamps look like on the pages
 $f3->set('eurocookie', FALSE); // Display eurocookie notices
 
