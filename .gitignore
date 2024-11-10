@@ -13,6 +13,7 @@ node_modules
 package-lock.json
 .env
 *.local
+*.lock
 
 # Editor directories and files
 .vscode/*
