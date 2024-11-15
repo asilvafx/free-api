@@ -17,15 +17,19 @@ CREATE TABLE IF NOT EXISTS roles (
   is_admin INTEGER DEFAULT 0
 );
 
-INSERT INTO roles (id, name, description, access, color, is_admin) 
+INSERT INTO roles (id, name, description, access, color, is_admin)
 VALUES (0, 'Member', NULL, NULL, NULL, 0);
 
-INSERT INTO roles (id, name, description, access, color, is_admin) 
+INSERT INTO roles (id, name, description, access, color, is_admin)
 VALUES (1, 'Admin', NULL, '*', NULL, 1);
 
 CREATE TABLE IF NOT EXISTS site (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   site_name TEXT,
+  site_title TEXT,
+  site_description TEXT,
+  site_keywords TEXT,
+  site_logo TEXT,
   smtp_host TEXT,
   smtp_mail TEXT,
   smtp_port TEXT,
@@ -35,8 +39,16 @@ CREATE TABLE IF NOT EXISTS site (
   uri_backend TEXT,
   uri_auth TEXT,
   base_url TEXT,
+  color_primary TEXT,
+  color_primary_text TEXT,
+  color_dark TEXT,
+  color_light TEXT,
+  color_dark_secondary TEXT,
+  color_light_secondary TEXT,
   setup_wizzard INTEGER DEFAULT 1,
-  enable_frontend INTEGER DEFAULT 1
+  enable_frontend INTEGER DEFAULT 1,
+  enable_api INTEGER DEFAULT 1,
+  enable_register INTEGER DEFAULT 0 
 );
 
 CREATE TABLE IF NOT EXISTS users (
