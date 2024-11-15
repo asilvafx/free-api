@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS users (
   pin INTEGER DEFAULT 0,
   last_online TEXT,
   login_count INTEGER DEFAULT 0,
+  is_admin INTEGER DEFAULT 0,
   created_at TIMESTAMP,
   status INTEGER DEFAULT 0
 );
