@@ -1,22 +1,20 @@
 CREATE TABLE IF NOT EXISTS api (
-  id INTEGER NOT NULL AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   api_key TEXT,
   api_slug TEXT,
   api_usage INTEGER DEFAULT 0,
   api_allowed_domains TEXT,
   created_by TEXT,
-  created_at TIMESTAMP DEFAULT (strftime('%s',CURRENT_TIMESTAMP,'localtime')),
-  PRIMARY KEY(id)
+  created_at TIMESTAMP DEFAULT (strftime('%s',CURRENT_TIMESTAMP,'localtime'))
 );
 
 CREATE TABLE IF NOT EXISTS roles (
-  id INTEGER NOT NULL AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   description TEXT,
   access TEXT,
   color TEXT,
-  is_admin INTEGER DEFAULT 0,
-  PRIMARY KEY(id)
+  is_admin INTEGER DEFAULT 0
 );
 
 INSERT INTO roles (id, name, description, access, color, is_admin) 
@@ -26,7 +24,7 @@ INSERT INTO roles (id, name, description, access, color, is_admin)
 VALUES (1, 'Admin', NULL, '*', NULL, 1);
 
 CREATE TABLE IF NOT EXISTS site (
-  id INTEGER NOT NULL AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   site_name TEXT,
   smtp_host TEXT,
   smtp_mail TEXT,
@@ -38,12 +36,11 @@ CREATE TABLE IF NOT EXISTS site (
   uri_auth TEXT,
   base_url TEXT,
   setup_wizzard INTEGER DEFAULT 1,
-  enable_frontend INTEGER DEFAULT 1,
-  PRIMARY KEY(id)
+  enable_frontend INTEGER DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS users (
-  id INTEGER NOT NULL AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT,
   displayName TEXT,
   email TEXT,
@@ -52,6 +49,5 @@ CREATE TABLE IF NOT EXISTS users (
   nonce TEXT,
   role INTEGER DEFAULT 0,
   created_at TIMESTAMP,
-  status INTEGER DEFAULT 0,
-  PRIMARY KEY(id)
+  status INTEGER DEFAULT 0
 );
