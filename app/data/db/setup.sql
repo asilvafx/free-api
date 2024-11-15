@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_online TEXT,
   login_alerts INTEGER DEFAULT 0,
   twofactor INTEGER DEFAULT 0,
+  twofactor_sk TEXT,
   passkey INTEGER DEFAULT 0,
   pin INTEGER DEFAULT 0,
   login_count INTEGER DEFAULT 0,
