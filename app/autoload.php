@@ -72,7 +72,7 @@ if ($site->dry()) {
 
     // Load site configuration
     $f3->set('SITE.name', $site->site_name); // Site Name
-    $f3->set('SITE.title', $site->site_title); // Site Title
+    $f3->set('SITE.title', $site->site_title); // Site Description
     $f3->set('SITE.description', $site->site_description); // Site Description
     $f3->set('SITE.keywords', $site->site_keywords); // Site Keywords
     $f3->set('SITE.logo', $site->site_logo); // Site Logo
