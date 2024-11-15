@@ -6,27 +6,29 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     try {
         // Initialize response class (assuming you have one)
         $response = new Response();
+        $utils = new Utils;
 
         // Fetch the database instance (assuming you use Fat-Free or similar)
+        global $f3;
         global $db;
 
         // Retrieve and decode the JSON payload
         $inputData = json_decode(file_get_contents('php://input'), true);
 
         // Retrieve the form data sent via POST
-        $siteName = isset($inputData['siteName']) ? htmlspecialchars($inputData['siteName']) : null;
-        $siteUrl = isset($inputData['siteUrl']) ? htmlspecialchars($inputData['siteUrl']) : null;
+        $siteName = isset($inputData['siteName']) ? htmlspecialchars($inputData['siteName']) : $f3->get('POST.siteName');
+        $siteUrl = isset($inputData['siteUrl']) ? htmlspecialchars($inputData['siteUrl']) : $f3->get('POST.siteUrl');
         $siteLogo = !isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK ? null : $_FILES['file'];
-        $smtpScheme = isset($inputData['smtpScheme']) ? htmlspecialchars($inputData['smtpScheme']) : null;
-        $smtpPort = isset($inputData['smtpPort']) ? htmlspecialchars($inputData['smtpPort']) : null;
-        $smtpHost = isset($inputData['smtpHost']) ? htmlspecialchars($inputData['smtpHost']) : null;
-        $smtpUser = isset($inputData['smtpUser']) ? htmlspecialchars($inputData['smtpUser']) : null;
-        $smtpPassword = isset($inputData['smtpPassword']) ? htmlspecialchars($inputData['smtpPassword']) : null;
-        $userId = isset($inputData['userId']) ? htmlspecialchars($inputData['userId']) : null;
-        $userName = isset($inputData['userName']) ? htmlspecialchars($inputData['userName']) : null;
-        $userEmail = isset($inputData['userEmail']) ? htmlspecialchars($inputData['userEmail']) : null;
-        $userPassword = isset($inputData['userPassword']) ? htmlspecialchars($inputData['userPassword']) : null;
-        $createdAt = isset($inputData['createdAt']) ? htmlspecialchars($inputData['createdAt']) : null;
+        $smtpScheme = isset($inputData['smtpScheme']) ? htmlspecialchars($inputData['smtpScheme']) : $f3->get('POST.smtpScheme');
+        $smtpPort = isset($inputData['smtpPort']) ? htmlspecialchars($inputData['smtpPort']) : $f3->get('POST.smtpPort');
+        $smtpHost = isset($inputData['smtpHost']) ? htmlspecialchars($inputData['smtpHost']) : $f3->get('POST.smtpHost');
+        $smtpUser = isset($inputData['smtpUser']) ? htmlspecialchars($inputData['smtpUser']) : $f3->get('POST.smtpUser');
+        $smtpPassword = isset($inputData['smtpPassword']) ? htmlspecialchars($inputData['smtpPassword']) : $f3->get('POST.smtpPassword');
+        $userId = isset($inputData['userId']) ? htmlspecialchars($inputData['userId']) : $f3->get('POST.userId');
+        $userName = isset($inputData['userName']) ? htmlspecialchars($inputData['userName']) : $f3->get('POST.userName');
+        $userEmail = isset($inputData['userEmail']) ? htmlspecialchars($inputData['userEmail']) : $f3->get('POST.userEmail');
+        $userPassword = isset($inputData['userPassword']) ? htmlspecialchars($inputData['userPassword']) : $f3->get('POST.userPassword');
+        $createdAt = isset($inputData['createdAt']) ? htmlspecialchars($inputData['createdAt']) : $f3->get('POST.createdAt');
 
         // Validate required fields
         if (!$siteName || !$siteUrl || !$smtpHost || !$smtpUser || !$smtpPassword || !$userName || !$userEmail || !$userPassword) {
@@ -44,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         // Set the form data into the database fields
         $site->site_name = $siteName;
-        $site->site_title = 'Powered by F3';
+        $site->site_title = $siteName;
         $site->site_description = 'Discover F3, a versatile backend framework that seamlessly integrates with any frontend application. Learn how this CMS framework can elevate your web development projects with an example.';
         $site->site_keywords = 'f3, framework, cms, example';
         $site->smtp_scheme = $smtpScheme;
@@ -68,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         $logoPath = 'public/assets/img/icon.png';
         if(!empty($siteLogo)){
-        $utils = new Utils;
         $uploadedLogo = $utils->uploadFile($file, 'public/assets/img/');
         if (!$uploadedLogo) {
             $response->json('error', 'Failed to upload logo file.');
