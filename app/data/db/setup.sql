@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS site (
   setup_wizzard INTEGER DEFAULT 1,
   enable_frontend INTEGER DEFAULT 1,
   enable_api INTEGER DEFAULT 1,
-  enable_register INTEGER DEFAULT 0 
+  enable_register INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -60,6 +60,13 @@ CREATE TABLE IF NOT EXISTS users (
   confirmed INTEGER DEFAULT 0,
   nonce TEXT,
   role INTEGER DEFAULT 0,
+  ip_address TEXT,
+  login_alerts INTEGER DEFAULT 0,
+  twofactor INTEGER DEFAULT 0,
+  passkey INTEGER DEFAULT 0,
+  pin INTEGER DEFAULT 0,
+  last_online TEXT,
+  login_count INTEGER DEFAULT 0,
   created_at TIMESTAMP,
   status INTEGER DEFAULT 0
 );
