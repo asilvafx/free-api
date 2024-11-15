@@ -8,12 +8,19 @@ CREATE TABLE IF NOT EXISTS api (
   created_at TIMESTAMP DEFAULT (strftime('%s',CURRENT_TIMESTAMP,'localtime'))
 );
 
+CREATE TABLE IF NOT EXISTS permissions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  default INTEGER DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS roles (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   description TEXT,
   access TEXT,
   color TEXT,
+  default INTEGER DEFAULT 0,
   is_admin INTEGER DEFAULT 0
 );
 
