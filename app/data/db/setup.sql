@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS api (
   api_slug TEXT,
   api_usage INTEGER DEFAULT 0,
   api_allowed_domains TEXT,
+  status INTEGER DEFAULT 1,
   created_by TEXT,
   created_at TIMESTAMP DEFAULT (strftime('%s',CURRENT_TIMESTAMP,'localtime'))
 );
