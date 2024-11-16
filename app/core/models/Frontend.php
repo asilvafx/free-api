@@ -30,6 +30,23 @@ class Frontend extends MainController
       exit;
     }
 
+    function Assets($f3, $args)
+    {
+        $slug = empty($args[0]) ? '' : $args[0];
+
+        $file_url = BASE_PATH . '/ui/' . $slug;
+        if (!file_exists($file_url)) {
+            $f3->reroute('/');
+        } else {
+            header('Content-Type: application/octet-stream');
+            header("Content-Transfer-Encoding: Binary");
+            header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
+            readfile($file_url);
+        }
+        exit;
+    }
+
+
     function Public($f3, $args)
     {
         $slug = empty($args[0]) ? '' : $args[0];
