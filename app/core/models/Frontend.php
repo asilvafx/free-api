@@ -34,8 +34,8 @@ class Frontend extends MainController
     {
         $slug = empty($args[0]) ? '' : $args[0];
 
-        $file_url = BASE_PATH . '/ui/' . $slug;
-        if (!file_exists($file_url)) {
+        $file_url = BASE_PATH . '/' . $f3->get('UI') . $slug;
+        if (!file_exists($file_url))  {
             $f3->reroute('/');
         } else {
             header('Content-Type: application/octet-stream');
