@@ -175,6 +175,7 @@ if ($site->dry()) {
 $f3->set('SITE.db', $siteDb);
 
 $f3->route('GET /public/@slug*', 'Frontend->Public');
+$f3->route('GET /assets/@slug*', 'Frontend->Assets');
 $f3->route('GET /secure/dl/*', 'Frontend->SecureDl');
 
 if (empty($f3->get('SESSION.loggedin'))) {
