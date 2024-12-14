@@ -66,6 +66,7 @@ $site->load(array('id>? AND setup_wizzard>?', 0, 0));
 if ($site->dry()) {
     $f3->set('SITE.wizzard', true);
     $f3->route('GET|POST /', 'Setup->wizzard');
+    $f3->route('GET|POST /*', 'Setup->wizzard');
     $f3->route('GET|POST /setup/@slug*', 'Setup->wizzard');
 } else {
     $f3->set('SITE.wizzard', false);
@@ -194,10 +195,7 @@ $f3->set('CLIENT.ip', $client_ip);
 // Accepted languages
 $languages = array(
     "en" => "en",
-    "es" => "es",
-    "fr" => "fr",
-    "pt" => "pt",
-    "de" => "de",
+    // Add more languages here if you wish
 );
 
 // Get 2 char lang code

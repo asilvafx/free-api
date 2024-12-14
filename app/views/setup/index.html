@@ -9,10 +9,12 @@
   <meta name="author" content="PIGMIL.COM">
   <meta name="keyword" content="Fatfree,Admin,Open,Source,CMS,Dashboard,PHP,CSS,JS,HTML,SQL">
   <meta name="theme-color" content="currentColor">
-  <title>Setup Wizard</title> 
-  <link href="public/client/app.css?v={{time()}}" rel="stylesheet">
-  <script src="public/client/app.js?v={{time()}}"></script>
-  <style> 
+  <title>Setup Wizard</title>
+  <style>
+    :root {
+      --app-dark-color:#1d222b;
+      --app-light-color:#dfe2e7;
+    }
     .hidden {
       display: none;
     }
@@ -28,15 +30,15 @@
     .data-forms {
       margin-top: 2rem;
     }
-    .form-group {
-      position: relative;
-    } 
   </style>
+
+  <link href="public/client/app.css?v={{time()}}" rel="stylesheet">
+  <script src="public/client/app.js?v={{time()}}"></script>
 </head>
 <body>
   <div class="min-vh-100 d-flex flex-row align-items-center">
     <div class="container">
-      <div id="progressBarContainer">
+      <div id="progressBarContainer" class="border rounded">
         <div id="progressBar" class="progress"></div>
       </div>
       <section class="data-forms"> 
@@ -48,10 +50,9 @@
         <p class="text-sm text-gray-500 mt-2">Please enter the name and URL of your site.</p>
         <div class="input-group mb-3">
           <input class="form-control" id="logoFile" type="file">
-          <label class="input-group-text" for="logoFile">Upload logo</label>
         </div>
-        <div class="flex justify-between mt-6">
-          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+        <div class="flex justify-end mt-6">
+          <button class="btn btn-secondary px-4 py-2 border" onclick="nextStep()">Next →</button>
         </div>
       </div>
 
@@ -68,8 +69,8 @@
         </select>
         <p class="text-sm text-gray-500 mt-2">Provide your SMTP settings for email configuration.</p>
         <div class="flex justify-between mt-6">
-          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+          <button class="btn px-4 py-2 border" onclick="prevStep()">← Back</button>
+          <button class="btn btn-secondary px-4 py-2 border" onclick="nextStep()">Next →</button>
         </div>
       </div>
 
@@ -82,8 +83,8 @@
         <input type="password" id="confirmPassword" placeholder="Confirm Password" class="form-control px-4 py-2" />
         <p class="text-sm text-gray-500 mt-2">Enter your email and password for the setup.</p>
         <div class="flex justify-between mt-6">
-          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary px-4" onclick="nextStep()">Next</button>
+          <button class="btn px-4 py-2 border" onclick="prevStep()">← Back</button>
+          <button class="btn btn-secondary px-4 py-2 border" onclick="nextStep()">Next →</button>
         </div>
       </div>
 
@@ -96,8 +97,8 @@
         <p id="summaryUserEmail" class="text-lg text-gray-700 mb-2"></p>
         <p class="text-sm text-gray-500 mb-4">Review your settings and finish the setup.</p>
         <div class="flex justify-between mt-6">
-          <button class="btn btn-secondary px-4" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary px-4" onclick="finishSetup()">Finish</button>
+          <button class="btn px-4 py-2 border" onclick="prevStep()">← Back</button>
+          <button class="btn btn-secondary px-4 py-2 border" onclick="finishSetup()">Finish</button>
         </div>
       </div>
       </section>
@@ -155,19 +156,24 @@
         return false;
       }
     } else if (step === 2) {
-      formData.smtpHost = document.getElementById('smtpHost').value;
-      formData.smtpPort = document.getElementById('smtpPort').value;
-      formData.smtpUser = document.getElementById('smtpUser').value;
-      formData.smtpPassword = document.getElementById('smtpPassword').value;
-      formData.smtpScheme = document.getElementById('smtpScheme').value;
-      if (!formData.smtpHost || !formData.smtpPort || !formData.smtpUser || !formData.smtpPassword) {
-        alert('Please fill out all SMTP fields.');
-        return false;
+      var check_smtp = false;
+
+      if(check_smtp){
+        formData.smtpHost = document.getElementById('smtpHost').value;
+        formData.smtpPort = document.getElementById('smtpPort').value;
+        formData.smtpUser = document.getElementById('smtpUser').value;
+        formData.smtpPassword = document.getElementById('smtpPassword').value;
+        formData.smtpScheme = document.getElementById('smtpScheme').value;
+        if (!formData.smtpHost || !formData.smtpPort || !formData.smtpUser || !formData.smtpPassword) {
+          alert('Please fill out all SMTP fields.');
+          return false;
+        }
+        if (!isValidEmail(formData.smtpUser)) {
+          alert('Please enter a valid SMTP email.');
+          return false;
+        }
       }
-      if (!isValidEmail(formData.smtpUser)) {
-        alert('Please enter a valid SMTP email.');
-        return false;
-      }
+
     } else if (step === 3) {
       formData.userName = document.getElementById('userName').value;
       formData.userEmail = document.getElementById('userEmail').value;

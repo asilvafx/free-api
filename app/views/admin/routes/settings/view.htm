@@ -393,10 +393,10 @@
             },
         }).then(response => {
             const data = response.data;
-            if (data === "success") {
+            if (data.status === "success") {
                 sendUpdateRequest();
                 return false;
-            } else {
+            } else { 
                 showAlert("error", response.data.message);
                 submitBtn.innerText = submitOrignalTxt; 
                 submitBtn.disabled = false;
@@ -466,7 +466,7 @@
     } 
 
     // Add Event Listeners
-    async function fetchRequest(formData, url, formEl, reload=null) {
+    async function fetchRequest(formData, url) {
        event.preventDefault();  
 
        try {
@@ -485,6 +485,7 @@
                    }
                   
                } else {
+                   console.log(response);
                    showAlert("error", response.data.message);
                }
            }).finally(() => {

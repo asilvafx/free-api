@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $createdAt = isset($inputData['createdAt']) ? htmlspecialchars($inputData['createdAt']) : $f3->get('POST.createdAt');
 
         // Validate required fields
-        if (!$siteName || !$siteUrl || !$smtpHost || !$smtpUser || !$smtpPassword || !$userName || !$userEmail || !$userPassword) {
+        if (!$siteName || !$siteUrl || !$userName || !$userEmail || !$userPassword) {
             $response->json('error', 'Missing required fields.');
             exit;
         }
