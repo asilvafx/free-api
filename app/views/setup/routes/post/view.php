@@ -68,14 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $site->color_dark_secondary = '#272c34';
         $site->color_light_secondary = '#f9fafb';
 
-        $logoPath = 'public/assets/img/icon.png';
+        $logoPath = 'public/assets/logo/favicon.png';
         if(!empty($siteLogo)){
         $uploadedLogo = $utils->uploadFile($file, 'public/assets/img/');
         if (!$uploadedLogo) {
             $response->json('error', 'Failed to upload logo file.');
             exit;
         } else {
-            $logoPath = $uploadedLogo; 
+            $logoPath = $uploadedLogo;
         }
         }
 
