@@ -401,7 +401,7 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-            PUT: `fetch('${uri}', {
+            PUT: `fetch('${uri}/id/xxx', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -414,7 +414,7 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-            DELETE: `fetch('${uri}', {
+            DELETE: `fetch('${uri}/id/xxx', {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',

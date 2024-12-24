@@ -141,8 +141,8 @@ if ($site->dry()) {
     $f3->route('GET|POST /' . $f3->get('SITE.uri_backend') . '/@slug*', 'Backend->Base');
 
     // Load api routes
-    $f3->route('GET|POST|DELETE /v1/@slug', 'Api->Base');
-    $f3->route('GET|PUT /v1/@slug/@search/@value', 'Api->Base');
+    $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
+    $f3->route('GET|PUT|DELETE /v1/@slug/@search/@value', 'Api->Base');
 
     // Load WebAuthn Routes
     $f3->route('GET|POST /web/authn/attestation/options', 'WebAuthn->Options');

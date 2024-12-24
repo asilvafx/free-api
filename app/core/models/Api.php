@@ -126,11 +126,7 @@ class Api extends PostController
           $fields_cast = $siteDb->exec('SELECT * FROM ' . $requestData["collection"] . ' ' . $set_limit);
         }
 
-      if ($fields_cast) {
-          $response->json('success', $fields_cast);
-      } else {
-          $response->json('error', null);
-      }
+      $response->json('success', $fields_cast);
 
       } elseif ($requestData["method"] === 'post') {
           if ($requestData["collection"] === 'UPLOAD' && isset($_FILES['file'])) {
@@ -221,9 +217,23 @@ class Api extends PostController
               $response->json('error', 'Missing data or values.');
           }
       } elseif ($requestData["method"] === 'delete') {
-        if ($data) {
-          $siteDb->exec('DELETE FROM ' . $requestData["collection"] . ' WHERE ' . $data);
-          $response->json('success', 'Removed from collection.');
+
+        if (!empty($search) && !empty($value)) {
+            $tableName = $requestData["collection"];
+
+            // Prepare the SQL statement
+            $sql = "DELETE FROM $tableName WHERE $search = :value";
+
+            // Prepare and execute the statement
+            $stmt = $siteDb->prepare($sql);
+            $stmt->bindParam(':value', $value); // Bind the search value
+            $result = $stmt->execute();
+
+            if ($result) {
+                $response->json('success', 'Deleted from collection successfully.');
+            } else {
+                $response->json('error', 'Failed to delete data.');
+            }
         } else {
           $response->json('error', 'Missing data.');
         }
