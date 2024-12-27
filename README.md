@@ -30,9 +30,9 @@ To get started with the Free API, follow these steps:
    ```
 
 2. **Install Dependencies**:
-  ``` 
-  composer install
-  ```
+   ``` 
+   composer install
+   ```
  
      
 Upload the files to your FTP server, and follow the setup wizzard instructions on your browser!
