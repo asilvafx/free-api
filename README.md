@@ -6,7 +6,7 @@
 
 ## Overview
 
-Welcome to the Free API project! This is a PHP API backend built using the F3 Fat-Free Framework and Webpack 5. The goal of this project is to provide a robust and easy-to-implement backend framework that supports REST API, Secure authentication, MVC architecture, Databases, and a user-friendly administration layout.
+Welcome to the Free API project! This is a PHP API backend built using the F3 Fat-Free Framework. The goal of this project is to provide a robust and easy-to-implement backend framework that supports REST API, Secure authentication, MVC architecture, Databases, and a user-friendly administration layout.
 
 ## Features
 
@@ -24,15 +24,16 @@ Welcome to the Free API project! This is a PHP API backend built using the F3 Fa
 To get started with the Free API, follow these steps:
 
 1. **Clone the Repository**:
-   ```bash
+   ```
    git clone https://github.com/asilvafx/free-api.git
    cd free-api
+   ```
 
 2. **Install Dependencies**:
-  ```bash 
-    composer install
+  ``` 
+  composer install
+  ```
  
      
-    Upload the files to your FTP server, and follow the setup wizzard instructions on your browser!
-    All done!
+Upload the files to your FTP server, and follow the setup wizzard instructions on your browser!
 
