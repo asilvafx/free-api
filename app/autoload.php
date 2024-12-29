@@ -142,7 +142,7 @@ if ($site->dry()) {
 
     // Load api routes
     $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
-    $f3->route('GET|PUT|DELETE /v1/@slug/@search/@value', 'Api->Base');
+    $f3->route('GET|PUT|DELETE /v1/@slug/@search', 'Api->Base');
 
     // Load WebAuthn Routes
     $f3->route('GET|POST /web/authn/attestation/options', 'WebAuthn->Options');
@@ -199,19 +199,23 @@ $languages = array(
 );
 
 // Get 2 char lang code
-$lang2 = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+$lang2 = $f3->get('SITE.lang');
 
-// Set default language if a `$lang` version of site is not available
-if (!in_array($lang2, array_keys($languages))) {
-    $lang2 = $f3->get('SITE.lang');
+if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+    $lang2 = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    // Set default language if a `$lang` version of site is not available
+    if (!in_array($lang2, array_keys($languages))) {
+        $lang2 = $f3->get('SITE.lang');
+    }
 }
 
-if (is_null($f3->get('SESSION.locale')) || empty($f3->get('SESSION.locale'))) {
+if (empty($f3->get('SESSION.locale'))) {
     // Auto site translation
-    $f3->set('SESSION.locale', $languages[$lang2]);
+    $f3->set('SESSION.locale', $lang2);
 }
 
 $f3->set('YearNow', date("Y"));
+
 
 // Load application
 $f3->run();

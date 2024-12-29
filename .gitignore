@@ -14,6 +14,9 @@ package-lock.json
 .env
 *.local
 *.lock
+app/vendor
+app/vendor/*
+public/manifest/*
 
 # Editor directories and files
 .vscode/*
