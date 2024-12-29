@@ -34,18 +34,12 @@
                     <set userRole="{{@item.role}}"></set>
                     <set userIsAdmin="{{@item.is_admin}}"></set>
                     <set userIsSuper="{{@item.is_super_admin}}"></set>
-                    <set userIsDev="{{@item.is_developer}}"></set>
                     <set userUid="{{@item.user_id}}"></set>
                     <tr> 
                       <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}"><span class="{{@userIsAdmin===1?'isAdminClr':''}}">
                         <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1?'isAdminClr':''}}">
                           <span>{{@userIsSuper===1?'★ ':''}}</span>
                           <span>{{@displayName}}</span>
-                          <check if="{{@userIsDev===1}}">
-                            <span class="position-relative">
-                            <span class="badge text-uppercase bg-body">Dev</span>
-                            </span>
-                          </check>   
                       </span></a></td>
                       <td>{{@userEmail}}</td>
                       <td>{{  getRoleNameById(@userRole) }}</td>
@@ -57,12 +51,15 @@
                             </svg> 
                             View
                           </a>
+                            <check if="{{(!@userIsSuper && !@userIsAdmin) || @CXT.is_super_admin}}">
+
                           <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/users/edit?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                             <svg class="icon icon-sm">
                               <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                             </svg> 
                             Edit
                           </a>
+                            </check>
                         </div>
                       </td>
                     </tr> 

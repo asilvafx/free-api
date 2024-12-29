@@ -56,6 +56,8 @@
         </div>
 
         <div class="row row-cols-1 mb-4">
+
+          <check if="{{@CXT.is_super_admin}}">
           <div class="col">
             <div class="d-flex justify-content-between align-items-center">
               <div class="position-relative">
@@ -68,20 +70,23 @@
                 </div>
               </div>
             </div>
-          </div> 
+          </div>
+
           <div class="col">
             <div class="d-flex justify-content-between align-items-center">
               <div class="position-relative">
               <label class="text-body fw-bolder" for="isSuperAdmin">Is Super Admin?</label>
               <p class="text-body-secondary">Allow user full-administration access.</p>
               </div>
+
               <div class="position-relative">
                 <div class="form-check form-switch">
                   <input class="form-check-input form-switch-xl" id="isSuperAdmin" type="checkbox"> 
                 </div>
               </div>
             </div>
-          </div> 
+          </div>
+          </check>
 
         </div> 
 
@@ -128,8 +133,15 @@
             return false;
         }
 
-        var is_admin = isAdmin.checked?1:0;
-        var is_super_admin = isSuperAdmin.checked?1:0;
+        let is_admin = 0;
+        if (typeof(isAdmin) !== 'undefined' && isAdmin !== null) {
+            is_admin = isAdmin.checked?1:0;
+        }
+
+        let is_super_admin = 0;
+        if (typeof(isSuperAdmin) !== 'undefined' && isSuperAdmin !== null) {
+            is_super_admin = isSuperAdmin.checked?1:0;
+        }
 
         const schema = {};  
         schema['displayName'] = displayName.value;

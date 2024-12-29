@@ -37,13 +37,16 @@
             <div class="position-relative">
                 <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
             </div>
-            <div class="position-relative inline-flex gap-2"> 
-            <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/roles/edit?id={{@role.id}}'; void(0);">
+            <div class="position-relative inline-flex gap-2">
+
+               <check if="{{!@role.default}}">
+                <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/roles/edit?id={{@role.id}}'; void(0);">
                 <svg class="icon">
                     <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                 </svg>
                 Edit role
-            </button>
+                </button>
+               </check>
             </div>
         </div>
 

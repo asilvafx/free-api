@@ -30,6 +30,7 @@
                     <set name="{{@item.name}}"></set>
                     <set description="{{@item.description}}"></set> 
                     <set roleId="{{@item.id}}"></set>
+                    <set roleDefault="{{@item.default}}"></set>
                     <tr> 
                       <td><a class="text-body" aria-label="{{@name}}" href="/{{@SITE.uri_backend}}/access/roles/view?id={{@roleId}}">{{@name}}</a></td>
                       <td>{{@description}}</td> 
@@ -41,12 +42,15 @@
                             </svg> 
                             View
                           </a>
-                          <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
-                            <svg class="icon icon-sm">
-                              <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
-                            </svg> 
-                            Edit
-                          </a>
+                            <check if="{{!@roleDefault}}">
+                                <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
+                                    <svg class="icon icon-sm">
+                                        <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
+                                    </svg>
+                                    Edit
+                                </a>
+                            </check>
+
                         </div>
                       </td>
                     </tr> 

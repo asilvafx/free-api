@@ -38,7 +38,7 @@
                     </svg>
                 </span>
                 <input class="form-control" type="email" id="email" name="email" placeholder="user@company.com" value="{{@USER->email}}" required="" {{@userSelf?'disabled aria-disabled="true"':''}}>
-                </div> 
+                </div>
 
                 <div class="input-group mb-4">
                     <span class="input-group-text">
@@ -46,15 +46,28 @@
                         <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-group"></use>
                         </svg>
                     </span>
+                    <check if="{{(!@USER->is_admin && !@USER->is_super_admin) || @CXT.is_super_admin}}">
+                    <true>
                     <select class="form-select" id="role" name="role" required="" {{@userSelf?'disabled aria-disabled="true"':''}}>
                         <option value="">Select Role</option>
                         <repeat group="{{@rolesAll}}" value="{{@role}}">
                             <option {{@USER->role===@role.id?'selected':''}} value="{{@role.id}}">{{@role.name}}</option>
                         </repeat>
                     </select>
+                    </true>
+                    <false>
+                        <select class="form-select" id="role" name="role" required="" disabled aria-disabled="true">
+                        <option value="">Select Role</option>
+                        <repeat group="{{@rolesAll}}" value="{{@role}}">
+                            <option {{@USER->role===@role.id?'selected':''}} value="{{@role.id}}">{{@role.name}}</option>
+                        </repeat>
+                        </select>
+                    </false>
+                </check>
                 </div>
- 
+
                 <div class="row row-cols-1 mb-4">
+                  <check if="{{(@CXT.is_super_admin || @CXT.is_admin) && (!@USER->is_super_admin || !@USER->is_admin)}}">
                   <div class="col">
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="position-relative">
@@ -67,7 +80,10 @@
                         </div>
                       </div>
                     </div>
-                  </div> 
+                  </div>
+                  </check>
+
+                  <check if="{{@CXT.is_super_admin}}">
                   <div class="col">
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="position-relative">
@@ -80,7 +96,8 @@
                         </div>
                       </div>
                     </div>
-                  </div> 
+                  </div>
+                  </check>
 
                 </div> 
  
@@ -102,6 +119,10 @@
 </div> 
 <check if="{{ !isset(@notfound) && @userSelf != true }}">
 <div class="position-relative pt-4">
+
+    <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
+        <check if="{{(!@USER->is_admin && !@USER->is_super_admin) || @CXT.is_super_admin}}">
+
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -167,7 +188,7 @@
             </form>
         </div>
     </div>
-    
+
 
     <div class="w-100 mb-4">
         <span class="h1">Manage</span>
@@ -187,7 +208,9 @@
             Change password
         </button>
     </div>
+    </check>
 </div>
+</check>
 </check>
 
 

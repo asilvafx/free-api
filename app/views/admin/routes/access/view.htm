@@ -55,12 +55,14 @@
                             </svg> 
                             View
                           </a>
+                            <check if="{{(!@userIsSuper && !@userIsAdmin) || @CXT.is_super_admin}}">
                           <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/users/edit?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                             <svg class="icon icon-sm">
                               <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                             </svg> 
                             Edit
                           </a>
+                            </check>
                         </div>
                       </td>
                     </tr> 
@@ -101,8 +103,9 @@
                   <repeat group="{{ @rolesList }}" value="{{ @item }}" key="{{ @key }}"> 
                     <set roleName="{{@item.name}}"></set>
                     <set roleDescription="{{@item.description}}"></set>
-                    <set roleId="{{@item.id}}"></set> 
-                    <tr> 
+                    <set roleId="{{@item.id}}"></set>
+                    <set roleDefault="{{@item.default}}"></set>
+                      <tr>
                       <td><a class="text-body" aria-label="{{@roleName}}" href="/{{@SITE.uri_backend}}/access/roles/view?id={{@roleId}}">{{@roleName}}</a></td>
                       <td>{{@roleDescription}}</td> 
                       <td class="text-end pe-0">
@@ -113,12 +116,14 @@
                             </svg> 
                             View
                           </a>
+                        <check if="{{!@roleDefault}}">
                           <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                             <svg class="icon icon-sm">
                               <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                             </svg> 
                             Edit
                           </a>
+                        </check>
                         </div>
                       </td>
                     </tr> 

@@ -13,8 +13,9 @@
         </true>
         <false> 
             <check if="{{isset(@user)}}">
-            <set userIsAdmin="{{@user.is_admin===1?true:false}}"></set> 
-            <div class="w-100 mb-4">
+            <set userIsAdmin="{{@user.is_admin===1?true:false}}"></set>
+            <set userIsSuper="{{@user.is_super_admin===1?true:false}}"></set>
+                <div class="w-100 mb-4">
                 <div class="d-flex align-items-center gap-4">
                     <div class="my-auto">
                         <img alt="{{@user.displayName}} - Avatar" width="68" height="68" class="rounded" src="{{@user.avatar}}">
@@ -74,12 +75,14 @@
                 <div class="position-relative">
                     <button class="btn btn-secondary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access'; void(0);">← Go back</button>
                 </div>
-                <div class="position-relative inline-flex gap-2"> 
+                <div class="position-relative inline-flex gap-2">
+                    <check if="{{(!@userIsSuper && !@userIsAdmin) || @CXT.is_super_admin}}">
                     <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/users/edit?id={{@user.id}}'; void(0);">
                         <svg class="icon">
                             <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                         </svg> Edit user
                     </button>
+                    </check>
                 </div>
             </div>
 

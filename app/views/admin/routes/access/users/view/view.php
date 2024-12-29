@@ -55,6 +55,7 @@ if ($query) {
     $f3->set('user.confirmed', $user->confirmed);
     $f3->set('user.status', $user->status);
     $f3->set('user.is_admin', $user->is_admin);
+    $f3->set('user.is_super_admin', $user->is_super_admin);
     $f3->set('user.created_at', $user->created_at);
 } else {
     $f3->set('notfound', true);
