@@ -120,12 +120,11 @@ if (isset($_GET['add-entry']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $data = $siteDb->exec($sql);
 
             // If the table has no data, return just the field names
+            $f3->set('collection.fields', $fields);
             if (empty($data)) {
-                $f3->set('collection.fields', $fields);
                 $f3->set('collection.data', null);
             } else {
                 // Return both the field names and the data
-                $f3->set('collection.fields', $fields);
                 $f3->set('collection.data', $data);
             }
 

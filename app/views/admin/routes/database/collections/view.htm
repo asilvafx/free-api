@@ -8,6 +8,31 @@
             </div>
         </true>
         <false>
+            <div class="modal fade" id="editEntryModal" tabindex="-1" aria-labelledby="editEntryModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editEntryModalLabel">Edit Entry</h5>
+                            <button class="btn-close" type="button" data-ui-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="editEntryForm">
+                            <div class="modal-body">
+                                <input type="hidden" id="editEntryId" name="id" value="">
+                                <repeat group="{{@collection.fields}}" value="{{@field}}">
+                                    <div class="d-flex bg-body flex-column mb-4">
+                                        <label for="editEntry-{{@field.name}}" class="mb-2 fw-bolder">{{@field.name}}</label>
+                                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="editEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.default}}" placeholder="{{@field.default}}" {{@field.notnull==0?'':'required'}}>
+                                    </div>
+                                </repeat>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-ui-dismiss="modal" id="editEntryExit">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="newEntryModal" tabindex="-1" aria-labelledby="newEntryModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                   <div class="modal-content">
@@ -137,7 +162,7 @@
                         <thead>
                           <tr> 
                             <repeat group="{{@collection.fields}}" value="{{@field}}">
-                                <th scope="col">{{@field.name}}</th> 
+                                <th scope="col">{{@field.name}}</th>
                             </repeat> 
                             <th scope="col" class="text-end">Actions</th>
                           </tr>
@@ -147,18 +172,18 @@
                                 <repeat group="{{@collection.data}}" value="{{@data}}" key="{{@key}}">
                                 <tr>  
                                   <repeat group="{{@collection.fields}}" value="{{@field}}">
-                                    <td> 
+                                    <td data-field="{{@field.name}}">
                                       {{ !empty(@data[@field.name]) ? stripslashes(@data[@field.name]) : '' }}
                                     </td>  
                                   </repeat>
                                     <td class="text-end pe-0">
                                       <div class="inline-flex"> 
-                                        <a role="button" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary" aria-label="Edit" href="/{{@SITE.uri_backend}}/database/collections?view={{@collection.name}}">
+                                        <button data-ui-toggle="modal" data-ui-target="#editEntryModal" class="btn-edit inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary" aria-label="Edit" href="/{{@SITE.uri_backend}}/database/collections?view={{@collection.name}}">
                                           <svg class="icon icon-sm">
                                             <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
                                           </svg> 
                                           Edit
-                                          </a> 
+                                          </button>
                                       </div>
                                     </td>
                                 </tr> 
@@ -301,13 +326,14 @@
               </div> 
             </div>
 
+
+
             <input type="hidden" id="tbl_name" name="tbl_name" value="{{@collection.name}}">
             <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
         </false>
     </check> 
 
 </div>
-
 
 <script>
   "use strict"
@@ -370,14 +396,45 @@
     }
 
    document.addEventListener('DOMContentLoaded', () => {
+
+
+   const editButtons = document.querySelectorAll('.btn-edit');
+   editButtons.forEach(button => {
+       button.addEventListener('click', function(e) {
+           const fieldsString = '{{json_encode(@collection.fields)}}';
+
+           let fields;
+
+           try {
+               fields = JSON.parse(fieldsString);
+           } catch (error) {
+               console.error("Failed to parse fields:", error);
+           }
+           const row = this.closest('tr'); // Get the closest row
+           const id = row.querySelector('td:first-child').textContent; // Assuming the first cell contains the ID
+           document.getElementById('editEntryId').value = id; // Set the ID in the hidden input
+
+           // Populate the fields with current values
+           fields.forEach(field => {
+               const input = document.getElementById(`editEntry-${field.name}`);
+               if (input) {
+                   // Use data attributes to get the current value
+                   const currentValue = row.querySelector(`td[data-field="${field.name}"]`).textContent;
+                   input.value = currentValue; // Set the input value
+               }
+           });
+
+       });
+   });
+
     const devReqType = document.getElementById('devReqType');
     const devReqParams = document.getElementById('devReqParams');
     const devReqUri = document.getElementById('devReqUri');
     const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
 
-    const fetchExamples = (method, uri) => {
-        const templates = {
-            GET: `fetch('${uri}', {
+       const fetchExamples = (method, uri) => {
+           const templates = {
+               GET: `fetch('${uri}', {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -387,7 +444,7 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-            POST: `fetch('${uri}', {
+               POST: `fetch('${uri}', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -401,7 +458,7 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-            PUT: `fetch('${uri}/id/xxx', {
+               PUT: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to update
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -414,7 +471,7 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-            DELETE: `fetch('${uri}/id/xxx', {
+               DELETE: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to delete
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',
@@ -424,19 +481,19 @@
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`
-        };
-        return templates[method];
-    };
+           };
+           return templates[method];
+       };
 
-    const curlExamples = (method, uri) => {
-        const templates = {
-            GET: `curl -X GET "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`,
-            POST: `curl -X POST "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "value", "anotherKey": "anotherValue"}'`,
-            PUT: `curl -X PUT "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "updatedValue"}'`,
-            DELETE: `curl -X DELETE "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`
-        };
-        return templates[method];
-    };
+       const curlExamples = (method, uri) => {
+           const templates = {
+               GET: `curl -X GET "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`,
+               POST: `curl -X POST "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "value", "anotherKey": "anotherValue"}'`,
+               PUT: `curl -X PUT "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "updatedValue"}'`, // Replace '1' with the actual ID
+               DELETE: `curl -X DELETE "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"` // Replace '1' with the actual ID
+           };
+           return templates[method];
+   };
 
     const updateTextarea = () => {
         const selectedMethod = devReqType.value;
