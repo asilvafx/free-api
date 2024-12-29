@@ -6,7 +6,9 @@
             <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
         </div> 
         <div>
+            <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
             <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/roles/add" class="btn bg-primary">+ Add new role</a>
+            </check>
         </div> 
     </div>
     <div class="card mb-4">
@@ -42,7 +44,7 @@
                             </svg> 
                             View
                           </a>
-                            <check if="{{!@roleDefault}}">
+                            <check if="{{!@roleDefault && (@CXT.is_super_admin || @CXT.is_admin)}}">
                                 <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                                     <svg class="icon icon-sm">
                                         <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>

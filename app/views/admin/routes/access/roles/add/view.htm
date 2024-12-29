@@ -1,5 +1,7 @@
  
-<div class="position-relative mb-4"> 
+<div class="position-relative mb-4">
+    <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
+    <true>
    <div class="w-100 mb-4">
        <span class="h1">New Role</span>
        <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
@@ -55,6 +57,17 @@
             </div>
         </div>
    </form>
+    </true>
+        <false>
+            <div class="w-100 mb-4">
+                <span class="h1">No Access</span>
+                <p class="text-body-secondary">You don't have access to this page.</p>
+            </div>
+            <div class="position-relative">
+                <button class="btn btn-secondary" type="reset" onclick="window.location.href='/{{@SITE.uri_backend}}/access/roles'; void(0);">← Go back</button>
+            </div>
+        </false>
+    </check>
 </div>
 
 <script>

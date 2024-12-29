@@ -41,9 +41,9 @@
                     <set userUid="{{@item.user_id}}"></set>
                     <tr> 
                       <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}">
-                        <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1?'isAdminClr':''}}">
+                        <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1||@userIsSuper===1?'isAdminClr':''}}">
                           <span>{{@userIsSuper===1?'★ ':''}}</span>
-                          <span>{{@displayName}}</span>
+                          <span class="{{@userIsAdmin===1||@userIsSuper===1?'isAdminClr':''}}">{{@displayName}}</span>
                       </span></a></td>
                       <td>{{@userEmail}}</td>
                       <td>{{getRoleNameById(@userRole)}}</td>
@@ -55,6 +55,7 @@
                             </svg> 
                             View
                           </a>
+                            <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
                             <check if="{{(!@userIsSuper && !@userIsAdmin) || @CXT.is_super_admin}}">
                           <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/users/edit?id={{@userUid}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                             <svg class="icon icon-sm">
@@ -62,6 +63,7 @@
                             </svg> 
                             Edit
                           </a>
+                            </check>
                             </check>
                         </div>
                       </td>
@@ -71,10 +73,13 @@
               </table>
           </div>
         </div>
-    </div>  
+    </div>
+
+    <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
     <div>
         <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/users/add" class="btn bg-primary py-2">+ Add new user</a>
     </div>
+    </check>
 </div>
 
 <div class="position-relative">
@@ -116,6 +121,7 @@
                             </svg> 
                             View
                           </a>
+                        <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
                         <check if="{{!@roleDefault}}">
                           <a role="button" aria-label="Edit" href="/{{@SITE.uri_backend}}/access/roles/edit?id={{@roleId}}" class="inline-flex align-items-center gap-1 btn btn-sm btn-outline-secondary">
                             <svg class="icon icon-sm">
@@ -123,6 +129,7 @@
                             </svg> 
                             Edit
                           </a>
+                        </check>
                         </check>
                         </div>
                       </td>
@@ -132,8 +139,10 @@
               </table>
           </div>
         </div>
-    </div>  
+    </div>
+    <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
     <div>
         <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/access/roles/add" class="btn bg-primary py-2">+ Add new role</a>
     </div>
+    </check>
 </div>
