@@ -57,7 +57,7 @@ if (isset($_GET['delete']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             exit;
         }
 
-        if ($role->default === 1) {
+        if ($role->def === 1) {
             $response->json('error', 'Role protected by system defaults.');
             exit;
         }

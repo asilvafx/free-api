@@ -16,19 +16,19 @@ def INTEGER DEFAULT 0
 );
 
 INSERT INTO permissions (id, name, def)
-VALUES (0, 'Access', 1);
+VALUES (1, 'Access', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (1, 'Database', 1);
+VALUES (2, 'Database', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (2, 'API', 1);
+VALUES (3, 'API', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (3, 'Files', 1);
+VALUES (4, 'Files', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (4, 'Integrations', 1);
+VALUES (5, 'Integrations', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (5, 'Settings', 1);
+VALUES (6, 'Settings', 1);
 INSERT INTO permissions (id, name, def)
-VALUES (6, 'Maintenance & Support', 1);
+VALUES (7, 'Maintenance & Support', 1);
 
 CREATE TABLE IF NOT EXISTS roles (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,9 +41,9 @@ is_admin INTEGER DEFAULT 0
 );
 
 INSERT INTO roles (id, name, description, access, color, def, is_admin)
-VALUES (0, 'Admin', NULL, '*', NULL, 1, 1);
+VALUES (1, 'Admin', NULL, '*', NULL, 1, 1);
 INSERT INTO roles (id, name, description, access, color, def, is_admin)
-VALUES (1, 'Member', NULL, NULL, NULL, 0, 0);
+VALUES (2, 'Member', NULL, NULL, NULL, 0, 0);
 
 CREATE TABLE IF NOT EXISTS site (
 id INTEGER PRIMARY KEY AUTOINCREMENT,

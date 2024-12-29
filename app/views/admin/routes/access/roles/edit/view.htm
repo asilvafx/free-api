@@ -72,7 +72,7 @@
                     </span>
                     <select class="form-select" id="access" name="access" required="" multiple=""> 
                         <repeat group="{{@permissionsAll}}" value="{{@access}}">
-                            <option value="{{@access.name}}" {{ @role.access==='*' || str_contains(@role.access, @access.name) ? 'selected' : '' }} >{{@access.name}}</option>
+                            <option value="{{@access.name}}" {{ @role.access==='*' || (@role.access && str_contains(@role.access, @access.name)) ? 'selected' : '' }} >{{@access.name}}</option>
                         </repeat>
                     </select>
                     <span class="w-100 text-sm text-muted mt-2">Hold Ctrl (Windows) or Command (Mac) to select multiple permissions.</span>

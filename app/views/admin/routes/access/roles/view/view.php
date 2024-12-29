@@ -37,6 +37,7 @@ if (!empty($query)) {
         $f3->set('role.name', $roleName);
         $f3->set('role.description', $role->description);
         $f3->set('role.access', $role->access);
+        $f3->set('role.def', $role->def);
     }
 } else {
     $f3->set('notfound', true);
