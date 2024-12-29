@@ -38,18 +38,12 @@
                     <set userRole="{{@item.role}}"></set>
                     <set userIsAdmin="{{@item.is_admin}}"></set>
                     <set userIsSuper="{{@item.is_super_admin}}"></set>
-                    <set userIsDev="{{@item.is_developer}}"></set>
                     <set userUid="{{@item.user_id}}"></set>
                     <tr> 
                       <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}">
                         <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1?'isAdminClr':''}}">
                           <span>{{@userIsSuper===1?'★ ':''}}</span>
                           <span>{{@displayName}}</span>
-                          <check if="{{@userIsDev===1}}">
-                            <span class="position-relative">
-                            <span class="badge text-uppercase bg-body">Dev</span>
-                            </span>
-                          </check>  
                       </span></a></td>
                       <td>{{@userEmail}}</td>
                       <td>{{getRoleNameById(@userRole)}}</td>
