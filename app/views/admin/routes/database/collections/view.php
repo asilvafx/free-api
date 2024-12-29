@@ -17,8 +17,6 @@ global $siteDb;
 
 $query = !empty($f3->get('GET.view')) ? htmlspecialchars_decode($f3->get('GET.view')) : null;
 
-$f3->set('TOKEN', $f3->get('SESSION.token'));
-
 if (isset($_GET['add-entry']) && $_SERVER['REQUEST_METHOD'] === "POST") {
 
     $response = new Response;
@@ -88,9 +86,7 @@ if (isset($_GET['add-entry']) && $_SERVER['REQUEST_METHOD'] === "POST") {
 
     exit;
 } else {
-    $token_gen = md5(uniqid(mt_rand(), true));
-    $f3->set('TOKEN', $token_gen);
-    $f3->set('SESSION.token', $f3->get('TOKEN'));
+    $token_gen = md5(uniqid(mt_rand(), true)); 
 
     if (empty($query)) {
         $f3->set('notfound', true);

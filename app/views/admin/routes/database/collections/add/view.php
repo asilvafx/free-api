@@ -13,8 +13,6 @@ $f3->set('breadcrumbs', [
     ]
 ]);
 
-$f3->set('TOKEN', $f3->get('SESSION.token'));
-
 global $siteDb;
 
 if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
@@ -62,8 +60,4 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
         }
     }
     exit;
-} else {
-    $token_gen = md5(uniqid(mt_rand(), true));
-    $f3->set('TOKEN', $token_gen);
-    $f3->set('SESSION.token', $f3->get('TOKEN'));
-}
+}  

@@ -138,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $users->role = null;
         $users->is_admin = 1;
         $users->is_super_admin = 1;
-        $users->is_developer = 1;
 
         // Save the data to the database
         $users->save();

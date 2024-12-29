@@ -83,7 +83,6 @@ pin INTEGER DEFAULT 0,
 login_count INTEGER DEFAULT 0,
 is_admin INTEGER DEFAULT 0,
 is_super_admin INTEGER DEFAULT 0,
-is_developer INTEGER DEFAULT 0,
 created_at TIMESTAMP,
 status INTEGER DEFAULT 0
 );

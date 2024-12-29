@@ -81,19 +81,7 @@
                       </div>
                     </div>
                   </div> 
-                  <div class="col">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="position-relative">
-                      <label class="text-body fw-bolder" for="isDeveloper">Is Developer?</label>
-                      <p class="text-body-secondary">Allow user developer access.</p>
-                      </div>
-                      <div class="position-relative">
-                        <div class="form-check form-switch">
-                          <input class="form-check-input form-switch-xl" id="isDeveloper" type="checkbox" {{@USER->is_developer===1?'checked':''}} {{@userSelf?'disabled aria-disabled="true"':''}}> 
-                        </div>
-                      </div>
-                    </div>
-                  </div>   
+
                 </div> 
  
                 <input type="hidden" id="userId" name="userId" value="{{@USER->user_id}}">

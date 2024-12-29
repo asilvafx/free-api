@@ -50,7 +50,6 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
         $role = $schema['role'];
         $is_admin = $schema['is_admin'];
         $is_super_admin = $schema['is_super_admin'];
-        $is_developer = $schema['is_developer'];
 
         if (!$email) {
             $response->json('error', 'Invalid Email. Please enter a different email and try again.');
@@ -83,7 +82,6 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $user->role = $role;
             $user->is_admin = $is_admin;
             $user->is_super_admin = $is_super_admin;
-            $user->is_developer = $is_developer;
             $user->confirmed = 1;
             $user->status = 1;
             $user->twofactor = 0;

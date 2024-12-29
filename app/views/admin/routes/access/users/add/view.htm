@@ -82,19 +82,7 @@
               </div>
             </div>
           </div> 
-          <div class="col">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="position-relative">
-              <label class="text-body fw-bolder" for="isDeveloper">Is Developer?</label>
-              <p class="text-body-secondary">Allow user developer access.</p>
-              </div>
-              <div class="position-relative">
-                <div class="form-check form-switch">
-                  <input class="form-check-input form-switch-xl" id="isDeveloper" type="checkbox"> 
-                </div>
-              </div>
-            </div>
-          </div>   
+
         </div> 
 
         <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
@@ -125,7 +113,6 @@
     const role = document.getElementById('role');
     const isAdmin = document.getElementById('isAdmin');
     const isSuperAdmin = document.getElementById('isSuperAdmin');
-    const isDeveloper = document.getElementById('isDeveloper');
 
     // Submit Form
     if(newUserForm){
@@ -143,7 +130,6 @@
 
         var is_admin = isAdmin.checked?1:0;
         var is_super_admin = isSuperAdmin.checked?1:0;
-        var is_developer = isDeveloper.checked?1:0;
 
         const schema = {};  
         schema['displayName'] = displayName.value;
@@ -152,7 +138,6 @@
         schema['role'] = role.value;
         schema['is_admin'] = is_admin;
         schema['is_super_admin'] = is_super_admin;
-        schema['is_developer'] = is_developer;
 
         const payload = {
             token: token.value, 
