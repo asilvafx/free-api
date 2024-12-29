@@ -30,7 +30,7 @@
                             <td>{{@item.name}}</td>
                             <td class="text-end">
                                 <check if="{{@CXT.is_super_admin || @CXT.is_admin}}">
-                                <check if="{{@item.default != 1}}"> 
+                                <check if="{{@item.def != 1}}">
                                     <a role="button" class="btn btn-danger btn-sm" aria-label="Delete" onclick="deletePermission('{{@item.id}}')">
                                     <svg class="icon">
                                         <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
@@ -141,7 +141,6 @@
 
       // Add Event Listeners
       async function fetchRequest(formData, url, formEl) {
-        event.preventDefault();  
         hideAlerts();
 
         // Disable all inputs and submit button

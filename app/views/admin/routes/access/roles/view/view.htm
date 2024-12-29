@@ -39,7 +39,7 @@
             </div>
             <div class="position-relative inline-flex gap-2">
 
-               <check if="{{!@role.default && (@CXT.is_super_admin || @CXT.is_admin)}}">
+               <check if="{{!@role.def && (@CXT.is_super_admin || @CXT.is_admin)}}">
                 <button class="btn btn-primary" type="button" onclick="window.location.href='/{{@SITE.uri_backend}}/access/roles/edit?id={{@role.id}}'; void(0);">
                 <svg class="icon">
                     <use xlink:href="/public/assets/icons/svg/free.svg#cil-pencil"></use>
