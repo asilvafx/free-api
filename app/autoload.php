@@ -121,12 +121,7 @@ if ($site->dry()) {
         $enable_register = true;
     }
     $f3->set('SITE.enable_register', $enable_register);  // Enable `Register` (true/false) 
-
-    // Custom server configuration
-    $f3->set('VERSION', '1.0');
-    $f3->set('DEBUG', 1);
-    $f3->set('auto_logout', 14400);
-
+    
     // Load frontend routes
     $f3->route('GET|POST|PUT /', 'Frontend->Base');
     $f3->route('GET|POST|PUT /@slug*', 'Frontend->Base');
