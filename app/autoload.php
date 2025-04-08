@@ -138,6 +138,7 @@ if ($site->dry()) {
     // Load api routes
     $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
     $f3->route('GET|PUT|DELETE /v1/@slug/@search', 'Api->Base');
+    $f3->route('POST /v1/upload', 'Api->Upload');
 
     // Load WebAuthn Routes
     $f3->route('GET|POST /web/authn/attestation/options', 'WebAuthn->Options');

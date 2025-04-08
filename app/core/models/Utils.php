@@ -124,7 +124,7 @@ class Utils
         $file_save = $file_name . '-' . uniqid() . '.' . $file_ext;
         if ($fileRename) {
             $fileRename = htmlspecialchars_decode($fileRename);
-            $file_save = $fileRename . '.' . $file_ext;
+            $file_save = $fileRename . '-' . uniqid() . '.' . $file_ext;
         }
 
         $uploadPath = $uploadDir . $file_save;

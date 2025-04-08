@@ -13,7 +13,7 @@ class Api extends PostController
     function verifyKey($key): bool
     {
         global $f3;
-        global $db; // Use the global $db for API key verification
+        global $db;
         $response = new Response;
 
         if ($f3->get('SITE.enable_api') !== true) {
@@ -56,6 +56,52 @@ class Api extends PostController
             $response->json('error', 'Error fetching request. ' . $e->getMessage());
             return false;
         }
+    }
+
+    function Upload($f3)
+    {
+        $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
+        $response = new Response;
+        $utils = new Utils();
+
+        // Verify API Key
+        if (!$this->verifyKey($key)) {
+            exit;
+        }
+
+        // Check if it's a POST request with files
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $response->json('error', 'Only POST method is allowed for file uploads.');
+            exit;
+        }
+
+        // Check if files were uploaded
+        if (empty($_FILES) || !isset($_FILES['file'])) {
+            $response->json('error', 'No files were uploaded.');
+            exit;
+        }
+
+        // Get target directory for uploads
+        $uploadDir = 'public/uploads/';
+
+        // Get optional file renaming parameter
+        $fileRename = $f3->get('POST.filename') ?: null;
+
+        // Handle file upload
+        $uploadedFile = $utils->uploadFile($_FILES['file'], $uploadDir, $fileRename);
+
+        if ($uploadedFile) {
+            // Return success with file path
+            $relativePath = str_replace(BASE_PATH, '', $uploadedFile);
+            $response->json('success', [
+                'file' => $relativePath,
+                'message' => 'File uploaded successfully.'
+            ]);
+        } else {
+            $response->json('error', 'Failed to upload file. Check file size or permissions.');
+        }
+
+        exit;
     }
 
     function Base($f3, $args)

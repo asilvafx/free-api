@@ -75,10 +75,6 @@
                 <div class="input-group mb-4"> 
                     <input class="form-control" type="text" id="siteName" name="siteName" maxlength="60" placeholder="Site Name Here" value="{{@SITE.name}}">
                 </div>
-                <label for="siteTitle" class="text-body-secondary mb-2">Site Title</label>
-                <div class="input-group mb-4"> 
-                    <input class="form-control" type="text" id="siteTitle" name="siteTitle" maxlength="60" placeholder="Site Title Here" value="{{@SITE.title}}">
-                </div> 
                 <label for="siteDescription" class="text-body-secondary mb-2">Site Description</label>
                 <div class="input-group mb-4 position-relative"> 
                     <textarea class="form-control" id="siteDescription" name="siteDescription" aria-label="Enter Site Description here" maxlength="250">{{@SITE.description}}</textarea>
@@ -301,7 +297,6 @@
     function sendUpdateRequest(){
     // Site Input Fields
     const siteName = document.getElementById('siteName');
-    const siteTitle = document.getElementById('siteTitle');
     const siteDescription = document.getElementById('siteDescription');
     const siteKeywords = document.getElementById('siteKeywordsInput');
     const siteFrontend = document.getElementById('siteFrontend');
@@ -328,7 +323,7 @@
 
     const schema = {};   
     schema['siteName'] = siteName.value; 
-    schema['siteTitle'] = siteTitle.value; 
+    schema['siteTitle'] = siteName.value;
     schema['siteDescription'] = siteDescription.value; 
     schema['siteKeywords'] = siteKeywords.value; 
     schema['siteFrontend'] = siteFrontend.checked?1:0; 
