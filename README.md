@@ -10,14 +10,17 @@ Welcome to the Free API project! This is a PHP API backend built using the F3 Fa
 
 ## Features
 
-- **REST API**: Easily create and manage RESTful services.
-- **JWT Authentication**: Secure your API with JSON Web Tokens.
+- **REST API**: Easily create and manage RESTful CRUD (Create, Read, Update and Delete) services.
+- **Bearer Tokens Authentication**: Secure your API http authorization requests.
 - **MVC Architecture**: Organize your code with the Model-View-Controller pattern.
-- **User  Authentication**: Implement user registration and login functionalities.
+- **Emails**: Connect email to your SMTP server to send emails via API.
+- **Files Management**: Dedicated area to manage uploaded files. Download and upload files via API.
+- **SQLite Database Management**: Lightweight and easy-to-use database solution with visual editor.
+- **User Access**: Implement user registration, login and roles based functionalities.
 - **Two-Factor Authentication (2-FA)**: Enhance security with an additional layer of authentication.
 - **WebAuthn**: Support for modern passwordless authentication methods.
-- **SQLite Database**: Lightweight and easy-to-use database solution.
-- **User -Friendly UI/UX**: An intuitive administration layout for easy management.
+- **User-Friendly UI/UX**: An intuitive administration panel for easy management and customization.
+- **Security**: Enhanced security protocols via htaccess and PHP calls to prevent cyber attacks.
 
 ## Installation
 

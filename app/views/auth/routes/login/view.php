@@ -1,5 +1,7 @@
 <?php
 
+global $f3;
+
 $f3->set('PAGE.title', 'Sign in');
 
 if (empty($f3->get('SESSION.token'))) {
@@ -74,9 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         }
                         $current_ip = $f3->get('CLIENT.ip');
                         $login_alerts = false;
-                        $login_count = $users->login_count;
-                        $users->last_online = time();
-                        $users->login_count = $login_count+1;
+                        $login_try_count = $users->login_try_count;
+                        $users->login_last_try = time();
+                        $users->login_try_count = $login_try_count+1;
                         if($current_ip !== $users->ip_address){
                           $login_alerts = $users->login_alerts == 1;
                           $users->ip_address = $current_ip;
@@ -88,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         }
                     }
                 } else {
+
                     $current_try = $users->login_try_count;
                     $users->login_last_try = time();
                     $users->login_try_count = $current_try+1;
@@ -147,9 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     }
                     $current_ip = $f3->get('CLIENT.ip');
                     $login_alerts = false;
-                    $login_count = $users->login_count;
-                    $users->last_online = time();
-                    $users->login_count = $login_count+1;
+                    $login_try_count = $users->login_try_count;
+                    $users->login_last_try = time();
+                    $users->login_try_count = $login_try_count+1;
                     if($current_ip !== $users->ip_address){
                       $login_alerts = $users->login_alerts == 1;
                       $users->ip_address = $current_ip;
@@ -168,6 +171,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 break;
         }
 
+        $users->last_online = time();
+        $users->login_try_count = 0;
+        $users->login_count = $users->login_count+1;
+        $users->save();
+        
         $response->json('success', $message);
     } catch (Exception $e) {
         // Send error message if something went wrong
