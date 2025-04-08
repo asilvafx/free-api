@@ -172,8 +172,7 @@ class Utils
 
                 // Backup additional directories
                 $this->backupAdditionalDirectories($zip, ROOT, 'app');
-                $this->backupAdditionalDirectories($zip, 'ui', 'ui');
-                //$this->backupAdditionalDirectories($zip, 'public', 'public');
+                $this->backupAdditionalDirectories($zip, 'public/uploads', 'public/uploads');
 
                 $zip->close();
                 return true;

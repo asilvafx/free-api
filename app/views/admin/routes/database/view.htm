@@ -33,3 +33,148 @@
         <a role="button" aria-label="Add new" href="/{{@SITE.uri_backend}}/database/collections/add" class="btn bg-primary">+ New collection</a>
     </div>
 </div>
+<div class="w-100 pt-2 position-relative">
+    <div class="accordion" id="devBlock">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="devConsoleTitle">
+                <button class="accordion-button collapsed gap-2" type="button" data-ui-toggle="collapse" data-ui-target="#devConsole" aria-expanded="false" aria-controls="devConsole">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-code"></use>
+                    </svg>
+                    Developer Mode
+                </button>
+            </h2>
+            <div class="accordion-collapse collapse" id="devConsole" aria-labelledby="devConsoleTitle" data-ui-parent="#devBlock" style="">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="input-group mb-2">
+                          <span class="input-group-text p-0">
+                            <select class="form-select" aria-label="HTTP Request" id="devReqType" name="devReqType">
+                              <option value="GET" selected="">GET</option>
+                              <option value="POST">POST</option>
+                              <option value="PUT">PUT</option>
+                              <option value="DELETE">DELETE</option>
+                            </select>
+                          </span>
+                            <input class="form-control" type="text" id="devReqUri" name="devReqUri" placeholder="URI" value="{{ @API.base_url .'/'}}<COLLECTION>" readonly disabled>
+                        </div>
+
+                        <!-- Radio buttons for Node.js and cURL -->
+                        <div class="mb-3">
+                            <label class="form-label">Library:</label>
+                            <div>
+                                <input type="radio" id="nodeRadio" name="reqMethod" value="node" checked>
+                                <label for="nodeRadio">Node.js (Fetch API)</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="curlRadio" name="reqMethod" value="curl">
+                                <label for="curlRadio">cURL</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-4">
+                            <textarea rows="10" cols="250" class="form-control" id="devReqParams" name="devReqParams" aria-label="PARAMS" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    "use strict"
+
+    const devReqType = document.getElementById('devReqType');
+    const devReqParams = document.getElementById('devReqParams');
+    const devReqUri = document.getElementById('devReqUri');
+    const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
+
+    const fetchExamples = (method, uri) => {
+        const templates = {
+            GET: `fetch('${uri}', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            POST: `fetch('${uri}', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    },
+    body: JSON.stringify({
+        key: 'value',
+        anotherKey: 'anotherValue'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            PUT: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to update
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    },
+    body: JSON.stringify({
+        key: 'updatedValue'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+            DELETE: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to delete
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-api-key'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`
+        };
+        return templates[method];
+    };
+
+    const curlExamples = (method, uri) => {
+        const templates = {
+            GET: `curl -X GET "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`,
+            POST: `curl -X POST "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "value", "anotherKey": "anotherValue"}'`,
+            PUT: `curl -X PUT "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "updatedValue"}'`, // Replace '1' with the actual ID
+            DELETE: `curl -X DELETE "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"` // Replace '1' with the actual ID
+        };
+        return templates[method];
+    };
+
+    const updateTextarea = () => {
+        const selectedMethod = devReqType.value;
+        const uri = devReqUri.value;
+        const selectedReqMethod = document.querySelector('input[name="reqMethod"]:checked').value;
+
+        let example;
+        if (selectedReqMethod === 'node') {
+            example = fetchExamples(selectedMethod, uri); // Use fetch examples for Node.js
+        } else if (selectedReqMethod === 'curl') {
+            example = curlExamples(selectedMethod, uri); // Use cURL examples
+        }
+
+        devReqParams.value = example;
+    };
+
+    // Set default to GET example using the URI from devReqUri
+    updateTextarea();
+
+    // Update textarea based on selected method and URI
+    devReqType.addEventListener('change', updateTextarea);
+    reqMethodRadios.forEach(radio => {
+        radio.addEventListener('change', updateTextarea);
+    });
+
+</script>

@@ -119,17 +119,6 @@
                                 <option value="BLOB" ${field.type === "BLOB" ? "selected" : ""}>BLOB</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Default Value</label>
-                            <input type="text" name="defaultValue" class="form-control" value="${field.defaultValue}" onchange="handleFieldChange(${index}, event)">
-                        </div> 
-                        <div class="col-md-6">
-                            <label class="form-label">Null</label>
-                            <select name="notNull" class="form-select" onchange="handleFieldChange(${index}, event)">
-                                <option value="false" ${!field.notNull ? "selected" : ""}>Allow Null</option>
-                                <option value="true" ${field.notNull ? "selected" : ""}>Not Null</option>
-                            </select>
-                        </div>
                         <div class="col-md-6 form-check">
                             <input type="checkbox" name="primaryKey" class="form-check-input" id="primaryKey-${index}" ${field.primaryKey ? "checked" : ""} onchange="handleFieldChange(${index}, event)">
                             <label class="form-check-label" for="primaryKey-${index}">Primary Key</label>
@@ -191,7 +180,7 @@
             alert("Table created successfully!");
             let collectionUri = "/{{@SITE.uri_backend}}/database/collections?view=" + tableNameInput.value;
             tableNameInput.value = "";
-            fields = [{ name: "", type: "TEXT", defaultValue: "", notNull: false, primaryKey: false, autoIncrement: false }];
+            fields = [{ name: "", type: "TEXT", primaryKey: false, autoIncrement: false }];
             renderFields();
             window.location.href = collectionUri;
             return false;

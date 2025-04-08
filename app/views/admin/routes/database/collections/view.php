@@ -230,7 +230,7 @@ if (isset($_GET['delete-table']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $siteDb->exec("DROP TABLE `$collection`");
-        $response->json('success', 'Table deleted successfully.');
+        $response->json('success', 'Collection deleted successfully.');
     } catch(Exception $e) {
         $response->json('error', "Error deleting table: " . $e->getMessage());
     }
@@ -250,53 +250,102 @@ if (isset($_GET['rename-table']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if(empty($newTableName)){
-        $response->json('error', 'New table name required.');
+        $response->json('error', 'New collection name required.');
         exit;
     }
 
     try {
         $siteDb->exec("ALTER TABLE `$oldTableName` RENAME TO `$newTableName`");
-        $response->json('success', 'Table renamed successfully.');
+        $response->json('success', 'Collection renamed successfully.');
     } catch(Exception $e) {
-        $response->json('error', "Error renaming table: " . $e->getMessage());
+        $response->json('error', "Error renaming collection: " . $e->getMessage());
     }
     exit;
 }
 
 if (isset($_GET['update-fields']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $body = json_decode(file_get_contents('php://input'), true);
     $token = $body['token'];
     $collection = $body['collection'];
     $fields = $body['fields'];
+    $removed = $body['removedFields'] ?? [];
 
     // Validate CSRF Token
     $csrf = ($body['token'] ?? $f3->get('POST.token'));
-
     if ($csrf != $f3->get('SESSION.token')) {
         $response->json('error', 'CSRF token mismatch error. Please reload your browser and try again.');
         exit;
     }
 
-    foreach ($fields as $field) {
-        $original = $field['original'];
-        $newName = $field['name'];
-        $newType = strtoupper($field['type']) === 'INTEGER' ? 'INTEGER' : 'TEXT';
-
-        if ($original && $original !== $newName) {
-            // Rename existing column
-            $siteDb->exec("ALTER TABLE `$collection` RENAME COLUMN `$original` TO `$newName`");
-            $siteDb->exec("ALTER TABLE `$collection` ALTER COLUMN `$newName` TYPE $newType");
-        } elseif ($original) {
-            // Just change type of existing field
-            $siteDb->exec("ALTER TABLE `$collection` ALTER COLUMN `$original` TYPE $newType");
-        } elseif (!$original && $newName) {
-            // New field
-            $siteDb->exec("ALTER TABLE `$collection` ADD COLUMN `$newName` $newType");
+    // Get current table schema info and primary key info
+    $result = $siteDb->exec("PRAGMA table_info(`$collection`)");
+    $existingCols = array_column($result, 'name');
+    $oldPK = null;
+    foreach ($result as $colInfo) {
+        if ($colInfo['pk']) {
+            $oldPK = $colInfo['name'];
+            break;
         }
     }
 
-    $response->json('success', 'Fields updated successfully.');
+    // Compute new field names from payload fields
+    $newFieldNames = array_map(function($f) {
+        return $f['name'];
+    }, $fields);
+
+    // Reconcile removed fields
+    if (!empty($removed)) {
+        $newFieldNames = array_diff($newFieldNames, $removed);
+    }
+
+    // Build new schema definitions using payload fields, including primary info
+    $fieldDefs = [];
+    foreach ($fields as $f) {
+        if (in_array($f['name'], $newFieldNames)) {
+            if (!empty($f['primary']) && $f['primary'] === true) {
+                // Build primary key definition.
+                // If integer, allow autoincrement; if text, primary key without autoincrement.
+                if (strtoupper($f['type']) === 'INTEGER') {
+                    $fieldDefs[] = "`{$f['name']}` INTEGER PRIMARY KEY AUTOINCREMENT";
+                } else {
+                    $fieldDefs[] = "`{$f['name']}` TEXT PRIMARY KEY";
+                }
+            } else {
+                $type = strtoupper($f['type']) === 'INTEGER' ? 'INTEGER' : 'TEXT';
+                $fieldDefs[] = "`{$f['name']}` $type";
+            }
+        }
+    }
+
+    // Identify common columns between existing table and new schema
+    $commonCols = array_intersect($existingCols, $newFieldNames);
+
+    // Build column copy list (for simplicity, we use columns as-is)
+    $columnsToCopyArr = [];
+    foreach ($commonCols as $col) {
+        $columnsToCopyArr[] = "`$col`";
+    }
+    $columnsToCopy = implode(', ', $columnsToCopyArr);
+    $schemaSQL = implode(', ', $fieldDefs);
+
+    // Temporary table name
+    $tempTable = $collection . "_temp";
+
+    try {
+        $siteDb->begin();
+        $siteDb->exec("CREATE TABLE `$tempTable` ($schemaSQL)");
+        if (!empty($commonCols)) {
+            $siteDb->exec("INSERT INTO `$tempTable` ($columnsToCopy) SELECT $columnsToCopy FROM `$collection`");
+        }
+        $siteDb->exec("DROP TABLE `$collection`");
+        $siteDb->exec("ALTER TABLE `$tempTable` RENAME TO `$collection`");
+        $siteDb->commit();
+
+        $response->json('success', 'Collection structure updated successfully.');
+    } catch (Exception $e) {
+        $siteDb->rollback();
+        $response->json('error', 'Error updating collection structure: ' . $e->getMessage());
+    }
     exit;
 }
 
@@ -539,7 +588,9 @@ if (isset($_GET['add-entry']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             // Prepare an array to store the field names
             $fields = [];
             foreach ($schema as $column) {
-                $fields[] = ['name' => $column['name'], 'type' => $column['type'], 'notnull' => $column['notnull'], 'default' => $column['dflt_value'], 'key' => $column['pk']]; // Extract the field/column 
+                $default = isset($column['dflt_value']) && !empty($column['dflt_value']) ? $column['dflt_value'] : '';
+                $default = htmlspecialchars($default, ENT_QUOTES, 'UTF-8');
+                $fields[] = ['name' => $column['name'], 'type' => $column['type'], 'notnull' => $column['notnull'], 'value' => $default, 'key' => $column['pk']]; // Extract the field/column
             }
 
             // Get the table data

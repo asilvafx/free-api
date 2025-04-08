@@ -21,7 +21,7 @@
                                 <repeat group="{{@collection.fields}}" value="{{@field}}">
                                     <div class="d-flex bg-body flex-column mb-4">
                                         <label for="editEntry-{{@field.name}}" class="mb-2 fw-bolder">{{@field.name}}</label>
-                                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="editEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.default}}" placeholder="{{@field.default}}" {{@field.notnull==0?'':'required'}}>
+                                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="editEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.value}}" {{@field.key ? 'disabled' : ''}} placeholder="{{@field.key ? 'Primary' : 'Value'}}" {{@field.notnull==0?'':'required'}}>
                                     </div>
                                 </repeat>
                             </div>
@@ -46,7 +46,7 @@
                       <repeat group="{{@collection.fields}}" value="{{@field}}">
                         <div class="d-flex bg-body flex-column mb-4">
                         <label for="newEntry-{{@field.name}}" class="mb-2 fw-bolder">{{@field.name}}</label>
-                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="newEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.default}}" placeholder="{{@field.default}}" {{@field.notnull==0?'':'required'}}>
+                        <input class="form-control" type="{{@field.type=='INTEGER'?'number':'text'}}" id="newEntry-{{@field.name}}" name="{{@field.name}}" value="{{@field.value}}" placeholder="{{@field.value}}" {{@field.notnull==0?'':'required'}}>
                         </div>
                       </repeat>  
                     </div>
@@ -68,13 +68,19 @@
                     <form id="editFieldsForm">
                         <div id="fieldsContainer">
                             <repeat group="{{@collection.fields}}" value="{{@field}}">
-                                <p>{{@field.name}} ( {{@field.type}} )</p>
-                                <div class="field-row" data-original-name="{{@field.name}}">
+                                <div class="field-row"
+                                     data-original-name="{{@field.name}}"
+                                     data-primary="{{@field.key ? 'true' : 'false'}}">
                                     <input type="text" name="field_name[]" value="{{@field.name}}" placeholder="Field name" required />
                                     <select name="field_type[]">
-                                        <option value="TEXT">TEXT</option>
-                                        <option value="INTEGER">INTEGER</option>
+                                        <option value="TEXT" {{@field.type=='TEXT'?'selected':''}}>TEXT</option>
+                                        <option value="INTEGER" {{@field.type=='INTEGER'?'selected':''}}>INTEGER</option>
                                     </select>
+                                    <label>
+                                        <input type="checkbox" class="field-primary-checkbox"
+                                               {{@field.key ? 'checked' : ''}}>
+                                        Primary
+                                    </label>
                                     <button type="button" class="btn-remove-field">Remove</button>
                                 </div>
                             </repeat>
@@ -82,6 +88,7 @@
                         <button type="button" id="addNewField" class="btn btn-secondary">+ Add New Field</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </form>
+
                 </div>
               </div>
           </div>
@@ -274,9 +281,7 @@
                                       <thead>
                                       <tr> 
                                           <th scope="col">Name</th>  
-                                          <th scope="col">Type</th>  
-                                          <th scope="col">Default</th>  
-                                          <th scope="col">Is Null</th> 
+                                          <th scope="col">Type</th>
                                           <th scope="col">Key</th>  
                                       </tr>
                                       </thead>
@@ -284,9 +289,7 @@
                                           <repeat group="{{@collection.fields}}" value="{{@field}}"> 
                                             <tr>   
                                                 <td>{{@field.name}}</td> 
-                                                <td>{{@field.type}}</td>  
-                                                <td>{{@field.default}}</td> 
-                                                <td>{{@field.notnull==0?'FALSE':'TRUE'}}</td> 
+                                                <td>{{@field.type}}</td>
                                                 <td>{{@field.key==0?'':'🔑'}}</td> 
                                             </tr> 
                                           </repeat>  
@@ -335,57 +338,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="w-100 pt-2 position-relative">
-              <div class="accordion" id="devBlock">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="devConsoleTitle">
-                    <button class="accordion-button collapsed gap-2" type="button" data-ui-toggle="collapse" data-ui-target="#devConsole" aria-expanded="false" aria-controls="devConsole">
-                      <svg class="icon">
-                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-code"></use>
-                    </svg>
-                    Developer Mode
-                    </button>
-                  </h2>
-                  <div class="accordion-collapse collapse" id="devConsole" aria-labelledby="devConsoleTitle" data-ui-parent="#devBlock" style="">
-                    <div class="accordion-body">
-                      <div class="d-flex flex-wrap gap-2">
-                        <div class="input-group mb-2">
-                          <span class="input-group-text p-0">
-                            <select class="form-select" aria-label="HTTP Request" id="devReqType" name="devReqType"> 
-                              <option value="GET" selected="">GET</option>
-                              <option value="POST">POST</option> 
-                              <option value="PUT">PUT</option> 
-                              <option value="DELETE">DELETE</option> 
-                            </select> 
-                          </span>
-                          <input class="form-control" type="text" id="devReqUri" name="devReqUri" placeholder="URI" value="{{ @API.base_url .'/'. @collection.name }}" readonly disabled>
-                        </div>
-                
-                        <!-- Radio buttons for Node.js and cURL -->
-                        <div class="mb-3">
-                          <label class="form-label">Library:</label>
-                          <div>
-                            <input type="radio" id="nodeRadio" name="reqMethod" value="node" checked>
-                            <label for="nodeRadio">Node.js (Fetch API)</label>
-                          </div>
-                          <div>
-                            <input type="radio" id="curlRadio" name="reqMethod" value="curl">
-                            <label for="curlRadio">cURL</label>
-                          </div>
-                        </div>
-                
-                        <div class="input-group mb-4"> 
-                          <textarea rows="10" cols="250" class="form-control" id="devReqParams" name="devReqParams" aria-label="PARAMS" readonly></textarea>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> 
-              </div> 
-            </div>
-
-
 
             <input type="hidden" id="tbl_name" name="tbl_name" value="{{@collection.name}}">
             <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
@@ -454,9 +406,6 @@
 
     }
 
-   document.addEventListener('DOMContentLoaded', () => {
-
-
    const editButtons = document.querySelectorAll('.btn-edit');
    editButtons.forEach(button => {
        button.addEventListener('click', function(e) {
@@ -479,105 +428,12 @@
                if (input) {
                    // Use data attributes to get the current value
                    const currentValue = row.querySelector(`td[data-field="${field.name}"]`).textContent;
-                   input.value = currentValue; // Set the input value
+                   input.value = currentValue.trim(); // Set the input value
                }
            });
 
        });
    });
-
-    const devReqType = document.getElementById('devReqType');
-    const devReqParams = document.getElementById('devReqParams');
-    const devReqUri = document.getElementById('devReqUri');
-    const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
-
-       const fetchExamples = (method, uri) => {
-           const templates = {
-               GET: `fetch('${uri}', {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-api-key'
-    }
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));`,
-               POST: `fetch('${uri}', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-api-key'
-    },
-    body: JSON.stringify({
-        key: 'value',
-        anotherKey: 'anotherValue'
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));`,
-               PUT: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to update
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-api-key'
-    },
-    body: JSON.stringify({
-        key: 'updatedValue'
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));`,
-               DELETE: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to delete
-    method: 'DELETE',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-api-key'
-    }
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));`
-           };
-           return templates[method];
-       };
-
-       const curlExamples = (method, uri) => {
-           const templates = {
-               GET: `curl -X GET "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"`,
-               POST: `curl -X POST "${uri}" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "value", "anotherKey": "anotherValue"}'`,
-               PUT: `curl -X PUT "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key" -d '{"key": "updatedValue"}'`, // Replace '1' with the actual ID
-               DELETE: `curl -X DELETE "${uri}/id/1" -H "Content-Type: application/json" -H "Authorization: Bearer your-api-key"` // Replace '1' with the actual ID
-           };
-           return templates[method];
-   };
-
-    const updateTextarea = () => {
-        const selectedMethod = devReqType.value;
-        const uri = devReqUri.value;
-        const selectedReqMethod = document.querySelector('input[name="reqMethod"]:checked').value;
-
-        let example;
-        if (selectedReqMethod === 'node') {
-            example = fetchExamples(selectedMethod, uri); // Use fetch examples for Node.js
-        } else if (selectedReqMethod === 'curl') {
-            example = curlExamples(selectedMethod, uri); // Use cURL examples
-        }
-
-        devReqParams.value = example;
-    };
-
-    // Set default to GET example using the URI from devReqUri
-    updateTextarea();
-
-    // Update textarea based on selected method and URI
-    devReqType.addEventListener('change', updateTextarea);
-    reqMethodRadios.forEach(radio => {
-        radio.addEventListener('change', updateTextarea);
-    });
-});
 
   // Event listener for edit form submission
   const editEntryForm = document.getElementById('editEntryForm');
@@ -686,64 +542,124 @@
       }
   }
 
-  // Handle dynamic field removal
-  document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('btn-remove-field')) {
-          e.preventDefault();
-          e.target.closest('.field-row').remove();
+  const editFieldsForm = document.getElementById('editFieldsForm');
+  const fieldsContainer = document.getElementById('fieldsContainer');
+  const addNewFieldBtn = document.getElementById('addNewField');
+
+  // Update data-primary attribute when checkbox toggled
+  document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('field-primary-checkbox')) {
+          const row = e.target.closest('.field-row');
+          row.setAttribute('data-primary', e.target.checked ? 'true' : 'false');
       }
   });
 
-  // Submit edited fields
-  const editFieldsForm = document.getElementById('editFieldsForm');
+  // Add new field dynamically (default not primary)
+  addNewFieldBtn.addEventListener('click', () => {
+      const fieldHTML = `
+      <div class="field-row" data-original-name="" data-primary="false">
+        <input type="text" name="field_name[]" placeholder="Field name" required />
+        <select name="field_type[]">
+          <option value="TEXT">TEXT</option>
+          <option value="INTEGER">INTEGER</option>
+        </select>
+        <label>
+          <input type="checkbox" class="field-primary-checkbox">
+          Primary
+        </label>
+        <button type="button" class="btn-remove-field">Remove</button>
+      </div>`;
+      fieldsContainer.insertAdjacentHTML('beforeend', fieldHTML);
+  });
+
+  // Mark a field as removed when clicking its remove button
+  document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('btn-remove-field')) {
+          e.preventDefault();
+          const row = e.target.closest('.field-row');
+          // Mark for deletion if it has an original name, else remove directly
+          if (row.getAttribute('data-original-name')) {
+              row.setAttribute('data-deleted', 'true');
+              row.style.display = 'none';
+          } else {
+              // New rows can be removed directly
+              row.remove();
+          }
+      }
+  });
+
+  // Submit edited fields (edit, add, delete + primary flag)
   if (editFieldsForm) {
       editFieldsForm.addEventListener('submit', async function(e) {
           e.preventDefault();
+
           const rows = document.querySelectorAll('.field-row');
           const fields = [];
+          const removedFields = [];
+
           rows.forEach(row => {
-              const original = row.dataset.originalName;
-              const name = row.querySelector('input[name="field_name[]"]').value;
-              const type = row.querySelector('select[name="field_type[]"]').value;
-              fields.push({ original, name, type });
+              const isDeleted = row.getAttribute('data-deleted') === 'true';
+              const original = row.dataset.originalName || null;
+              const nameInput = row.querySelector('input[name="field_name[]"]');
+              const typeSelect = row.querySelector('select[name="field_type[]"]');
+              const primary = row.getAttribute('data-primary') === 'true';
+
+              const name = nameInput?.value.trim();
+              const type = typeSelect?.value;
+
+              if (isDeleted && original) {
+                  removedFields.push(original);
+                  return;
+              }
+              if (!name) return; // Skip empty fields
+
+              fields.push({ original, name, type, primary });
           });
 
           const payload = {
               token: token.value,
               collection: tableNameInput.value,
-              fields: fields
+              fields: fields,
+              removedFields: removedFields
           };
 
-          await axios.post("/{{@SITE.uri_backend}}/database/collections?update-fields", payload, {
-              headers: {
-                  "Content-Type": "application/json"
-              }
-          }).then(response => {
-              if (response.data.status === "success") {
-                  alert(response.data.message);
+          try {
+              const response = await axios.post("/{{@SITE.uri_backend}}/database/collections?update-fields", payload, {
+                  headers: { "Content-Type": "application/json" }
+              });
+              const data = response.data;
+              if (data.status === "success") {
+                  alert(data.message);
                   window.location.reload();
               } else {
-                  showAlert("error", response.data.message);
+                  showAlert("error", data.message);
               }
-          }).catch(() => {
+          } catch (err) {
               showAlert("error", "Error updating fields.");
-          });
+          }
       });
   }
 
-  // Add new field dynamically
-  document.getElementById('addNewField').addEventListener('click', () => {
-      const container = document.getElementById('fieldsContainer');
-      const fieldHTML = `
-    <div class="field-row" data-original-name="">
-      <input type="text" name="field_name[]" placeholder="Field name" required />
-      <select name="field_type[]">
-        <option value="TEXT">TEXT</option>
-        <option value="INTEGER">INTEGER</option>
-      </select>
-      <button type="button" class="btn-remove-field">Remove</button>
-    </div>`;
-      container.insertAdjacentHTML('beforeend', fieldHTML);
+  document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('field-primary-checkbox')) {
+          if (e.target.checked) {
+              // Uncheck all other primary checkboxes and update their rows
+              document.querySelectorAll('.field-primary-checkbox').forEach(checkbox => {
+                  if (checkbox !== e.target) {
+                      checkbox.checked = false;
+                      const otherRow = checkbox.closest('.field-row');
+                      otherRow.setAttribute('data-primary', 'false');
+                  }
+              });
+              // Mark current row as primary
+              const row = e.target.closest('.field-row');
+              row.setAttribute('data-primary', 'true');
+          } else {
+              // Uncheck current row primary flag
+              const row = e.target.closest('.field-row');
+              row.setAttribute('data-primary', 'false');
+          }
+      }
   });
 
   document.getElementById('renameForm').addEventListener('submit', async function(e) {
