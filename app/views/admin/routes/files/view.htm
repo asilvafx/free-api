@@ -290,6 +290,7 @@ formData.append('filename', 'custom-filename-optional');
 fetch('${uri}', {
     method: 'POST',
     headers: {
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer your-api-key'
     },
     body: formData
@@ -303,7 +304,7 @@ fetch('${uri}', {
 
     const curlExamples = (method, uri) => {
         const templates = {
-            POST: `curl -X POST "${uri}" -H "Authorization: Bearer your-api-key" -F "file=@/path/to/your/file.jpg" -F "filename=custom-filename-optional" -v`,
+            POST: `curl -X POST "${uri}" -H "Content-Type: multipart/form-data" "Authorization: Bearer your-api-key" -F "file=@/path/to/your/file.jpg" -F "filename=custom-filename-optional" -v`,
         };
         return templates[method];
     };
