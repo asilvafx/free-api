@@ -45,12 +45,18 @@
   </style>
 
   <link href="{{@PUBLIC}}/client/app.css?v={{@DEBUG>0?time():@VERSION}}" rel="stylesheet">
+
+  <style>
+    <include href="index.css" />
+  </style>
+
   <script src="{{@PUBLIC}}/client/app.js?v={{@DEBUG>0?time():@VERSION}}"></script>
 
   <script>
     "use strict"
-      <include href="index.js" />
+    <include href="index.js" />
   </script>
+
 </head>
 <body>
 

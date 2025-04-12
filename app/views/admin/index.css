@@ -26,7 +26,12 @@ object-fit: fill;
 #profileImage, #logoPreview {
 width: 80px;
 height: 80px;
-object-fit: fill;
+object-fit: cover;
+}
+.avatar-img {
+height: 30px;
+width: 30px;
+object-fit: cover;
 }
 #keywordsContainer {
 display: flex;

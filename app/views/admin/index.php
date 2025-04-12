@@ -46,7 +46,6 @@ $f3->set('MENU.sidenav', $sideMenuItems);
 $app_menu_json = '[]';
 $f3->set('app_menu_json', $app_menu_json);
 
-
 function addMenuItem($title, $route, $icon, $hasNew=false)
 {
     global $f3;
@@ -90,7 +89,6 @@ $menuItems = json_decode($f3->get('app_menu_json'), true);
 // Set the menu items array in the F3 framework
 $f3->set('MENU.appnav', $menuItems);
 $f3->set('MENU.appcount', count($menuItems));
-
 
 function getRoleNameById($roleid)
 {

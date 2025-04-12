@@ -68,7 +68,7 @@ if ($upload) {
 
     $file = $_FILES['file'];
     $utils = new Utils;
-    $uploadedFile = $utils->uploadFile($file, 'public/uploads/');
+    $uploadedFile = $utils->uploadFile($file, 'public/uploads/users/');
 
     if (!$uploadedFile) {
         $response->json('error', 'Failed to upload file.');
