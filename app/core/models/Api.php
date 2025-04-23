@@ -58,6 +58,95 @@ class Api extends PostController
         }
     }
 
+    function Payment($f3, $args)
+    {
+        $stripe_sk = 'sk_test_51L9a5yJAJnmQ0fU3n5fdoKLQZHikT5rbYk7VA9IH2t8em6VNDOhZGdE6aruhgdoUFic71EHbCBcRKzdzMjjl2fKo002znVAVft';
+        require_once ROOT . 'lib/vendor/stripe-php/init.php';
+
+        // Set proper headers for CORS if needed
+        header('Content-Type: application/json');
+
+        // Parse the JSON body
+        $body = json_decode($f3->get('BODY'), true); 
+
+        // Log incoming request for debugging
+        error_log('Payment request: ' . json_encode($body));
+
+        if (!$body) {
+            echo json_encode(['error' => 'Invalid request body']);
+            return;
+        }
+
+        // Extract parameters from the request body
+        $amount = isset($body['amount']) ? intval($body['amount']) : 0;
+        $currency = isset($body['currency']) ? $body['currency'] : 'usd';
+        $email = isset($body['email']) ? $body['email'] : '';
+        $useAutomaticMethods = isset($body['automatic_payment_methods']) ? $body['automatic_payment_methods'] : false;
+
+        // Validate required fields
+        if ($amount <= 0) {
+            echo json_encode(['error' => 'Invalid amount']);
+            return;
+        }
+
+        if (empty($email)) {
+            echo json_encode(['error' => 'Email is required']);
+            return;
+        }
+
+        try {
+            // Initialize Stripe with your secret key
+            $stripe = new \Stripe\StripeClient($stripe_sk);
+
+            // Create a customer
+            $customer = $stripe->customers->create([
+                'email' => $email,
+                'description' => 'Customer for ' . $email,
+            ]);
+
+            // Prepare payment intent parameters
+            $paymentIntentParams = [
+                'amount' => $amount,
+                'currency' => $currency,
+                'customer' => $customer->id,
+                'metadata' => [
+                    'customer_email' => $email
+                ],
+            ];
+
+            // Use automatic payment methods if specified
+            if ($useAutomaticMethods) {
+                $paymentIntentParams['automatic_payment_methods'] = ['enabled' => true];
+            } else {
+                $paymentIntentParams['payment_method_types'] = ['card'];
+            }
+
+            // Create a payment intent
+            $paymentIntent = $stripe->paymentIntents->create($paymentIntentParams);
+
+            // Log the client secret for debugging (remove in production)
+            error_log('Created PaymentIntent: ' . $paymentIntent->id);
+
+            // Return the client secret to the client
+            echo json_encode([
+                'client_secret' => $paymentIntent->client_secret,
+                'customer_id' => $customer->id,
+                'payment_intent_id' => $paymentIntent->id
+            ]);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            // Handle Stripe API errors
+            error_log('Stripe API Error: ' . $e->getMessage());
+            echo json_encode(['error' => $e->getMessage()]);
+            http_response_code(400);
+        } catch (\Exception $e) {
+            // Handle other errors
+            error_log('Server Error: ' . $e->getMessage());
+            echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+            http_response_code(500);
+        }
+    }
+
     function Upload($f3)
     {
         $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
