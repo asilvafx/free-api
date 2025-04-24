@@ -99,7 +99,7 @@ if ($site->dry()) {
 
     $f3->set('SITE.stripe_status', $site->stripe_status); // Stripe Enabled (0/1)
     $f3->set('SITE.stripe_pk', $site->stripe_pk); // Stripe Public Key
-    $f3->set('SITE.stripe_sk', $site->stripe_pk); // Stripe Secret Key
+    $f3->set('SITE.stripe_sk', $site->stripe_sk); // Stripe Secret Key
 
     $baseUrl = $f3->get('SCHEME') . '://' . $f3->get('HOST');
     $f3->set('SITE.base_url', $baseUrl); // Site Base URL 
