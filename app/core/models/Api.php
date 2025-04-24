@@ -59,7 +59,7 @@ class Api extends PostController
     }
 
     function Payment($f3, $args)
-    {
+    { 
         if($f3->get('SITE.stripe_status') !== 1){
             echo json_encode(['error' => 'Stripe not enabled.']);
             return;
