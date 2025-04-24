@@ -60,14 +60,18 @@ class Api extends PostController
 
     function Payment($f3, $args)
     {
-        $stripe_sk = 'sk_test_51L9a5yJAJnmQ0fU3n5fdoKLQZHikT5rbYk7VA9IH2t8em6VNDOhZGdE6aruhgdoUFic71EHbCBcRKzdzMjjl2fKo002znVAVft';
+        if($f3->get('SITE.stripe_status') !== 1){
+            echo json_encode(['error' => 'Stripe not enabled.']);
+            return;
+        }
+        $stripe_sk = $f3->get('SITE.stripe_sk');
         require_once ROOT . 'lib/vendor/stripe-php/init.php';
 
         // Set proper headers for CORS if needed
         header('Content-Type: application/json');
 
         // Parse the JSON body
-        $body = json_decode($f3->get('BODY'), true); 
+        $body = json_decode($f3->get('BODY'), true);
 
         // Log incoming request for debugging
         error_log('Payment request: ' . json_encode($body));

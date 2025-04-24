@@ -97,6 +97,10 @@ if ($site->dry()) {
     $f3->set('SITE.color_dark_secondary',  $site->color_dark_secondary); // Dark Theme Accent Color
     $f3->set('SITE.color_light_secondary',  $site->color_light_secondary); // Light Theme Accent Color
 
+    $f3->set('SITE.stripe_status', $site->stripe_status); // Stripe Enabled (0/1)
+    $f3->set('SITE.stripe_pk', $site->stripe_pk); // Stripe Public Key
+    $f3->set('SITE.stripe_sk', $site->stripe_pk); // Stripe Secret Key
+
     $baseUrl = $f3->get('SCHEME') . '://' . $f3->get('HOST');
     $f3->set('SITE.base_url', $baseUrl); // Site Base URL 
     $f3->set('API.base_url', $baseUrl . '/v1'); // Sever RestAPI Base URL 
