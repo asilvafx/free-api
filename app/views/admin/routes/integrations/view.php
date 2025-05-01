@@ -1,5 +1,7 @@
 <?php
 
+global $f3;
+
 $f3->set('PAGE.title', 'Integrations');
 $f3->set('PAGE.slug', 'integrations');
 $f3->set('breadcrumbs', [

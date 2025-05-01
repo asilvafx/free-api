@@ -14,6 +14,16 @@ $sidenav_menu = '[
         "icon": "storage"
     },
     {
+        "title": "Payments",
+        "route": "pay",
+        "icon": "dollar"
+    },
+    {
+        "title": "E-Mail",
+        "route": "mail",
+        "icon": "at"
+    },
+    {
         "title": "API",
         "route": "api",
         "icon": "bolt"
