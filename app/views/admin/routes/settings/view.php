@@ -116,7 +116,7 @@ if (isset($_GET['update']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $site->site_keywords = $siteKeywords;
             $site->site_logo = $logoPath;
             $site->enable_frontend = $siteFrontend;
-            $site->enable_register = $siteRegister; 
+            $site->enable_register = $siteRegister;
             $site->uri_backend = $uriBackend;
             $site->uri_auth = $uriAuth;
             $site->color_primary = $colorPrimary;
