@@ -50,6 +50,12 @@
     <include href="index.css" />
   </style>
 
+  <check if="{{ isset(@VIEW_CSS) }}">
+    <style>
+      <include href="{{@VIEW_CSS}}" />
+    </style>
+  </check>
+
   <script src="{{@PUBLIC}}/client/app.js?v={{@DEBUG>0?time():@VERSION}}"></script>
 
   <script>
@@ -63,6 +69,15 @@
 
 <include href="partials/sidebar.htm" />
 <include href="partials/main.htm" />
+
+<check if="{{ isset(@VIEW_JS) }}">
+  <script>
+    "use strict"
+    document.addEventListener('DOMContentLoaded', function() {
+      <include href="{{@VIEW_JS}}" />
+    }, false);
+  </script>
+</check>
 
 
 </body>

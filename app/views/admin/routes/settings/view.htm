@@ -46,12 +46,7 @@
             <a class="nav-link active" id="v-pills-site-tab" data-ui-toggle="pill" data-ui-target="#v-pills-site" aria-controls="v-pills-site" role="tab" aria-selected="true">
             Site
             </a>
-        </li> 
-        <li class="nav-item" role="button">
-            <a class="nav-link" id="v-pills-mail-tab" data-ui-toggle="pill" data-ui-target="#v-pills-mail" aria-controls="v-pills-mail" role="tab" aria-selected="false">
-            Mail
-            </a>
-        </li> 
+        </li>
         <li class="nav-item" role="button">
             <a class="nav-link" id="v-pills-appearance-tab" data-ui-toggle="pill" data-ui-target="#v-pills-appearance" aria-controls="v-pills-appearance" role="tab" aria-selected="false">
                 Appearance
@@ -116,46 +111,6 @@
                     </div> 
                 </div> 
             
-            </div>
-
-            <div class="tab-pane fade" id="v-pills-mail" role="tabpanel" aria-labelledby="v-pills-mail-tab">
-
-                <label for="mailHost" class="text-body-secondary mb-2">SMTP Host</label>
-                <div class="input-group mb-4"> 
-                    <input class="form-control" type="text" id="mailHost" name="mailHost" placeholder="SMTP Host" value="{{@SITE.smtp_host}}">
-                </div>
-                <label for="mailPort" class="text-body-secondary mb-2">SMTP Port</label>
-                <div class="input-group mb-4"> 
-                    <input class="form-control" type="tel" id="mailPort" name="mailPort" placeholder="Eg: 465" value="{{@SITE.smtp_port}}">
-                </div>
-                <label for="mailScheme" class="text-body-secondary mb-2">SMTP Scheme</label>
-                <div class="input-group mb-4"> 
-                    <select class="form-select" aria-label="Select Scheme" id="mailScheme" name="mailScheme">
-                        <option selected>Select one</option>
-                        <option value="SSL" {{@SITE.smtp_scheme==='SSL'?'selected':''}}>SSL</option>
-                        <option value="TSL" {{@SITE.smtp_scheme==='TSL'?'selected':''}}>TSL</option> 
-                    </select>
-                     
-                </div>
-                <label for="mailUsername" class="text-body-secondary mb-2">SMTP Username</label>
-                <div class="input-group mb-4"> 
-                    <span class="input-group-text">
-                        <svg class="icon">
-                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
-                        </svg>
-                    </span>
-                    <input class="form-control" type="email" id="mailUsername" name="mailUsername" placeholder="Eg: mail@domain.com" value="{{@SITE.smtp_user}}">
-                </div>
-                <label for="mailPassword" class="text-body-secondary mb-2">SMTP Password</label>
-                <div class="input-group mb-4">
-                    <span class="input-group-text">
-                        <svg class="icon">
-                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
-                        </svg>
-                    </span>
-                    <input class="form-control" type="password" id="mailPassword" name="mailPassword" placeholder="••••••••" value="{{@SITE.smtp_pass}}">
-                </div>
-
             </div>
 
             <div class="tab-pane fade" id="v-pills-appearance" role="tabpanel" aria-labelledby="v-pills-appearance-tab">
@@ -268,7 +223,7 @@
             <div class="position-relative">
                 <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
                 <a id="confirmbtn" class="hidden" aria-label="Confirm changes" data-ui-toggle="modal" data-ui-target="#confirmModal"></a>
-                <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</a>
+                <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
             </div>
         </div>
         </form>
@@ -302,13 +257,6 @@
     const siteFrontend = document.getElementById('siteFrontend');
     const siteRegister = document.getElementById('siteRegister');
 
-    // Mail Input Fields
-    const mailHost = document.getElementById('mailHost');
-    const mailPort = document.getElementById('mailPort');
-    const mailScheme = document.getElementById('mailScheme');
-    const mailUsername = document.getElementById('mailUsername');
-    const mailPassword = document.getElementById('mailPassword');
-
     // Appearance Input Fields
     const colorPrimary = document.getElementById('colorPrimary');
     const colorPrimaryText = document.getElementById('colorPrimaryText');
@@ -327,12 +275,7 @@
     schema['siteDescription'] = siteDescription.value; 
     schema['siteKeywords'] = siteKeywords.value; 
     schema['siteFrontend'] = siteFrontend.checked?1:0; 
-    schema['siteRegister'] = siteRegister.checked?1:0; 
-    schema['mailHost'] = mailHost.value; 
-    schema['mailPort'] = mailPort.value; 
-    schema['mailScheme'] = mailScheme.value; 
-    schema['mailUsername'] = mailUsername.value; 
-    schema['mailPassword'] = mailPassword.value; 
+    schema['siteRegister'] = siteRegister.checked?1:0;  
     schema['colorPrimary'] = colorPrimary.value; 
     schema['colorPrimaryText'] = colorPrimaryText.value; 
     schema['colorLight'] = colorLight.value; 
@@ -355,7 +298,6 @@
 
 
     function confirmedUpdate(){
-      
 
     const currentPassword = document.getElementById('currentPassword'); 
     if(currentPassword.value==""){

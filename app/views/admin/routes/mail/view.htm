@@ -1,1 +1,115 @@
-Email SMTP config goes here + Developer Code
+<form id="updateMailForm" class="w-100" >
+
+    <label for="mailHost" class="text-body-secondary mb-2">SMTP Host</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="text" id="mailHost" name="mailHost" placeholder="SMTP Host" value="{{@SITE.smtp_host}}">
+    </div>
+    <label for="mailPort" class="text-body-secondary mb-2">SMTP Port</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="tel" id="mailPort" name="mailPort" placeholder="Eg: 465" value="{{@SITE.smtp_port}}">
+    </div>
+    <label for="mailScheme" class="text-body-secondary mb-2">SMTP Scheme</label>
+    <div class="input-group mb-4">
+        <select class="form-select" aria-label="Select Scheme" id="mailScheme" name="mailScheme">
+            <option selected>Select one</option>
+            <option value="SSL" {{@SITE.smtp_scheme==='SSL'?'selected':''}}>SSL</option>
+            <option value="TSL" {{@SITE.smtp_scheme==='TSL'?'selected':''}}>TSL</option>
+        </select>
+
+    </div>
+    <label for="mailUsername" class="text-body-secondary mb-2">SMTP Username</label>
+    <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
+                        </svg>
+                    </span>
+        <input class="form-control" type="email" id="mailUsername" name="mailUsername" placeholder="Eg: mail@domain.com" value="{{@SITE.smtp_user}}">
+    </div>
+    <label for="mailPassword" class="text-body-secondary mb-2">SMTP Password</label>
+    <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+        <input class="form-control" type="password" id="mailPassword" name="mailPassword" placeholder="••••••••" value="{{@SITE.smtp_pass}}">
+    </div>
+    <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+    <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
+</form>
+
+
+<script>
+    "use strict"
+
+    // Initialization
+    const updateMailForm = document.getElementById('updateMailForm');
+    const token = document.getElementById('token');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitOrignalTxt = submitBtn.innerText;
+    let inputs = updateMailForm;
+    let keywords = updateMailForm;
+
+    function sendUpdateRequest(){
+
+        // Mail Input Fields
+        const mailHost = document.getElementById('mailHost');
+        const mailPort = document.getElementById('mailPort');
+        const mailScheme = document.getElementById('mailScheme');
+        const mailUsername = document.getElementById('mailUsername');
+        const mailPassword = document.getElementById('mailPassword');
+
+        const schema = {};
+        schema['mailHost'] = mailHost.value;
+        schema['mailPort'] = mailPort.value;
+        schema['mailScheme'] = mailScheme.value;
+        schema['mailUsername'] = mailUsername.value;
+        schema['mailPassword'] = mailPassword.value;
+
+        const payload = {
+            token: token.value,
+            schema: schema,
+        }
+
+        let uri_request = "mail?update";
+        fetchRequest(payload, uri_request, updateMailForm);
+    }
+
+    async function fetchRequest(formData, url) {
+        event.preventDefault();
+
+        try {
+            const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data", // Important for file uploads
+                },
+            }).then(response => {
+                const data = response.data;
+                if (data.status === "success") {
+                    showAlert("success", response.data.message);
+                    // Clear cache and reload the page
+                    if(confirm('Some changes may need to reload the page to take effect. Do wish to reload now?')){
+                        window.location.reload(true);
+                        return false;
+                    }
+
+                } else {
+                    console.log(response);
+                    showAlert("error", response.data.message);
+                }
+            }).finally(() => {
+                // Re-enable all inputs and submit button
+                if(inputs){ inputs.forEach(input => input.disabled = false); }
+                keywords.forEach(keyword => keyword.removeAttribute('aria-disabled'));
+                submitBtn.innerText = submitOrignalTxt;
+            });
+
+        } catch (error) {
+            showAlert("error", "Error creating user. Please try again later.");
+            // Re-enable all inputs and submit button in case of error
+            if(inputs){  inputs.forEach(input => input.disabled = false); }
+        }
+    }
+
+</script>

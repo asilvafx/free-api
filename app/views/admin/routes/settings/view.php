@@ -1,5 +1,7 @@
 <?php
 
+global $f3;
+
 $f3->set('PAGE.title', 'Settings');
 $f3->set('PAGE.slug', 'settings');
 $f3->set('breadcrumbs', [
@@ -67,11 +69,6 @@ if (isset($_GET['update']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $siteKeywords = isset($schema['siteKeywords']) ? htmlspecialchars_decode($schema['siteKeywords']) : null;
             $siteFrontend = isset($schema['siteFrontend']) ? htmlspecialchars_decode($schema['siteFrontend']) : null;
             $siteRegister = isset($schema['siteRegister']) ? htmlspecialchars_decode($schema['siteRegister']) : null;
-            $mailHost = isset($schema['mailHost']) ? htmlspecialchars_decode($schema['mailHost']) : null;
-            $mailPort = isset($schema['mailPort']) ? htmlspecialchars_decode($schema['mailPort']) : null;
-            $mailScheme = isset($schema['mailScheme']) ? htmlspecialchars_decode($schema['mailScheme']) : null;
-            $mailUsername = isset($schema['mailUsername']) ? htmlspecialchars_decode($schema['mailUsername']) : null;
-            $mailPassword = isset($schema['mailPassword']) ? htmlspecialchars_decode($schema['mailPassword']) : null;
             $colorPrimary = isset($schema['colorPrimary']) ? htmlspecialchars_decode($schema['colorPrimary']) : null;
             $colorPrimaryText = isset($schema['colorPrimary']) ? htmlspecialchars_decode($schema['colorPrimaryText']) : null;
             $colorLight = isset($schema['colorLight']) ? htmlspecialchars_decode($schema['colorLight']) : null;
@@ -119,13 +116,7 @@ if (isset($_GET['update']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $site->site_keywords = $siteKeywords;
             $site->site_logo = $logoPath;
             $site->enable_frontend = $siteFrontend;
-            $site->enable_register = $siteRegister;
-            $site->smtp_host = $mailHost;
-            $site->smtp_mail = $mailUsername;
-            $site->smtp_port = $mailPort;
-            $site->smtp_scheme = $mailScheme;
-            $site->smtp_user = $mailUsername;
-            $site->smtp_pass = $mailPassword;
+            $site->enable_register = $siteRegister; 
             $site->uri_backend = $uriBackend;
             $site->uri_auth = $uriAuth;
             $site->color_primary = $colorPrimary;

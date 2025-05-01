@@ -35,7 +35,15 @@ class Backend extends MainController  {
  
         if (file_exists($ui.'routes'.$content.'/view.php')) { 
             require_once($ui.'routes'.$content.'/view.php');
-        } 
+        }
+
+        if (file_exists($ui.'routes'.$content.'/view.css')) {
+            $f3->set('VIEW_CSS', 'routes'.$content.'/view.css');
+        }
+
+        if (file_exists($ui.'routes'.$content.'/view.js')) {
+            $f3->set('VIEW_JS', 'routes'.$content.'/view.js');
+        }
 
         $f3->set('CONTENT', $content);  
  
