@@ -143,6 +143,7 @@ if ($site->dry()) {
     $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
     $f3->route('GET|PUT|DELETE /v1/@slug/@search', 'Api->Base');
     $f3->route('POST /v1/payment-gateway/@slug', 'Api->Payment');
+    $f3->route('POST /v1/send-mail', 'Api->Mail');
     $f3->route('POST /v1/upload', 'Api->Upload');
 
     // Load WebAuthn Routes

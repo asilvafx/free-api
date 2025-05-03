@@ -83,9 +83,9 @@ class Api extends PostController
 
         // Extract parameters from the request body
         $amount = isset($body['amount']) ? intval($body['amount']) : 0;
-        $currency = isset($body['currency']) ? $body['currency'] : 'usd';
-        $email = isset($body['email']) ? $body['email'] : '';
-        $useAutomaticMethods = isset($body['automatic_payment_methods']) ? $body['automatic_payment_methods'] : false;
+        $currency = $body['currency'] ?? 'usd';
+        $email = $body['email'] ?? '';
+        $useAutomaticMethods = $body['automatic_payment_methods'] ?? false;
 
         // Validate required fields
         if ($amount <= 0) {
@@ -151,6 +151,56 @@ class Api extends PostController
         }
     }
 
+    function Mail($f3)
+    {
+        $key = isset($_SERVER['HTTP_AUTHORIZATION'])
+            ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']))
+            : $f3->get('POST.key');
+
+        $response = new Response;
+        $mail     = new Mail;
+
+        // Verify API Key
+        if (!$this->verifyKey($key)) {
+            $response->json('error', 'Invalid API key.');
+            exit;
+        }
+
+        // Only allow POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $response->json('error', 'Only POST method is allowed.');
+            exit;
+        }
+
+        $body = json_decode(file_get_contents('php://input'), true);
+
+        // Gather inputs
+        $to      = $body['address'] ?? $f3->get('POST.address');
+        $subject = $body['subject'] ?? $f3->get('POST.subject');
+        $body    = $body['body'] ?? $f3->get('POST.body');
+
+        if (!$to || !$subject || !$body) {
+            $response->json('error', 'Missing email fields (address, subject, body).');
+            exit;
+        }
+
+        // Send!
+        $ok = $mail->sendEmail(
+            $to,
+            $subject,
+            'default',
+            ['message' => $body]
+        );
+
+        if ($ok) {
+            $response->json('success', 'Email sent.');
+        } else {
+            $response->json('error', 'Email could not be sent.');
+        }
+
+        exit;
+    }
+
     function Upload($f3)
     {
         $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
@@ -183,11 +233,18 @@ class Api extends PostController
         // Handle file upload
         $uploadedFile = $utils->uploadFile($_FILES['file'], $uploadDir, $fileRename);
 
+        if(isset($_SERVER['HTTPS'])){
+            $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+        }
+        else{
+            $protocol = 'http';
+        }
+
         if ($uploadedFile) {
             // Return success with file path
             $relativePath = str_replace(BASE_PATH, '', $uploadedFile);
             $response->json('success', [
-                'file' => $relativePath,
+                'file' => $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" .$relativePath,
                 'message' => 'File uploaded successfully.'
             ]);
         } else {
