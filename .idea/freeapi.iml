@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/app/vendor/src" isTestSource="false" packagePrefix="Pigmilcom\Webapp\" />
+      <sourceFolder url="file://$MODULE_DIR$/app/vendor2/src" isTestSource="false" packagePrefix="Pigmilcom\Webapp\" />
+      <sourceFolder url="file://$MODULE_DIR$/app/lib/spec" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/app/lib/vendor/stripe-php/data" />
+      <excludeFolder url="file://$MODULE_DIR$/app/lib/vendor/stripe-php/lib" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
