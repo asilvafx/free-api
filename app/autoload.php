@@ -18,7 +18,6 @@ $f3->set('dbPath', "app/data/db/cms.db"); // Database Path
 $f3->set('auto_logout', 14400); // Automatically logout after this many seconds of inactivity
 $f3->set('TIMEOUT', 86400); // Define cookies timeout (in seconds, default: 24h > 86400)
 $f3->set('time_format', "d M Y h:ia"  ); // How timestamps look like on the pages
-$f3->set('eurocookie', FALSE); // Display eurocookie notices
 
 // Server errors
 $debug = 0;
@@ -77,9 +76,6 @@ if ($site->dry()) {
     $f3->set('SITE.description', $site->site_description); // Site Description
     $f3->set('SITE.keywords', $site->site_keywords); // Site Keywords
     $f3->set('SITE.logo', $site->site_logo); // Site Logo
-
-    $f3->set('SITE.currencyCode', 'EUR'); // Site Currency code (ex: USD)
-    $f3->set('SITE.currencySymbol', '€'); // Site Currency symbol (ex: $)
 
     $f3->set('SITE.smtp_host', $site->smtp_host);  // SMTP Host
     $f3->set('SITE.smtp_mail', $site->smtp_mail);  // SMTP Sender
