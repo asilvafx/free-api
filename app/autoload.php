@@ -138,9 +138,9 @@ if ($site->dry()) {
     // Load api routes
     $f3->route('GET|POST|PUT|DELETE /v1/@slug', 'Api->Base');
     $f3->route('GET|PUT|DELETE /v1/@slug/@search', 'Api->Base');
-    $f3->route('POST /v1/payment-gateway/@slug', 'Api->Payment');
-    $f3->route('POST /v1/send-mail', 'Api->Mail');
-    $f3->route('POST /v1/upload', 'Api->Upload');
+    $f3->route('POST /pay/@slug', 'Api->Payment');
+    $f3->route('POST /mail', 'Api->Mail');
+    $f3->route('POST /upload', 'Api->Upload');
 
     // Load WebAuthn Routes
     $f3->route('GET|POST /web/authn/attestation/options', 'WebAuthn->Options');

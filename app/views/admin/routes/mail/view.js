@@ -1,0 +1,73 @@
+
+// Initialization
+const updateMailForm = document.getElementById('updateMailForm');
+const token = document.getElementById('token');
+const submitBtn = document.getElementById('submitBtn');
+const submitOrignalTxt = submitBtn.innerText;
+const inputs = document.querySelectorAll('input, select, button, textarea');
+
+function sendUpdateRequest(){
+
+    // Mail Input Fields
+    const mailHost = document.getElementById('mailHost');
+    const mailPort = document.getElementById('mailPort');
+    const mailScheme = document.getElementById('mailScheme');
+    const mailUsername = document.getElementById('mailUsername');
+    const mailPassword = document.getElementById('mailPassword');
+
+    const schema = {};
+    schema['mailHost'] = mailHost.value;
+    schema['mailPort'] = mailPort.value;
+    schema['mailScheme'] = mailScheme.value;
+    schema['mailUsername'] = mailUsername.value;
+    schema['mailPassword'] = mailPassword.value;
+
+    const payload = {
+        token: token.value,
+        schema: schema,
+    }
+
+    let uri_request = "mail?update";
+    fetchRequest(payload, uri_request, updateMailForm);
+}
+
+async function fetchRequest(formData, url) {
+    if(inputs){inputs.forEach(input => input.disabled = true);}
+
+    try {
+        const response = await axios.post("/{{@SITE.uri_backend}}/" + url, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data", // Important for file uploads
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data.status === "success") {
+                showAlert("success", response.data.message);
+            } else {
+                console.log(response);
+                showAlert("error", response.data.message);
+            }
+        }).finally(() => {
+            if(inputs){  inputs.forEach(input => input.disabled = false); }
+        });
+
+    } catch (error) {
+        showAlert("error", "Error updating data. Please try again later.");
+        // Re-enable all inputs and submit button in case of error
+        if(inputs){  inputs.forEach(input => input.disabled = false); }
+    }
+}
+
+if(updateMailForm){
+    updateMailForm.addEventListener('keydown', function(e){
+        if(e.keyCode === 13){
+            e.preventDefault();
+            sendUpdateRequest();
+        }
+    });
+
+    updateMailForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        sendUpdateRequest();
+    });
+}

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 $file = isset($_POST['file']) ? htmlspecialchars_decode($_POST['file']) : null;
                 $name = isset($_POST['name']) ? htmlspecialchars_decode($_POST['name']) : null;
                 if ($file && $name) {
-                    $baseDir = 'public/uploads/files/';
+                    $baseDir = 'public/uploads/';
                     if (file_exists($baseDir . $file)) {
                         // Rename file function here
                         rename($baseDir . $file, $baseDir . $name);
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             case "delete":
                 $file = isset($_POST['file']) ? htmlspecialchars_decode($_POST['file']) : null;
                 if ($file) {
-                    $baseDir = 'public/uploads/files/';
+                    $baseDir = 'public/uploads/';
                     if (file_exists($baseDir . $file)) {
                         unlink($baseDir . $file);
                         $response->json('success', 'File was successfully deleted.');

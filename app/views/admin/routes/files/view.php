@@ -14,7 +14,7 @@ $utils = new Utils;
 $f3->set('UTILS', $utils);
 
 // Base directory where the files are stored
-$baseDir = 'public/uploads/files/';
+$baseDir = 'public/uploads/';
 $f3->set('FILES.baseDir', $baseDir);
 
 // Scan directory and remove "." and ".." from the array
