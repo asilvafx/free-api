@@ -13,11 +13,11 @@
 <br>
 <label for="stripePk" class="text-body-secondary mb-2">Public Key</label>
 <div class="input-group mb-4">
-    <input class="form-control" type="text" id="stripePk" name="stripePk" maxlength="60" placeholder="pk_live_0000.." value="{{@SITE.stripe_pk}}">
+    <input class="form-control" type="text" id="stripePk" name="stripePk" maxlength="120" placeholder="pk_live_0000.." value="{{@SITE.stripe_pk}}">
 </div>
 <label for="stripeSk" class="text-body-secondary mb-2">Secret Key</label>
 <div class="input-group mb-4">
-    <input class="form-control" type="password" id="stripeSk" name="stripeSk" maxlength="60" placeholder="sk_live_0000" value="{{@SITE.stripe_sk}}">
+    <input class="form-control" type="password" id="stripeSk" name="stripeSk" maxlength="120" placeholder="sk_live_0000" value="{{@SITE.stripe_sk}}">
 </div>
     <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
     <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
