@@ -280,8 +280,12 @@ class Api extends PostController
                 if (!empty($body) && is_array($body)) {
                     $tableName = $requestData["collection"];
                     $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
-                    $id = $crud->create($tableName, $body);
-                    $response->json('success', ['id' => $id, 'message' => 'Data added successfully.']);
+                    try {
+                        $id = $crud->create($tableName, $body);
+                        $response->json('success', ['id' => $id, 'message' => 'Data added successfully.']);
+                    } catch (Exception $e) {
+                        $response->json('error', $e->getMessage());
+                    }
                 } else {
                     $response->json('error', 'Missing or invalid data in request body.');
                 }
@@ -290,32 +294,40 @@ class Api extends PostController
             case 'GET':
                 $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
 
-                if (!empty($search) && is_numeric($search)) {
-                    // If search is set and is numeric, fetch the specific item by ID
-                    $data = $crud->readById($requestData["collection"], (int)$search);
-                } else {
-                    // Otherwise, fetch all items from the table
-                    $data = $crud->read($requestData["collection"]);
-                }
+                try {
+                    if (!empty($search) && is_numeric($search)) {
+                        // If search is set and is numeric, fetch the specific item by ID
+                        $data = $crud->readById($requestData["collection"], (int)$search);
+                    } else {
+                        // Otherwise, fetch all items from the table
+                        $data = $crud->read($requestData["collection"]);
+                    }
 
-                // Check if the response indicates an error
-                if ($data['status'] === 'error') {
-                    // Return the error response directly
-                    $response->json('error', $data['message']);
-                } else {
-                    // Return the success response
-                    $response->json('success', $data['message']);
+                    // Check if the response indicates an error
+                    if ($data['status'] === 'error') {
+                        // Return the error response directly
+                        $response->json('error', $data['message']);
+                    } else {
+                        // Return the success response
+                        $response->json('success', $data['message']);
+                    }
+                } catch (Exception $e) {
+                    $response->json('error', $e->getMessage());
                 }
                 break;
                 
             case 'PUT':
                 if (!empty($search) && is_numeric($search) && !empty($body) && is_array($body)) {
                     $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
-                    $result = $crud->update($requestData["collection"], $search, $body);
-                    if ($result['status'] === 'success') {
-                        $response->json('success', $result['message']);
-                    } else {
-                        $response->json('error', $result['message']);
+                    try {
+                        $result = $crud->update($requestData["collection"], $search, $body);
+                        if ($result['status'] === 'success') {
+                            $response->json('success', $result['message']);
+                        } else {
+                            $response->json('error', $result['message']);
+                        }
+                    } catch (Exception $e) {
+                        $response->json('error', $e->getMessage());
                     }
                 } else {
                     $response->json('error', 'Invalid data or values.');
@@ -325,11 +337,15 @@ class Api extends PostController
             case 'DELETE':
                 if (!empty($search) && is_numeric($search)) {
                     $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
+                    try {
                     $result = $crud->erase($requestData["collection"], $search);
                     if ($result['status'] === 'success') {
                         $response->json('success', $result['message']);
                     } else {
                         $response->json('error', $result['message']);
+                    }
+                    } catch (Exception $e) {
+                        $response->json('error', $e->getMessage());
                     }
                 } else {
                     $response->json('error', 'Invalid data or values.');
