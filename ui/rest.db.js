@@ -6,7 +6,7 @@ const API_KEY = process.env.API_BEARER_TOKEN || null;
 
 // Configuring axios instance with default headers
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: `${API_BASE_URL}/v1`,
     headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`
@@ -189,10 +189,19 @@ class DBService {
     }
 
     // Delete all items in a table
-    // Note: Your PHP API doesn't seem to have this endpoint
     async deleteAll(table) {
-        console.warn('deleteAll method is not implemented in the PHP API');
-        return false;
+        try {
+            const response = await api.delete(`/${table}`);
+
+            if (response.data.status === 'success') {
+                return true;
+            }
+
+            throw new Error(response.data.message || 'Failed to delete collection');
+        } catch (error) {
+            console.error(`Error in delete: ${error}`);
+            throw error;
+        }
     }
 
     // Upload an image
