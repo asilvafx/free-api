@@ -155,7 +155,7 @@ class Api extends PostController
     {
         $key = isset($_SERVER['HTTP_AUTHORIZATION'])
             ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']))
-            : $f3->get('POST.key');
+            : null;
 
         $response = new Response;
         $mail     = new Mail;
@@ -203,7 +203,7 @@ class Api extends PostController
 
     function Upload($f3)
     {
-        $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
+        $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : null;
         $response = new Response;
         $utils = new Utils();
 
@@ -260,7 +260,7 @@ class Api extends PostController
         $body = json_decode(file_get_contents('php://input'), true);
         $slug = empty($args['slug']) ? '' : htmlspecialchars_decode($args['slug']);
         $search = empty($args['search']) ? '' : htmlspecialchars_decode($args['search']);
-        $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : $f3->get('POST.key');
+        $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : null;
         $response = new Response;
 
         // Verify API Key
@@ -335,9 +335,13 @@ class Api extends PostController
                 break;
 
             case 'DELETE':
-                if (!empty($search) && is_numeric($search)) {
-                    $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
+                $crud = new Crud($siteDb);
+                if (!empty($search)) {
                     try {
+                    if(!is_numeric($search)){
+                        $response->json('error', 'Invalid query value.');
+                        exit;
+                    }
                     $result = $crud->erase($requestData["collection"], $search);
                     if ($result['status'] === 'success') {
                         $response->json('success', $result['message']);
@@ -348,8 +352,20 @@ class Api extends PostController
                         $response->json('error', $e->getMessage());
                     }
                 } else {
-                    $response->json('error', 'Invalid data or values.');
-                }
+                     $response->json('error', 'Invalid data or values.');
+                     /* Uncomment block to allow collection full deletion
+                        try {
+                            $result = $crud->eraseAll($requestData["collection"]);
+                            if ($result['status'] === 'success') {
+                                $response->json('success', $result['message']);
+                            } else {
+                                $response->json('error', $result['message']);
+                            }
+                        } catch (Exception $e) {
+                            $response->json('error', $e->getMessage());
+                        }
+                    */
+                    }
                 break;
 
             default:

@@ -140,13 +140,32 @@ class Crud {
     public function erase(string $tableName, int $id): array // Change return type to array
     {
         $sql = "DELETE FROM $tableName WHERE id = ?";
-
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
             return [
                 "status" => "success",
                 "message" => "Deleted from collection successfully."
+            ]; // Return success message
+        } catch (PDOException $e) {
+            return [
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]; // Return error message
+        }
+    }
+
+    // DELETE ALL
+    public function eraseAll(string $tableName): array // Change return type to array
+    {
+        $sql = "DROP TABLE IF EXISTS $tableName";
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            return [
+                "status" => "success",
+                "message" => "Collection deleted successfully."
             ]; // Return success message
         } catch (PDOException $e) {
             return [
