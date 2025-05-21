@@ -353,7 +353,7 @@ class Api extends PostController
                     }
                 } else {
                      $response->json('error', 'Invalid data or values.');
-                     /* Uncomment block to allow collection full deletion
+                     /* Uncomment block to allow delete collection (All items)
                         try {
                             $result = $crud->eraseAll($requestData["collection"]);
                             if ($result['status'] === 'success') {
