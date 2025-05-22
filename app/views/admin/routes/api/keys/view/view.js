@@ -5,6 +5,7 @@ const deleteKeyForm = document.getElementById('deleteKeyForm');
 const newDomainForm = document.getElementById('newDomainForm');
 const enableApi = document.getElementById('enableApi');
 const keySlug = document.getElementById('keySlug');
+const removeDomainBtns = document.querySelectorAll('[data-remove-domain]');
 
 function copyKey(){
     const keyInput = document.getElementById("key");
@@ -103,7 +104,7 @@ if(deleteKeyForm){
     })
 }
 if(newDomainForm){
-    newDomainForm.addEventListener('submit', function(e){
+    newDomainForm.addEventListener('submit', async function(e){
         e.preventDefault();
         let apiUrl = document.getElementById('apiUrl');
 
@@ -122,10 +123,23 @@ if(newDomainForm){
         }
 
         let uri_request = "api/keys/edit?addDomain";
-        fetchRequest(payload, uri_request, newDomainForm, true);
+        await fetchRequest(payload, uri_request, newDomainForm, true);
     })
 }
-function removeDomain(domain){
+
+if(typeof(removeDomainBtns) && removeDomainBtns !== 'undefined'){
+    removeDomainBtns.forEach((button) => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            let domainAttr = button.getAttribute('data-domain');
+            if(window.confirm('Are you sure you want to remove this domain from allowed domains?')){
+                await removeDomain(domainAttr);
+            }
+
+        });
+    });
+}
+async function removeDomain(domain){
 
     if(domain === ""){
         alert('Domain invalid.');
@@ -142,7 +156,7 @@ function removeDomain(domain){
     }
 
     let uri_request = "api/keys/edit?removeDomain";
-    fetchRequest(payload, uri_request, null, true);
+    await fetchRequest(payload, uri_request, null, true);
 }
 
 // Add Event Listeners

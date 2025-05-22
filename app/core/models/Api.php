@@ -22,137 +22,68 @@ class Api extends PostController
         }
 
         try {
-            // Check if there are any records in the 'api' table
-            $totalItems = $this->crud->read('api'); // Use the read method from Crud
-
-            if (empty($totalItems)) {
-                return false;
-            }
-
             if (empty($key)) {
                 $response->json('error', 'API Key missing.');
                 return false;
             }
 
-            // Decode the API key from the authorization header
+            // Decode the API key
             $key = htmlspecialchars_decode($key);
 
-            // Load the API key from the database
-            $api = new DB\SQL\Mapper($db, 'api'); // Use the global $db
-            $api->load(array('api_key=?', $key));
+            // Load API key from DB
+            $api = new DB\SQL\Mapper($db, 'api');
+            $api->load(['api_key = ?', $key]);
 
             if ($api->dry()) {
                 $response->json('error', 'Invalid API Key.');
                 return false;
-            } elseif ($api->status === 0) {
+            }
+
+            // Check if API key is enabled
+            if ((int)$api->status === 0) {
                 $response->json('error', 'API Key disabled.');
                 return false;
-            } else {
-                $api->api_usage++;
-                $api->save();
-                return true;
             }
+
+            // Check allowed IPs if set
+            $client_ip = $f3->get('CLIENT.ip');
+            $ips = $api->api_allowed_domains;
+            if (!empty($ips) && is_string($ips)) {
+                $allowed_ips = array_map('trim', explode(',', $ips));
+
+
+                if (!in_array($client_ip, $allowed_ips) && !in_array('*', $allowed_ips)) {
+                    $response->json('error', 'IP: '.$client_ip.' not allowed.');
+                    return false;
+                }
+            } else {
+                $response->json('error', 'IP: '.$client_ip.' not allowed.');
+                return false;
+            }
+
+            // Increment usage
+            $api->api_usage++;
+            $api->save();
+
+            return true;
+
         } catch (Exception $e) {
             $response->json('error', 'Error fetching request. ' . $e->getMessage());
             return false;
         }
     }
 
-    function Payment($f3, $args)
-    { 
-        if($f3->get('SITE.stripe_status') !== 1){
-            echo json_encode(['error' => 'Stripe not enabled.']);
-            return;
-        }
-        $stripe_sk = $f3->get('SITE.stripe_sk');
-        require_once ROOT . 'lib/vendor/stripe-php/init.php';
 
-        // Set proper headers for CORS if needed
-        header('Content-Type: application/json');
-
-        // Parse the JSON body
-        $body = json_decode($f3->get('BODY'), true);
-
-        // Log incoming request for debugging
-        error_log('Payment request: ' . json_encode($body));
-
-        if (!$body) {
-            echo json_encode(['error' => 'Invalid request body']);
-            return;
-        }
-
-        // Extract parameters from the request body
-        $amount = isset($body['amount']) ? intval($body['amount']) : 0;
-        $currency = $body['currency'] ?? 'usd';
-        $email = $body['email'] ?? '';
-        $useAutomaticMethods = $body['automatic_payment_methods'] ?? false;
-
-        // Validate required fields
-        if ($amount <= 0) {
-            echo json_encode(['error' => 'Invalid amount']);
-            return;
-        }
-
-        if (empty($email)) {
-            echo json_encode(['error' => 'Email is required']);
-            return;
-        }
-
-        try {
-            // Initialize Stripe with your secret key
-            $stripe = new \Stripe\StripeClient($stripe_sk);
-
-            // Create a customer
-            $customer = $stripe->customers->create([
-                'email' => $email,
-                'description' => 'Customer for ' . $email,
-            ]);
-
-            // Prepare payment intent parameters
-            $paymentIntentParams = [
-                'amount' => $amount,
-                'currency' => $currency,
-                'customer' => $customer->id,
-                'metadata' => [
-                    'customer_email' => $email
-                ],
-            ];
-
-            // Use automatic payment methods if specified
-            if ($useAutomaticMethods) {
-                $paymentIntentParams['automatic_payment_methods'] = ['enabled' => true];
-            } else {
-                $paymentIntentParams['payment_method_types'] = ['card'];
-            }
-
-            // Create a payment intent
-            $paymentIntent = $stripe->paymentIntents->create($paymentIntentParams);
-
-            // Log the client secret for debugging (remove in production)
-            error_log('Created PaymentIntent: ' . $paymentIntent->id);
-
-            // Return the client secret to the client
-            echo json_encode([
-                'client_secret' => $paymentIntent->client_secret,
-                'customer_id' => $customer->id,
-                'payment_intent_id' => $paymentIntent->id
-            ]);
-
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-            // Handle Stripe API errors
-            error_log('Stripe API Error: ' . $e->getMessage());
-            echo json_encode(['error' => $e->getMessage()]);
-            http_response_code(400);
-        } catch (\Exception $e) {
-            // Handle other errors
-            error_log('Server Error: ' . $e->getMessage());
-            echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
-            http_response_code(500);
-        }
+    function Payment($f3, $args): void
+    {
+        $pay = new Pay;
+        $pay->stripe();
+        return;
     }
 
+
     function Mail($f3)
-    {
+    { 
         $key = isset($_SERVER['HTTP_AUTHORIZATION'])
             ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']))
             : null;
@@ -162,7 +93,6 @@ class Api extends PostController
 
         // Verify API Key
         if (!$this->verifyKey($key)) {
-            $response->json('error', 'Invalid API key.');
             exit;
         }
 
@@ -184,7 +114,7 @@ class Api extends PostController
             exit;
         }
 
-        // Send!
+        // Send email
         $ok = $mail->sendEmail(
             $to,
             $subject,
@@ -193,8 +123,10 @@ class Api extends PostController
         );
 
         if ($ok) {
+            // success response
             $response->json('success', 'Email sent.');
         } else {
+            // error response
             $response->json('error', 'Email could not be sent.');
         }
 

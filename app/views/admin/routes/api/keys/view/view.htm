@@ -199,12 +199,12 @@
                                     <td>{{@domain}}</td>
                                     <td class="text-end pe-0">
                                         <div class="inline-flex gap-1">  
-                                        <a onclick="removeDomain('{{@domain}}'); void(0);" role="button" aria-label="Delete" class="inline-flex align-items-center gap-1 btn btn-sm bg-color border">
+                                        <button data-remove-domain="true" data-domain="{{@domain}}" role="button" aria-label="Delete" class="inline-flex align-items-center gap-1 btn btn-sm bg-color border">
                                             <svg class="icon icon-sm">
                                             <use xlink:href="/public/assets/icons/svg/free.svg#cil-trash"></use>
                                             </svg> 
                                             Delete
-                                        </a>
+                                        </button>
                                         </div>
                                     </td>
                                 </tr> 
