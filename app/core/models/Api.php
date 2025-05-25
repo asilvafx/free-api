@@ -83,7 +83,7 @@ class Api extends PostController
 
 
     function Mail($f3)
-    { 
+    {
         $key = isset($_SERVER['HTTP_AUTHORIZATION'])
             ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']))
             : null;
