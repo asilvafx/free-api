@@ -49,7 +49,6 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
         $password = isset($schema['crypt']) ? htmlspecialchars_decode($schema['crypt']) : null;
         $role = $schema['role'];
         $is_admin = $schema['is_admin'];
-        $is_super_admin = $schema['is_super_admin'];
 
         if (!$email) {
             $response->json('error', 'Invalid Email. Please enter a different email and try again.');
@@ -70,7 +69,6 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $d = time();
             $rand = $crypt->generateRandomString(3);
             $user_id = 'us_' . $d . $rand;
-            $twofactor = new TwoFactor;
 
 
             // Execute the query
@@ -81,11 +79,9 @@ if (isset($_GET['save']) && $_SERVER['REQUEST_METHOD'] === "POST") {
             $user->crypt = $crypt->generate($password);
             $user->role = $role;
             $user->is_admin = $is_admin;
-            $user->is_super_admin = $is_super_admin;
+            $user->is_super_admin = 0;
             $user->confirmed = 1;
             $user->status = 1;
-            $user->twofactor = 0;
-            $user->twofactor_sk = $twofactor->generateSecretKey();
             $user->created_at = time();
             $user->save();
 

@@ -18,7 +18,7 @@
                 <div class="w-100 mb-4">
                 <div class="d-flex align-items-center gap-4">
                     <div class="my-auto">
-                        <img alt="{{@user.displayName}} - Avatar" width="68" height="68" class="rounded" src="{{@user.avatar}}">
+                        <img alt="{{@user.displayName}} - Avatar" width="68" height="68" class="rounded" src="{{!empty(@user.avatar) ? @user.avatar : @PUBLIC.'/assets/img/noavatar.jpg'}}">
                     </div>
                     <div class="d-flex flex-column"> 
                         <span class="h1 mb-1">{{@user.displayName}}</span>

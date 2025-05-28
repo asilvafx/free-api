@@ -8,8 +8,7 @@ const email = document.getElementById('email');
 const crypt = document.getElementById('crypt');
 const cryptConfirm = document.getElementById('cryptConfirm');
 const role = document.getElementById('role');
-const isAdmin = document.getElementById('isAdmin');
-const isSuperAdmin = document.getElementById('isSuperAdmin');
+const isAdmin = document.getElementById('isAdmin'); 
 
 // Submit Form
 if(newUserForm){
@@ -30,10 +29,6 @@ if(newUserForm){
             is_admin = isAdmin.checked?1:0;
         }
 
-        let is_super_admin = 0;
-        if (typeof(isSuperAdmin) !== 'undefined' && isSuperAdmin !== null) {
-            is_super_admin = isSuperAdmin.checked?1:0;
-        }
 
         const schema = {};
         schema['displayName'] = displayName.value;
@@ -41,7 +36,6 @@ if(newUserForm){
         schema['crypt'] = crypt.value;
         schema['role'] = role.value;
         schema['is_admin'] = is_admin;
-        schema['is_super_admin'] = is_super_admin;
 
         const payload = {
             token: token.value,

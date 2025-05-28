@@ -1,7 +1,5 @@
 <?php
 
-use YoHang88\LetterAvatar\LetterAvatar;
-
 $f3->set('PAGE.title', 'Not Found');
 $f3->set('PAGE.slug', 'access');
 $f3->set('breadcrumbs', [
@@ -34,17 +32,12 @@ if ($query) {
     }
 
     $displayName = $user->displayName;
-    $user_avatar = $user->avatar;
-    if (empty($user_avatar)) {
-        $avatar = new LetterAvatar($displayName, 'square', 100);
-        $user_avatar = $avatar->setColor($f3->get('SITE.color_primary'), $f3->get('SITE.color_primary_text'));
-    }
-    $f3->set('user.avatar', $user_avatar);
 
     $f3->set('PAGE.title', 'User: ' . $displayName);
 
     $f3->set('user.id', $query);
     $f3->set('user.displayName', $displayName);
+    $f3->set('user.avatar', $user->avatar);
     $f3->set('user.email', $user->email);
     $f3->set('user.phone', $user->phone);
     $f3->set('user.country', $user->phone);
