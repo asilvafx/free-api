@@ -1,7 +1,5 @@
 <?php
 
-use YoHang88\LetterAvatar\LetterAvatar;
-
 class User extends \Prefab
 {
 
@@ -20,16 +18,6 @@ class User extends \Prefab
                 $is_admin = false;
                 if ($user->is_admin === 1) {
                     $is_admin = true;
-                }
-
-                // Square Shape, Size 64px
-                if (empty($user->avatar)) {
-                    $avatar = new LetterAvatar($user->displayName, 'square', 100);
-                    $user_avatar = $avatar->setColor($f3->get('SITE.color_primary'), $f3->get('SITE.color_primary_text'));
-                    //$avatar->saveAs('public/uploads', LetterAvatar::MIME_TYPE_JPEG);
-                    //$user_avatar = $f3->get('SITE.base_url').'/public/assets/img/noavatar.jpg';
-                    $user->avatar = $user_avatar;
-                    $user->save();
                 }
 
                 $f3->set('CXT', $user);  
