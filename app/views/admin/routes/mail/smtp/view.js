@@ -71,3 +71,64 @@ if(updateMailForm){
         sendUpdateRequest();
     });
 }
+
+const host = window.location.protocol + "//" + window.location.host;
+
+const devReqType = document.getElementById('devReqType');
+const devReqParams = document.getElementById('devReqParams');
+const devReqUri = document.getElementById('devReqUri');
+const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
+
+
+
+const fetchExamples = (method, uri) => {
+    const templates = {
+        POST: `fetch('${uri}', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer your-api-key'
+    },
+    body: {
+        address: \'user@email.com\',
+        subject: \'Subject goes here\',
+        message: \'Message\'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`,
+    };
+    return templates[method];
+};
+
+const curlExamples = (method, uri) => {
+    const templates = {
+        POST: `curl -X POST "${uri}" -H "Content-Type: multipart/form-data" "Authorization: Bearer your-api-key" -F "file=@/path/to/your/file.jpg" -F "filename=custom-filename-optional" -v`,
+    };
+    return templates[method];
+};
+
+const updateTextarea = () => {
+    const selectedMethod = devReqType.value;
+    const uri = devReqUri.value;
+    const selectedReqMethod = document.querySelector('input[name="reqMethod"]:checked').value;
+
+    let example;
+    if (selectedReqMethod === 'node') {
+        example = fetchExamples(selectedMethod, uri); // Use fetch examples for Node.js
+    } else if (selectedReqMethod === 'curl') {
+        example = curlExamples(selectedMethod, uri); // Use cURL examples
+    }
+
+    devReqParams.value = example;
+};
+
+// Set default to GET example using the URI from devReqUri
+updateTextarea();
+
+// Update textarea based on selected method and URI
+devReqType.addEventListener('change', updateTextarea);
+reqMethodRadios.forEach(radio => {
+    radio.addEventListener('change', updateTextarea);
+});
