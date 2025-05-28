@@ -79,8 +79,6 @@ const devReqParams = document.getElementById('devReqParams');
 const devReqUri = document.getElementById('devReqUri');
 const reqMethodRadios = document.querySelectorAll('input[name="reqMethod"]');
 
-
-
 const fetchExamples = (method, uri) => {
     const templates = {
         POST: `fetch('${uri}', {

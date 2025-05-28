@@ -61,12 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
                     $login_alerts = $users->login_alerts == 1;
                     $pin = $users->pin == 1;
-                    $twofactor = $users->twofactor == 1;
                     $passkey = $users->passkey == 1;
 
                     $message = 'pass';
-                    if ($pin || $twofactor || $passkey) {
-                        $message = [['token' => $f3->get('CSRF')], ['otp' => ($pin ? 'pin' : '') . ($twofactor ? ', twofactor' : '') . ($passkey ? ', passkey' : '')]];
+                    if ($pin || $passkey) {
+                        $message = [['token' => $f3->get('CSRF')], ['otp' => ($pin ? 'pin' : '') . ($passkey ? ', passkey' : '')]];
                     } else {
                         $f3->set('SESSION.loggedin', true);
                         $f3->set('SESSION.username', $user_email);
@@ -106,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 if ($crypt->verify($user_pass, $users->crypt)) {
 
                     $pin = isset($inputData['pin']) ? htmlspecialchars($inputData['pin']) : null;
-                    $twofactor = isset($inputData['twofactor']) ? htmlspecialchars($inputData['twofactor']) : null;
                     $passkey = isset($inputData['passkey']) ? htmlspecialchars($inputData['passkey']) : null;
 
                     $message = null;
@@ -116,16 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         if ($pin === $users->pin_code) {
                             $requestPass = true;
                         }
-                    } else 
-                    if ($twofactor) {
-                        $tfa = new TwoFactor;
-                        
-                        $window = 4; // 4 keys (respectively 2 minutes) past and future
-
-                        $valid = $tfa->verifyKey($users->twofactor_sk, $twofactor, $window);
-
-                        if ($valid) { $requestPass = true; }
-                    } else 
+                    } else
                     if ($passkey) {
                         if ($users->passkey_id === $passkey) { $requestPass = true; }
                     } else {

@@ -15,15 +15,12 @@ $f3->set('breadcrumbs', [
 
 global $db;
 
-$twofactor = new TwoFactor;
 $response = new Response;
 
 $csrf = (isset($_POST['token']) ? htmlspecialchars_decode($_POST['token']) : null);
 
 $authnRegister = isset($_GET['authn-register']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
 $authnRemove = isset($_GET['authn-remove']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
-$twoFactorRegister = isset($_GET['twofactor-register']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
-$twoFactorRemove = isset($_GET['twofactor-remove']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
 $pinRegister = isset($_GET['pin-register']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
 $pinRemove = isset($_GET['pin-remove']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
 $loginAlerts = isset($_GET['login-alerts']) && $_SERVER['REQUEST_METHOD'] === "POST" ? true : false;
@@ -146,40 +143,7 @@ if ($authnRegister) {
         $response->json('error', "There was an error activating your passkey!");
     }
     exit;
-} else 
-if ($twoFactorRegister) {
-    $user = loadUser($csrf);
-    $twofactorkey = isset($_POST['twofactor_key']) ? base64_decode($_POST['twofactor_key']) : null;
-
-    $window = 4; // 4 keys (respectively 2 minutes) past and future
-
-    $valid = $twofactor->verifyKey($user->twofactor_sk, $twofactorkey, $window);
-
-    if ($valid) {
-        $user->twofactor = 1;
-        $user->save();
-        $response->json('success', "Authenticator's now active in your account!");
-    } else {
-        $response->json('error', "There was an error activating your authenticator!");
-    }
-    exit;
-} else 
-if ($twoFactorRemove) {
-    $user = loadUser($csrf);
-    $requestPass = true;
-
-    if ($requestPass) {
-        $user->twofactor = 0;
-        $user->twofactor_sk = "";
-        $user->save();
-
-        $response->json('success', "Authenticator's was removed from your account!");
-    } else {
-        $response->json('error', "There was an error removing your authenticator!");
-    }
-
-    exit;
-} else 
+} else
 if ($pinRegister) {
     $user = loadUser($csrf);
     $requestPass = true;
@@ -240,18 +204,3 @@ if ($loginAlerts) {
 $userId = $f3->get('CXT')->user_id;
 $user = new DB\SQL\Mapper($db, 'users');
 $user->load(array('user_id=?', $userId));
-if (!$user->dry()) {
-
-    $secretKey = $user->twofactor_sk;
-    if (empty($secretKey)) {
-        $secretKey = $twofactor->generateSecretKey();
-        $user->twofactor_sk = $secretKey;
-        $user->save();
-    }
-    if (empty($user->twofactor)) {
-        $qrCodeUrl = $twofactor->getQRCodeUrl($secretKey);
-        $f3->set('qrCodeUrl', $qrCodeUrl);
-    }
-
-    $f3->set('TWOFACTOR.secret', $secretKey);
-}

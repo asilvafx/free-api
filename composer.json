@@ -37,7 +37,5 @@
         "email": "support@pigmil.com"
     },
     "require": {
-        "pragmarx/google2fa": "^8.0",
-        "bacon/bacon-qr-code": "^3.0"
     }
 }

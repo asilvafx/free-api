@@ -9,47 +9,20 @@
     <!-- Security Options -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
     
-        <!-- 2FA Setup Section -->
-        <div class="col mb-4">
-            <div class="card bg-color">
-                <div class="card-body text-center">
-                    <h5 class="card-title d-flex flex-column align-items-center gap-2">
-                        <svg class="icon icon-xxl mb-2">
-                          <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-center-focus"></use>
-                        </svg>
-                        Authenticator App
-                    </h5>
-                    <p class="card-text">Secure your account using modern authentication applications.</p>
-                    <check if="{{@CXT->twofactor === 1}}">
-                        <true> 
-                            <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" data-ui-toggle="modal" data-ui-target="#twoFaRemoveModal">
-                                <span>Remove Authenticator</span><span>→</span>
-                            </button>
-                        </true>
-                        <false> 
-                            <button class="btn btn-primary d-flex justify-content-between w-100 text-truncate" data-ui-toggle="modal" data-ui-target="#setup2FAModal">
-                                <span>Setup Authenticator</span><span>→</span>
-                            </button>
-                        </false>
-                    </check>
-                </div>
-            </div>
-        </div>
-    
         <!-- Authn Setup Section -->
         <div class="col mb-4">
             <div class="card bg-color">
-                <div class="card-body text-center">
+                <div class="card-body text-center position-relative">
                     <h5 class="card-title d-flex flex-column align-items-center gap-2">
                       <svg class="icon icon-xxl mb-2">
                         <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-fingerprint"></use>
                       </svg>
                         Passkeys (Biometrics)
-                        <div class="position-relative"> 
+                        <div class="position-absolute top-0 right-0 m-2">
                         <span class="badge small border bg-body text-primary ms-2">Recommended</span>
                         </div>
                     </h5>
-                    <p class="card-text">Secure your account using modern authentication methods.</p>
+                    <p class="card-text truncate-2">Secure your account using modern authentication methods.</p>
                     <check if="{{@CXT->passkey === 1}}">
                         <true>
                             <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#removeAuthnModal">
@@ -70,14 +43,14 @@
         <!-- PIN Code Setup Section -->
         <div class="col mb-4">
             <div class="card bg-color">
-                <div class="card-body text-center">
+                <div class="card-body text-center position-relative">
                     <h5 class="card-title d-flex flex-column align-items-center gap-2">
                       <svg class="icon icon-xxl mb-2">
                         <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-dialpad"></use>
                       </svg>
                         PIN Code
                     </h5>
-                    <p class="card-text">Secure your account using modern authentication methods.</p>
+                    <p class="card-text truncate-2">Secure your account using modern authentication methods.</p>
                     <check if="{{@CXT->pin === 1}}">
                         <true>
                             <button class="btn btn-danger d-flex justify-content-between w-100 text-truncate" type="button" data-ui-toggle="modal" data-ui-target="#removePinModal">

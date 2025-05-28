@@ -9,40 +9,14 @@ class ComposerStaticInit3a80429d15c1b5c4971b37983420a2f3
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
-            'PragmaRX\\Google2FA\\' => 19,
             'Pigmilcom\\Webapp\\' => 17,
-            'ParagonIE\\ConstantTime\\' => 23,
-        ),
-        'D' => 
-        array (
-            'DASPRiD\\Enum\\' => 13,
-        ),
-        'B' => 
-        array (
-            'BaconQrCode\\' => 12,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'PragmaRX\\Google2FA\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pragmarx/google2fa/src',
-        ),
         'Pigmilcom\\Webapp\\' => 
         array (
             0 => __DIR__ . '/..' . '/src',
-        ),
-        'ParagonIE\\ConstantTime\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
-        ),
-        'DASPRiD\\Enum\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/dasprid/enum/src',
-        ),
-        'BaconQrCode\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 

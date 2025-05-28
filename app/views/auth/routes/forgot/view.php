@@ -91,6 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 }
                 $new_password = $crypt->generate($user_password);
                 $users->crypt = $new_password;
+                $users->passkey = 0;
+                $users->passkey_id = '';
+                $users->pin = 0;
+                $users->pin_code = '';
                 $users->save();
 
                 $message = $f3->get('SCHEME') . '://' . $f3->get('HOST') . '/' . $f3->get('SITE.uri_auth');
