@@ -24,15 +24,15 @@ $sidenav_menu = '[
         "icon": "at"
     },
     {
+        "title": "Files",
+        "route": "files",
+        "icon": "folder-open"
+    }, 
+    {
         "title": "API",
         "route": "api",
         "icon": "bolt"
     }, 
-    {
-        "title": "Files",
-        "route": "files",
-        "icon": "folder-open"
-    },
     {
         "title": "Integrations",
         "route": "integrations",

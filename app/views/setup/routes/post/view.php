@@ -1,7 +1,5 @@
 <?php
 
-use YoHang88\LetterAvatar\LetterAvatar;
-
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     try {
         // Initialize response class (assuming you have one)
@@ -123,12 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $createdAt = $d;
         }
 
-        $avatar = new LetterAvatar($userName, 'square', 100);
-        $user_avatar = $avatar->setColor($f3->get('SITE.color_primary'), $f3->get('SITE.color_primary_text'));
-
         $users->user_id = $userId;
         $users->displayName = $userName;
-        $users->avatar = $user_avatar;
+        $users->avatar = '';
         $users->email = $userEmail;
         $users->crypt = $userPasswordCrypt;
         $users->confirmed = 1;

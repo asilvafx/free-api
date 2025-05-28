@@ -97,6 +97,10 @@ if ($site->dry()) {
     $f3->set('SITE.stripe_pk', $site->stripe_pk); // Stripe Public Key
     $f3->set('SITE.stripe_sk', $site->stripe_sk); // Stripe Secret Key
 
+    $f3->set('SITE.paypal_status', $site->paypal_status); // Paypal Enabled (0/1)
+    $f3->set('SITE.paypal_pk', $site->paypal_pk); // Paypal Public Key
+    $f3->set('SITE.paypal_sk', $site->paypal_sk); // Paypal Secret Key
+
     $baseUrl = $f3->get('SCHEME') . '://' . $f3->get('HOST');
     $f3->set('SITE.base_url', $baseUrl); // Site Base URL 
     $f3->set('API.base_url', $baseUrl . '/v1'); // Sever RestAPI Base URL 

@@ -1,5 +1,10 @@
 <?php
 
+require_once ROOT . 'lib/vendor/stripe-php/init.php';
+require_once ROOT . 'lib/vendor/paypal-php/autoload.php';
+use PayPal\Rest\ApiContext;
+use PayPal\Auth\OAuthTokenCredential;
+
 class Pay
 {
     private $db;
@@ -13,15 +18,17 @@ class Pay
         $this->db = $db;
     }
 
-    public function stripe(): void
+    public function paypal(): void
     {
-        if ($this->f3->get('SITE.stripe_status') !== 1) {
-            echo json_encode(['error' => 'Stripe not enabled.']);
+        $response = new Response;
+        if ($this->f3->get('SITE.paypal_status') !== 1) {
+            $response->json('error', 'Paypal not enabled.');
             return;
         }
 
-        $stripe_sk = $this->f3->get('SITE.stripe_sk');
-        require_once ROOT . 'lib/vendor/stripe-php/init.php';
+        // Replace these values by entering your own ClientId and Secret by visiting https://developer.paypal.com/webapps/developer/applications/myapps
+        $clientId = $this->f3->get('SITE.paypal_pk');
+        $clientSecret = $this->f3->get('SITE.paypal_sk');
 
         header('Content-Type: application/json');
 
@@ -29,7 +36,30 @@ class Pay
         error_log('Payment request: ' . json_encode($body));
 
         if (!$body) {
-            echo json_encode(['error' => 'Invalid request body']);
+            $response->json('error', 'Invalid request body');
+            return;
+        }
+
+    }
+
+    public function stripe(): void
+    {
+        $response = new Response;
+
+        if ($this->f3->get('SITE.stripe_status') !== 1) {
+            $response->json('error', 'Stripe not enabled.');
+            return;
+        }
+
+        $stripe_sk = $this->f3->get('SITE.stripe_sk');
+
+        header('Content-Type: application/json');
+
+        $body = json_decode($this->f3->get('BODY'), true);
+        error_log('Payment request: ' . json_encode($body));
+
+        if (!$body) {
+            $response->json('error', 'Invalid request body');
             return;
         }
 
@@ -39,12 +69,12 @@ class Pay
         $useAutomaticMethods = $body['automatic_payment_methods'] ?? false;
 
         if ($amount <= 0) {
-            echo json_encode(['error' => 'Invalid amount']);
+            $response->json('error', 'Invalid amount');
             return;
         }
 
         if (empty($email)) {
-            echo json_encode(['error' => 'Email is required']);
+            $response->json('error', 'Email is required');
             return;
         }
 
@@ -83,11 +113,11 @@ class Pay
         } catch (\Stripe\Exception\ApiErrorException $e) {
             error_log('Stripe API Error: ' . $e->getMessage());
             http_response_code(400);
-            echo json_encode(['error' => $e->getMessage()]);
+            $response->json('error', $e->getMessage());
         } catch (\Exception $e) {
             error_log('Server Error: ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+            $response->json('error', $e->getMessage());
         }
     }
 }

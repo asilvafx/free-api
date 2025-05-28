@@ -40,7 +40,7 @@
                     <tr> 
                       <td><a class="text-body inline-flex gap-1" aria-label="{{@displayName}}" href="/{{@SITE.uri_backend}}/access/users/view?id={{@userUid}}"><span class="{{@userIsAdmin===1?'isAdminClr':''}}">
                         <span class="d-flex flex-nowrap align-items-center gap-1 {{@userIsAdmin===1||@userIsSuper===1?'isAdminClr':''}}">
-                          <span>{{@userIsSuper===1?'★ ':''}}</span>
+                          <span>{{@userIsAdmin===1||@userIsSuper===1?'★ ':''}}</span>
                           <span class="{{@userIsAdmin===1||@userIsSuper===1?'isAdminClr':''}}">{{@displayName}}</span>
                       </span></a></td>
                       <td>{{@userEmail}}</td>

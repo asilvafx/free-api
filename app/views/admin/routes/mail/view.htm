@@ -1,41 +1,41 @@
-<form id="updateMailForm" class="w-100" >
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-start">
+        <div class="col">
+            <span class="h1">E-mail</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div>
+        <div class="ms-auto">
+            <a role="button" class="btn bg-color border" aria-label="Logs" href="/{{@SITE.uri_backend}}/mail">
+                <svg class="icon">
+                    <use xlink:href="/public/assets/icons/svg/free.svg#cil-shield-alt"></use>
+                </svg> Logs
+            </a>
+        </div>
+    </div>
+</div>
 
-    <label for="mailHost" class="text-body-secondary mb-2">SMTP Host</label>
-    <div class="input-group mb-4">
-        <input class="form-control" type="text" id="mailHost" name="mailHost" placeholder="SMTP Host" value="{{@SITE.smtp_host}}">
-    </div>
-    <label for="mailPort" class="text-body-secondary mb-2">SMTP Port</label>
-    <div class="input-group mb-4">
-        <input class="form-control" type="tel" id="mailPort" name="mailPort" placeholder="Eg: 465" value="{{@SITE.smtp_port}}">
-    </div>
-    <label for="mailScheme" class="text-body-secondary mb-2">SMTP Scheme</label>
-    <div class="input-group mb-4">
-        <select class="form-select" aria-label="Select Scheme" id="mailScheme" name="mailScheme">
-            <option selected>Select one</option>
-            <option value="SSL" {{@SITE.smtp_scheme==='SSL'?'selected':''}}>SSL</option>
-            <option value="TSL" {{@SITE.smtp_scheme==='TSL'?'selected':''}}>TSL</option>
-        </select>
 
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+
+    <div class="col mb-3">
+        <div class="card bg-color p-3">
+            <div class="w-100 d-flex flex-column align-items-center justify-content-center gap-2 position-relative">
+                <img alt="SMTP" width="30" height="30" src="data:image/webp;base64,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" />
+                <div class="w-100 d-flex justify-content-center mb-2">
+                <span class="fs-6 fw-bolder text-truncate m-auto text-primary">
+                    SMTP
+                </span>
+                </div>
+                <p class="m-auto text-body text-center mb-2">
+                    The Simple Mail Transfer Protocol (SMTP) is an Internet standard communication protocol for electronic mail transmission.
+                </p>
+                <div class="m-auto">
+                    <a class="btn btn-sm bg-color border" role="button" aria-label="Setup" href="/{{@SITE.uri_backend}}/mail/smtp">
+                        Setup
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <label for="mailUsername" class="text-body-secondary mb-2">SMTP Username</label>
-    <div class="input-group mb-4">
-                    <span class="input-group-text">
-                        <svg class="icon">
-                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
-                        </svg>
-                    </span>
-        <input class="form-control" type="email" id="mailUsername" name="mailUsername" placeholder="Eg: mail@domain.com" value="{{@SITE.smtp_user}}">
-    </div>
-    <label for="mailPassword" class="text-body-secondary mb-2">SMTP Password</label>
-    <div class="input-group mb-4">
-                    <span class="input-group-text">
-                        <svg class="icon">
-                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
-                        </svg>
-                    </span>
-        <input class="form-control" type="password" id="mailPassword" name="mailPassword" placeholder="••••••••" value="{{@SITE.smtp_pass}}">
-    </div>
-    <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
-    <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
-</form>
- 
+
+</div>

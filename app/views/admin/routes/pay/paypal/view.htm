@@ -1,0 +1,73 @@
+
+<form id="updatePaypal" method="post" class="w-100 mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-start">
+        <div class="col">
+            <span class="h1">Paypal</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div>
+        <div class="ms-auto">
+            <div class="form-check form-switch form-switch-xl">
+                <input aria-label="Enable Paypal" class="form-check-input" id="stripeStatus" type="checkbox" {{@SITE.paypal_status === 1 ? "checked" : ""}}>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <label for="paypalPk" class="text-body-secondary mb-2">Public Key</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="text" id="paypalPk" name="paypalPk" maxlength="120" placeholder="pk_live_0000.." value="{{@SITE.paypal_pk}}">
+    </div>
+    <label for="paypalSk" class="text-body-secondary mb-2">Secret Key</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="password" id="paypalSk" name="paypalSk" maxlength="120" placeholder="sk_live_0000" value="{{@SITE.paypal_sk}}">
+    </div>
+    <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+    <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
+</form>
+
+
+<div class="w-100 position-relative">
+    <div class="accordion" id="devBlock">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="devConsoleTitle">
+                <button class="accordion-button collapsed gap-2" type="button" data-ui-toggle="collapse" data-ui-target="#devConsole" aria-expanded="false" aria-controls="devConsole">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-code"></use>
+                    </svg>
+                    Developer Mode
+                </button>
+            </h2>
+            <div class="accordion-collapse collapse" id="devConsole" aria-labelledby="devConsoleTitle" data-ui-parent="#devBlock" style="">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="input-group mb-2">
+                          <span class="input-group-text p-0">
+                            <select class="form-select" aria-label="HTTP Request" id="devReqType" name="devReqType" disabled>
+                              <option value="POST" selected="">POST</option>
+                            </select>
+                          </span>
+                            <input class="form-control" type="text" id="devReqUri" name="devReqUri" placeholder="URI" value="{{ @API.base_url .'/upload'}}" readonly disabled>
+                        </div>
+
+                        <!-- Radio buttons for Node.js and cURL -->
+                        <div class="mb-3">
+                            <label class="form-label">Library:</label>
+                            <div>
+                                <input type="radio" id="nodeRadio" name="reqMethod" value="node" checked>
+                                <label for="nodeRadio">Node.js (Fetch API)</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="curlRadio" name="reqMethod" value="curl">
+                                <label for="curlRadio">cURL</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-4">
+                            <textarea rows="10" cols="250" class="form-control" id="devReqParams" name="devReqParams" aria-label="PARAMS" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

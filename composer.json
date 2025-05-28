@@ -38,7 +38,6 @@
     },
     "require": {
         "pragmarx/google2fa": "^8.0",
-        "yohang88/letter-avatar": "^2.3",
         "bacon/bacon-qr-code": "^3.0"
     }
 }

@@ -76,9 +76,28 @@ class Api extends PostController
 
     function Payment($f3, $args): void
     {
+        $response = new Response;
+        $slug = empty($args['slug']) ? '' : htmlspecialchars_decode($args['slug']);
+
+        if(empty($slug)){
+            $response->json('error', 'Payment gateway missing.');
+            return;
+        }
+
         $pay = new Pay;
-        $pay->stripe();
-        return;
+
+        switch ($slug) {
+            case "stripe":
+                $pay->stripe();
+                break;
+            case "paypal":
+                $pay->paypal();
+                break;
+            default:
+                $response->json('error', 'Payment gateway unknown.');
+        }
+
+        exit;
     }
 
 

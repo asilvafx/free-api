@@ -1,0 +1,97 @@
+<div class="position-relative mb-4">
+    <div class="w-100 d-flex justify-content-between align-items-start">
+        <div class="col">
+            <span class="h1">SMTP</span>
+            <p class="text-body-secondary">Manage the website content, update settings, and more.</p>
+        </div>
+    </div>
+</div>
+
+
+<form id="updateMailForm" method="post" class="w-100 mb-4" >
+
+    <label for="mailHost" class="text-body-secondary mb-2">SMTP Host</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="text" id="mailHost" name="mailHost" placeholder="SMTP Host" value="{{@SITE.smtp_host}}">
+    </div>
+    <label for="mailPort" class="text-body-secondary mb-2">SMTP Port</label>
+    <div class="input-group mb-4">
+        <input class="form-control" type="tel" id="mailPort" name="mailPort" placeholder="Eg: 465" value="{{@SITE.smtp_port}}">
+    </div>
+    <label for="mailScheme" class="text-body-secondary mb-2">SMTP Scheme</label>
+    <div class="input-group mb-4">
+        <select class="form-select" aria-label="Select Scheme" id="mailScheme" name="mailScheme">
+            <option selected>Select one</option>
+            <option value="SSL" {{@SITE.smtp_scheme==='SSL'?'selected':''}}>SSL</option>
+            <option value="TSL" {{@SITE.smtp_scheme==='TSL'?'selected':''}}>TSL</option>
+        </select>
+
+    </div>
+    <label for="mailUsername" class="text-body-secondary mb-2">SMTP Username</label>
+    <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-at"></use>
+                        </svg>
+                    </span>
+        <input class="form-control" type="email" id="mailUsername" name="mailUsername" placeholder="Eg: mail@domain.com" value="{{@SITE.smtp_user}}">
+    </div>
+    <label for="mailPassword" class="text-body-secondary mb-2">SMTP Password</label>
+    <div class="input-group mb-4">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="/public/assets/icons/svg/free.svg#cil-lock-locked"></use>
+                        </svg>
+                    </span>
+        <input class="form-control" type="password" id="mailPassword" name="mailPassword" placeholder="••••••••" value="{{@SITE.smtp_pass}}">
+    </div>
+    <input type="hidden" id="token" name="token" value="{{@TOKEN}}">
+    <button type="submit" class="btn btn-primary" id="submitBtn" aria-label="Save changes">Save changes</button>
+</form>
+
+
+<div class="w-100 position-relative">
+    <div class="accordion" id="devBlock">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="devConsoleTitle">
+                <button class="accordion-button collapsed gap-2" type="button" data-ui-toggle="collapse" data-ui-target="#devConsole" aria-expanded="false" aria-controls="devConsole">
+                    <svg class="icon">
+                        <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-code"></use>
+                    </svg>
+                    Developer Mode
+                </button>
+            </h2>
+            <div class="accordion-collapse collapse" id="devConsole" aria-labelledby="devConsoleTitle" data-ui-parent="#devBlock" style="">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="input-group mb-2">
+                          <span class="input-group-text p-0">
+                            <select class="form-select" aria-label="HTTP Request" id="devReqType" name="devReqType" disabled>
+                              <option value="POST" selected="">POST</option>
+                            </select>
+                          </span>
+                            <input class="form-control" type="text" id="devReqUri" name="devReqUri" placeholder="URI" value="{{ @API.base_url .'/upload'}}" readonly disabled>
+                        </div>
+
+                        <!-- Radio buttons for Node.js and cURL -->
+                        <div class="mb-3">
+                            <label class="form-label">Library:</label>
+                            <div>
+                                <input type="radio" id="nodeRadio" name="reqMethod" value="node" checked>
+                                <label for="nodeRadio">Node.js (Fetch API)</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="curlRadio" name="reqMethod" value="curl">
+                                <label for="curlRadio">cURL</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-4">
+                            <textarea rows="10" cols="250" class="form-control" id="devReqParams" name="devReqParams" aria-label="PARAMS" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,7 +30,7 @@ if(loginAlertsToggle){
 
     })
 }
-function pinRemove(el){
+window.pinRemove = function pinRemove(el){
     let reload = true;
 
     const currentPassword = document.getElementById('pinRemove_cc');
@@ -66,7 +66,7 @@ function pinRemove(el){
     return true;
 }
 
-function pinRegister(el){
+window.pinRegister = function pinRegister(el){
     let reload = true;
     const formData = new FormData();
     const pinCode = Array.from(pinCodeInputs)
@@ -110,7 +110,7 @@ function pinRegister(el){
     return true;
 }
 
-function twoFaRemove(el){
+window.twoFaRemove = function twoFaRemove(el){
     let reload = true;
     const currentPassword = document.getElementById('twofactorRemove_cc');
     if(!currentPassword.value){
@@ -145,7 +145,7 @@ function twoFaRemove(el){
     return true;
 }
 
-function twoFaRegister(el){
+window.twoFaRegister = function twoFaRegister(el){
     let reload = true;
     const twoFactorCode = Array.from(qrKeyCodeInputs)
         .map((input) => input.value)
@@ -189,7 +189,7 @@ function twoFaRegister(el){
     return true;
 }
 
-function AuthnLogin(el) {
+window.AuthnLogin = function AuthnLogin(el) {
     // Close Modal
     document.getElementById('removeAuthnExit').click();
 
@@ -218,7 +218,7 @@ function AuthnLogin(el) {
         });
 }
 
-function AuthnRegister(el) {
+window.AuthnRegister = function AuthnRegister(el) {
     // Close Modal
     document.getElementById('passkeyExit').click();
 
@@ -386,7 +386,7 @@ if(newEmailForm){
 }
 
 
-function validatePassword(password) {
+window.validatePassword = function validatePassword(password) {
     const length = document.getElementById('length');
     const lowercase = document.getElementById('lowercase');
     const extra = document.getElementById('extra');
