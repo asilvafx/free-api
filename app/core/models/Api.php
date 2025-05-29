@@ -135,20 +135,23 @@ class Api extends PostController
         }
 
         // Send email
-        $ok = $mail->sendEmail(
+        $mail->sendEmail(
             $to,
             $subject,
             'default',
             ['message' => $body]
         );
 
-        if ($ok) {
-            // success response
-            $response->json('success', 'Email sent.');
-        } else {
-            // error response
-            $response->json('error', 'Email could not be sent.');
-        }
+        // success response
+        $response->json('success', 'Email sent.');
+
+        global $db;
+        $data = new DB\SQL\Mapper($db, 'mail');
+        $data->mail_to = $to;
+        $data->mail_from = $f3->get('SITE.smtp_user');
+        $data->subject = $subject;
+        $data->created_at = time();
+        $data->save();
 
         exit;
     }
