@@ -199,32 +199,6 @@
 
               </div>
 
-              <!-- Div for Authenticator App -->
-              <div class="hidden" id="twofactor">
-                <h1>Verify With Authenticator</h1>
-                <p class="text-body-secondary">Verify using your Authentication App code. <a aria-label="Change account" href="/{{@SITE.uri_auth}}" class="ms-1">Not you?</a></p>
-
-                <div class="mb-3">
-                  <label for="pinInput" class="text-body-secondary small">Enter 6-digts code:</label>
-                  <div class="otp-input twofactorInputs my-4">
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                    <input class="border shadow-sm" name="otp-input" type="number" min="0" max="9" placeholder="0" required>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                  <div class="position-relative">
-                    <button class="btn btn-secondary px-4 choiceStepBack" type="button">← Change method</button>
-                  </div>
-                  <div class="position-relative">
-                    <button class="btn btn-primary px-4" type="button" onclick="twofactorVerify(); void(0);">Verify</button>
-                  </div> 
-                </div>
-              </div>
               <div class="row">
                 <div class="col-12 text-end mt-4 mt-md-2">
                   <button class="forgotPassword btn btn-link px-0" type="button">Having trouble signing in?</button>
@@ -255,8 +229,7 @@
     const authForm = document.getElementById('authForm');
     const loginForm = document.getElementById('loginForm');
     const forgotPassword = document.querySelectorAll('.forgotPassword');
-    const pinInputs = document.querySelectorAll(".pinInputs input"); 
-    const twofactorInputs = document.querySelectorAll(".twofactorInputs input"); 
+    const pinInputs = document.querySelectorAll(".pinInputs input");
 
     let errorAlert = document.getElementById('errorAlert');
     let errorMsg = document.getElementById('errorMsg'); 
@@ -267,38 +240,6 @@
       pot.setAttribute('type', 'hidden');
     }
 
-    function loadTwoFactorInputs(){
-
-      twofactorInputs.forEach((input, index) => {
-      input.addEventListener("input", (e) => {
-        if (e.target.value.length > 1) {
-          e.target.value = e.target.value.slice(0, 1);
-        }
-        if (e.target.value.length === 1 && index < twofactorInputs.length - 1) {
-          twofactorInputs[index + 1].focus();
-        }
-      });
-
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && !e.target.value && index > 0) {
-          twofactorInputs[index - 1].focus();
-        }
-        if (e.key === "e") {
-          e.preventDefault();
-        }
-      });
-
-      // Listen for paste event to autofill inputs
-      input.addEventListener("paste", (e) => {
-        const pasteData = e.clipboardData.getData("text");
-        if (pasteData.length === twofactorInputs.length && /^\d+$/.test(pasteData)) {
-          twofactorInputs.forEach((input, i) => {
-            input.value = pasteData[i];
-          });
-        }
-      });
-    });
-    }
 
     function loadPinInputs(){
 
@@ -458,7 +399,7 @@
               let otpOptions = message[1].otp.split(', ').filter(Boolean); // Split by comma and trim whitespace
 
               // List of all possible choices
-              const allChoices = ['twofactor', 'passkey', 'pin'];
+              const allChoices = ['passkey', 'pin'];
 
               // Loop through all choices and show/hide them based on the response
               allChoices.forEach(choice => {
@@ -530,29 +471,6 @@
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
     };
-
-    function twofactorVerify(){
-      const twofactorCode = Array.from(twofactorInputs)
-        .map((input) => input.value)
-        .join("");
-      if (twofactorCode.length !== 6) { 
-        alert('You must enter a valid 6-digits code.');
-        return false;
-      }
-
-      let formData = new FormData();   
-      let inputUsername = document.getElementById('username').value;
-      let inputPassword = document.getElementById('password').value; 
-      let rememberme = document.getElementById('rememberme').checked;
-
-      formData.append('action', 'otp');
-      formData.append('token', "{{@TOKEN}}"); 
-      formData.append('username', inputUsername);
-      formData.append('crypt', btoa(inputPassword));
-      formData.append('rememberme', rememberme);
-      formData.append('twofactor', twofactorCode); 
-      fetchOtp(formData);
-    }
     
     function pinVerify(){
       const pinCode = Array.from(pinInputs)
@@ -655,12 +573,10 @@
       // Create new divs inside step 4
       let pinDiv = document.getElementById('pin-form');
       let passkeyDiv = document.getElementById('passkey-form');
-      let twofactorDiv = document.getElementById('twofactor');
 
       // Hide all choice divs initially
       pinDiv.classList.add('hidden');
       passkeyDiv.classList.add('hidden');
-      twofactorDiv.classList.add('hidden');
 
       // Show the div based on the selected choice
       switch (selectedChoice) {
@@ -671,10 +587,6 @@
         case 'passkey':
           passkeyDiv.classList.remove('hidden');
           AuthnLogin();
-          break;
-        case 'twofactor':
-          twofactorDiv.classList.remove('hidden');
-          loadTwoFactorInputs();
           break;
         default:
           // Handle cases where no valid choice is selected, if necessary

@@ -17,7 +17,6 @@ class Query extends \Prefab
           }
       } catch (Exception $e) {
           // Send error message if something went wrong
-          $response = false;
       }
       return $response;
     }
@@ -38,6 +37,8 @@ class Query extends \Prefab
         } catch (Exception $e) {
             $response[] = "";
         }
+
+        return $response;
     }
 
     function lookup($table, $search, $value, $db=null)
