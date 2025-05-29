@@ -3,11 +3,10 @@
 <IfModule mod_headers.c>
 	Header Set Service-Worker-allowed "/"
 	Header set X-XSS-Protection "1; mode=block"
-    Header set Access-Control-Allow-Origin "*"
 	Header always append X-Frame-Options "SAMEORIGIN"
 	Header set X-Content-Type-Options "nosniff"
 	Header add Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-	Header add Content-Security-Policy "default-src 'self' data: blob: https://client-8efhwk.dreamhosters.com https://via.placeholder.com https://*.gstatic.com https://*.googleapis.com https://*.google.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.gstatic.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://*.googleapis.com;upgrade-insecure-requests;"
+	Header add Content-Security-Policy "default-src 'self' data: blob: https://via.placeholder.com https://*.gstatic.com https://*.googleapis.com https://*.google.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.gstatic.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://*.googleapis.com;upgrade-insecure-requests;"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header set Connection keep-alive  
 	Header always set Permissions-Policy "accelerometer=(),autoplay=(),camera=(),encrypted-media=(),fullscreen=*,geolocation=*,gyroscope=(),interest-cohort=(),magnetometer=(),microphone=(),midi=(),payment=(\"https://*.paypal.com\" \"https://*.stripe.com\"),sync-xhr=*,usb=(),xr-spatial-tracking=()"
