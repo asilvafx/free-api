@@ -30,7 +30,7 @@ const fetchExamples = (method, uri) => {
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));`,
-        PUT: `fetch('${uri}/id/1', { // Replace '1' with the actual ID you want to update
+        PUT: `fetch('${uri}/1', { // Replace '1' with the actual ID you want to update
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',

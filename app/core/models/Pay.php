@@ -110,6 +110,14 @@ class Pay
                 'payment_intent_id' => $paymentIntent->id
             ]);
 
+            $data = new DB\SQL\Mapper($this->db, 'payments');
+            $data->amount = $amount;
+            $data->currency = $currency;
+            $data->customer = $customer->id;
+            $data->intent = $paymentIntent->id;
+            $data->created_at = time();
+            $data->save();
+
         } catch (\Stripe\Exception\ApiErrorException $e) {
             error_log('Stripe API Error: ' . $e->getMessage());
             http_response_code(400);

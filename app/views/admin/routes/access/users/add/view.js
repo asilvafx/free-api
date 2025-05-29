@@ -8,7 +8,7 @@ const email = document.getElementById('email');
 const crypt = document.getElementById('crypt');
 const cryptConfirm = document.getElementById('cryptConfirm');
 const role = document.getElementById('role');
-const isAdmin = document.getElementById('isAdmin'); 
+const isAdmin = document.getElementById('isAdmin');
 
 // Submit Form
 if(newUserForm){
