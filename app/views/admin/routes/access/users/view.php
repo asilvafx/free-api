@@ -12,16 +12,15 @@ $f3->set('breadcrumbs', [
         "slug" => "users"
     ]
 ]);
-
-global $db;
+ 
+$query = new Query;
 
 $offsetView = !empty($f3->get('GET.page')) ? (int)$f3->get('GET.page') : 1;
 $limitItemsPerView = 15;
 $offsetValue = ($offsetView * $limitItemsPerView) - $limitItemsPerView;
-$sqlView = 'SELECT * FROM users ORDER BY id DESC LIMIT ' . $limitItemsPerView . ' OFFSET ' . $offsetValue;
-$users_list = $db->exec($sqlView);
-
-$users_all = $db->exec('SELECT * FROM users');
+$sqlView = 'ORDER BY id DESC LIMIT ' . $limitItemsPerView . ' OFFSET ' . $offsetValue;
+$users_list = $query->load('users', $sqlView);
+$users_all = $query->load('users');
 $totalItems = count($users_all);
 
 $pagination = ceil($totalItems / $limitItemsPerView);

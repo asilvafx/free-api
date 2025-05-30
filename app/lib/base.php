@@ -38,14 +38,88 @@ abstract class Prefab {
 	}
 
 }
-
+/**
+ * @property string ALIAS
+ * @property array ALIASES
+ * @property string|array AUTOLOAD
+ * @property bool|string CACHE
+ * @property bool CASELESS
+ * @property callable|\Prefab|\Psr\Container\ContainerInterface CONTAINER
+ * @property array COOKIE
+ * @property array GET
+ * @property array POST
+ * @property array REQUEST
+ * @property array SESSION
+ * @property array FILES
+ * @property array SERVER
+ * @property array ENV
+ * @property array CORS
+ * @property int DEBUG
+ * @property array DIACRITICS
+ * @property string DNSBL
+ * @property array EMOJI
+ * @property string ENCODING
+ * @property bool ESCAPE
+ * @property string EXEMPT
+ * @property object EXCEPTION
+ * @property string FALLBACK
+ * @property array FORMATS
+ * @property string FRAGMENT
+ * @property bool HALT
+ * @property bool HIGHLIGHT
+ * @property array JAR
+ * @property string LANGUAGE
+ * @property string LOCALES
+ * @property string|array LOGGABLE
+ * @property string LOGS
+ * @property mixed ONERROR
+ * @property mixed ONREROUTE
+ * @property string|null PACKAGE
+ * @property array PARAMS
+ * @property string PLUGINS
+ * @property string PREFIX
+ * @property string PREMAP
+ * @property bool QUIET
+ * @property bool RAW
+ * @property array ROUTES
+ * @property string SEED
+ * @property string SERIALIZER
+ * @property string TEMP
+ * @property float TIME
+ * @property bool REROUTE_TRAILING_SLASH
+ * @property string TZ
+ * @property string UI
+ * @property callback UNLOAD
+ * @property string UPLOADS
+ * @property string URI
+ * @property string VERB
+ * @property string VERSION
+ * @property string|null XFRAME
+ * @property-read string AGENT
+ * @property-read bool AJAX
+ * @property-read string BASE
+ * @property-read string BODY
+ * @property-read bool CLI
+ * @property-read array ERROR
+ * @property-read array HEADERS
+ * @property-read string HOST
+ * @property-read string IP
+ * @property-read string PATH
+ * @property-read string PATTERN
+ * @property-read int PORT
+ * @property-read string QUERY
+ * @property-read string REALM
+ * @property-read string RESPONSE
+ * @property-read string ROOT
+ * @property-read string SCHEME
+ */
 //! Base structure
 final class Base extends Prefab implements ArrayAccess {
 
 	//@{ Framework details
 	const
 		PACKAGE='Fat-Free Framework',
-		VERSION='3.8.2-Release';
+		VERSION='3.9.0-Release';
 	//@}
 
 	//@{ HTTP status codes (RFC 2616)
@@ -172,7 +246,7 @@ final class Base extends Prefab implements ArrayAccess {
 	function build($url, $args=[], $addParams=TRUE) {
 		if ($addParams)
 			$args+=$this->recursive($this->hive['PARAMS'], function($val) {
-				return implode('/', array_map('urlencode', explode('/', $val)));
+				return implode('/', array_map('urlencode', explode('/', $val ?? '')));
 			});
 		if (is_array($url))
 			foreach ($url as &$var) {
@@ -905,10 +979,10 @@ final class Base extends Prefab implements ArrayAccess {
 	}
 
 	/**
-	*	Remove HTML tags (except those enumerated) and non-printable
-	*	characters to mitigate XSS/code injection attacks
-	*	@return mixed
-	*	@param $arg mixed
+	*	Remove HTML tags (except those enumerated) and non-printable characters
+    *   NB: This method doesn't mitigate XSS/code injection attacks.
+    *   @return mixed
+    *	@param $arg mixed
 	*	@param $tags string
 	**/
 	function clean($arg,$tags=NULL) {
@@ -1536,7 +1610,7 @@ final class Base extends Prefab implements ArrayAccess {
 			if (!preg_match('/'.self::VERBS.'/',$verb))
 				$this->error(501,$verb.' '.$this->hive['URI']);
 			$this->hive['ROUTES'][$parts[3]][$type][strtoupper($verb)]=
-				[$handler,$ttl,$kbps,$alias];
+				[is_string($handler) ? trim($handler) : $handler,$ttl,$kbps,$alias];
 		}
 	}
 
@@ -1728,7 +1802,8 @@ final class Base extends Prefab implements ArrayAccess {
 			if (!$route)
 				continue;
 			if (isset($route[$this->hive['VERB']]) && !$preflight) {
-				if ($this->hive['VERB']=='GET' &&
+				if ($this->hive['REROUTE_TRAILING_SLASH']===TRUE &&
+					$this->hive['VERB']=='GET' &&
 					preg_match('/.+\/$/',$this->hive['PATH']))
 					$this->reroute(substr($this->hive['PATH'],0,-1).
 						($this->hive['QUERY']?('?'.$this->hive['QUERY']):''));
@@ -2081,7 +2156,7 @@ final class Base extends Prefab implements ArrayAccess {
 							array_merge([$match['lval']],
 								str_getcsv($cmd[1]=='config'?
 								$this->cast($match['rval']):
-									$match['rval']))
+									$match['rval'],",",'"', "\\"))
 						);
 					}
 					else {
@@ -2104,7 +2179,7 @@ final class Base extends Prefab implements ArrayAccess {
 							// Mark quoted strings with 0x00 whitespace
 							str_getcsv(preg_replace(
 								'/(?<!\\\\)(")(.*?)\1/',
-								"\\1\x00\\2\\1",trim($rval)))
+								"\\1\x00\\2\\1",trim($rval)),",",'"', "\\")
 						);
 						preg_match('/^(?<section>[^:]+)(?:\:(?<func>.+))?/',
 							$sec,$parts);
@@ -2371,7 +2446,11 @@ final class Base extends Prefab implements ArrayAccess {
 		@ini_set('magic_quotes_gpc',0);
 		@ini_set('register_globals',0);
 		// Intercept errors/exceptions; PHP5.3-compatible
-		$check=error_reporting((E_ALL|E_STRICT)&~(E_NOTICE|E_USER_NOTICE));
+		if (PHP_VERSION_ID >= 80400) {
+			$check = error_reporting((E_ALL) & ~(E_NOTICE | E_USER_NOTICE));
+		} else {
+			$check = error_reporting((E_ALL | E_STRICT) & ~(E_NOTICE | E_USER_NOTICE));
+		}
 		set_exception_handler(
 			function($obj) {
 				/** @var Exception $obj */
@@ -2530,6 +2609,7 @@ final class Base extends Prefab implements ArrayAccess {
 			'PACKAGE'=>self::PACKAGE,
 			'PARAMS'=>[],
 			'PATH'=>$path,
+			'REROUTE_TRAILING_SLASH'=>TRUE,
 			'PATTERN'=>NULL,
 			'PLUGINS'=>$this->fixslashes(__DIR__).'/',
 			'PORT'=>$port,

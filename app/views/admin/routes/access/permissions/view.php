@@ -126,7 +126,9 @@ if (isset($_GET['add']) && $_SERVER['REQUEST_METHOD'] === "POST") {
     exit;
 }
 
-$permissionsAll = $db->exec('SELECT * FROM "permissions"');
-$permissionsList = $db->exec('SELECT * FROM "permissions" ORDER BY id DESC');
+$query = new Query;
+
+$permissionsList = $query->load('permissions', 'ORDER BY id DESC');
+$permissionsAll = $query->load('permissions');
 $f3->set('permissionsAll', $permissionsAll);
 $f3->set('permissionsList', $permissionsList);

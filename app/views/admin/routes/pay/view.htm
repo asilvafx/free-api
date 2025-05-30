@@ -25,9 +25,20 @@
                     Stripe
                 </span>
                 <div class="position-absolute top-0 right-0">
-                <span class="x-small text-success text-uppercase">
-                    ● Active
-                </span>
+
+                   <check if="{{@SITE.stripe_status === 1}}">
+                       <true>
+                         <span class="x-small text-success text-uppercase">
+                              ● Active
+                         </span>
+                       </true>
+                       <false>
+                           <span class="x-small text-muted text-uppercase">
+                              ● Inactive
+                         </span>
+                       </false>
+                   </check>
+
                 </div>
                 </div>
                 <p class="m-auto text-body text-center mb-2 truncate-3">
@@ -51,9 +62,18 @@
                     Paypal
                 </span>
                     <div class="position-absolute top-0 right-0">
-                <span class="x-small text-muted text-uppercase">
-                    ● Inactive
-                </span>
+                        <check if="{{@SITE.paypal_status === 1}}">
+                            <true>
+                         <span class="x-small text-success text-uppercase">
+                              ● Active
+                         </span>
+                            </true>
+                            <false>
+                           <span class="x-small text-muted text-uppercase">
+                              ● Inactive
+                         </span>
+                            </false>
+                        </check>
                     </div>
                 </div>
                 <p class="m-auto text-body text-center mb-2 truncate-3">

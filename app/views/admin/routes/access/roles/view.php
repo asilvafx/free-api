@@ -12,16 +12,15 @@ $f3->set('breadcrumbs', [
         "slug" => "roles"
     ]
 ]);
-
-global $db;
+ 
+$query = new Query;
 
 $offsetView = !empty($f3->get('GET.page')) ? (int)$f3->get('GET.page') : 1;
 $limitItemsPerView = 15;
 $offsetValue = ($offsetView * $limitItemsPerView) - $limitItemsPerView;
-$sqlView = 'SELECT * FROM roles ORDER BY id DESC LIMIT ' . $limitItemsPerView . ' OFFSET ' . $offsetValue;
-$roles_list = $db->exec($sqlView);
-
-$roles_all = $db->exec('SELECT * FROM roles');
+$sqlView = 'ORDER BY id DESC LIMIT ' . $limitItemsPerView . ' OFFSET ' . $offsetValue;
+$roles_list = $query->load('roles', $sqlView);
+$roles_all = $query->load('roles');
 $totalItems = count($roles_all);
 
 $pagination = ceil($totalItems / $limitItemsPerView);

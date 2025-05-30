@@ -49,12 +49,8 @@ class Mapper extends \DB\Cursor {
 		$adhoc=[],
 		//! Dynamic properties
 		$props=[];
-    /**
-     * @var mixed
-     */
-    private $login_alerts;
 
-    /**
+	/**
 	*	Return database type
 	*	@return string
 	**/

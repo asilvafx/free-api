@@ -7,15 +7,15 @@ $f3->set('breadcrumbs', [
         "name" => "Access",
         "slug" => "access"
     ]
-]);
+]); 
 
-global $db;
+$query = new Query;
 
-$users_all = $db->exec('SELECT * FROM users');
-$users_list = $db->exec('SELECT * FROM users ORDER BY id DESC LIMIT 5');
+$users_all = $query->load('users');
+$users_list = $query->load('users', 'ORDER BY id DESC LIMIT 5');
 
-$roles_all = $db->exec('SELECT * FROM roles');
-$roles_list = $db->exec('SELECT * FROM roles ORDER BY id DESC LIMIT 5');
+$roles_all = $query->load('roles');
+$roles_list = $query->load('roles', 'ORDER BY id DESC LIMIT 5');
 
 $f3->set('rolesAll', $roles_all);
 $f3->set('rolesList', $roles_list);
