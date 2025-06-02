@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 }
                 $file = $_FILES['file'];
                 $utils = new Utils;
-                if (!$utils->uploadFile($file, 'public/uploads/files/')) {
+                if (!$utils->uploadFile($file, 'public/uploads/')) {
                     $response->json('error', 'Failed to upload file.');
                 } else {
                     $response->json('success', 'File uploaded was successfully uploaded.');

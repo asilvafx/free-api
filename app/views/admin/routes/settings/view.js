@@ -60,7 +60,7 @@ function sendUpdateRequest(){
 }
 
 
-function confirmedUpdate(){
+window.confirmedUpdate = function confirmedUpdate(){
 
     const currentPassword = document.getElementById('currentPassword');
     if(currentPassword.value==""){
@@ -225,7 +225,7 @@ function initializeKeywords() {
 }
 
 // Delete a keyword
-function deleteWord(element) {
+window.deleteWord = function deleteWord(element) {
     var keywordElement = element.closest('.keyword');
     var keywordText = keywordElement.textContent.trim();
 
@@ -323,7 +323,7 @@ var siteDescription = document.getElementById('siteDescription');
 var charCountDisplay = document.getElementById('charCount');
 
 // Function to update the character counter
-function updateCharCount() {
+window.updateCharCount = function updateCharCount() {
     var remaining = maxChars - siteDescription.value.length;
     charCountDisplay.textContent = remaining + " characters remaining";
 }
