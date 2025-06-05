@@ -140,8 +140,11 @@ if ($site->dry()) {
     $f3->route('GET|POST /' . $f3->get('SITE.uri_backend') . '/@slug*', 'Backend->Base');
 
     // Load api routes
-    $f3->route('GET|POST|PUT|DELETE /v1/db/@slug', 'Api->Base');
-    $f3->route('GET|PUT|DELETE /v1/db/@slug/@search', 'Api->Base');
+    $f3->route('GET|POST|PUT|DELETE /v1', 'Api->Invalid');
+    $f3->route('GET|POST|PUT|DELETE /v1/*', 'Api->Invalid');
+    $f3->route('GET|POST|PUT|DELETE /v1/rest', 'Api->Invalid');
+    $f3->route('GET|POST|PUT|DELETE /v1/rest/@slug', 'Api->Base');
+    $f3->route('GET|PUT|DELETE /v1/rest/@slug/@search', 'Api->Base'); 
     $f3->route('POST /v1/pay/@slug', 'Api->Payment');
     $f3->route('POST /v1/mail', 'Api->Mail');
     $f3->route('POST /v1/upload', 'Api->Upload');

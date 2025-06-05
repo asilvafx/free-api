@@ -26,7 +26,7 @@ class DBService {
     }
 
     // Get multiple items by a specific key-value pair
-    async getItemsByKeyValue(key, value, table) {
+    async getItems(key, value, table) {
         try {
             const response = await api.get(`/${table}`);
 
@@ -54,7 +54,7 @@ class DBService {
     }
 
     // Get a single item by a specific key-value pair
-    async getItemByKeyValue(key, value, table) {
+    async getItem(key, value, table) {
         try {
             const response = await api.get(`/${table}`);
 
@@ -89,22 +89,6 @@ class DBService {
             return null;
         } catch (error) {
             console.error(`Error in getItemKey: ${error}`);
-            return null;
-        }
-    }
-
-    // Get an item by ID
-    async getItem(key, table) {
-        try {
-            const response = await api.get(`/${table}/${key}`);
-
-            if (response.data.status === 'success') {
-                return response.data.message;
-            }
-
-            return null;
-        } catch (error) {
-            console.error(`Error in getItem: ${error}`);
             return null;
         }
     }

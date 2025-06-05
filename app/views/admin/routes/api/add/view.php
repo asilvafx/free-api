@@ -54,7 +54,7 @@ if (isset($_GET['key']) && $_SERVER['REQUEST_METHOD'] === "POST") {
         }
         $crypt = new Crypt;
         $d = time();
-        $api_key = $crypt->generateRandomString(26);
+        $api_key = $crypt->generateRandomString(13) . "-" . $crypt->generateRandomString(13);
 
         try {
             $collection->reset();

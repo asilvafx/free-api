@@ -116,8 +116,15 @@ class Crud {
     }
 
     // UPDATE
-    public function update(string $tableName, int $id, array $data): array // Change return type to array
+    public function update(string $tableName, int $id, array $data): array
     {
+        // Check and add columns if they don't exist
+        foreach (array_keys($data) as $column) {
+            if (!$this->columnExists($tableName, $column)) {
+                $this->addColumn($tableName, $column, 'TEXT'); // or detect type if needed
+            }
+        }
+
         $updates = implode(", ", array_map(fn($key) => "$key = ?", array_keys($data)));
         $sql = "UPDATE $tableName SET $updates WHERE id = ?";
 
@@ -127,12 +134,12 @@ class Crud {
             return [
                 "status" => "success",
                 "message" => "Data updated successfully."
-            ]; // Return success message
+            ];
         } catch (PDOException $e) {
             return [
                 "status" => "error",
                 "message" => $e->getMessage()
-            ]; // Return error message
+            ];
         }
     }
 
@@ -146,26 +153,6 @@ class Crud {
             return [
                 "status" => "success",
                 "message" => "Deleted from collection successfully."
-            ]; // Return success message
-        } catch (PDOException $e) {
-            return [
-                "status" => "error",
-                "message" => $e->getMessage()
-            ]; // Return error message
-        }
-    }
-
-    // DELETE ALL
-    public function eraseAll(string $tableName): array // Change return type to array
-    {
-        $sql = "DROP TABLE IF EXISTS $tableName";
-
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute();
-            return [
-                "status" => "success",
-                "message" => "Collection deleted successfully."
             ]; // Return success message
         } catch (PDOException $e) {
             return [

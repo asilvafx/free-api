@@ -291,36 +291,20 @@ class Api extends PostController
 
             case 'DELETE':
                 $crud = new Crud($siteDb);
-                if (!empty($search)) {
+                if( !empty($search) ){
                     try {
-                    if(!is_numeric($search)){
-                        $response->json('error', 'Invalid query value.');
-                        exit;
-                    }
-                    $result = $crud->erase($requestData["collection"], $search);
-                    if ($result['status'] === 'success') {
-                        $response->json('success', $result['message']);
-                    } else {
-                        $response->json('error', $result['message']);
-                    }
+                        $result = $crud->erase($requestData["collection"], $search);
+                        if ($result['status'] === 'success') {
+                            $response->json('success', $result['message']);
+                        } else {
+                            $response->json('error', $result['message']);
+                        }
                     } catch (Exception $e) {
                         $response->json('error', $e->getMessage());
                     }
                 } else {
                      $response->json('error', 'Invalid data or values.');
-                     /* Uncomment block to allow delete collection (All items)
-                        try {
-                            $result = $crud->eraseAll($requestData["collection"]);
-                            if ($result['status'] === 'success') {
-                                $response->json('success', $result['message']);
-                            } else {
-                                $response->json('error', $result['message']);
-                            }
-                        } catch (Exception $e) {
-                            $response->json('error', $e->getMessage());
-                        }
-                    */
-                    }
+                }
                 break;
 
             default:
@@ -328,6 +312,13 @@ class Api extends PostController
                 exit;
         }
 
+        exit;
+    }
+
+    function Invalid($f3) {
+        $response = new Response;
+
+        $response->json('error', 'Invalid Endpoint');
         exit;
     }
 }

@@ -7,7 +7,7 @@ const enableApi = document.getElementById('enableApi');
 const keySlug = document.getElementById('keySlug');
 const removeDomainBtns = document.querySelectorAll('[data-remove-domain]');
 
-function copyKey(){
+window.copyKey = function copyKey(){
     const keyInput = document.getElementById("key");
 
     // Select the text field
@@ -21,7 +21,7 @@ function copyKey(){
     showAlert("success", "API Key was succefully copied to the clipbard.");
 }
 
-function showKey($display){
+window.showKey = function showKey($display){
     const showKeyBtn = document.getElementById('showKey');
     const hideKeyBtn = document.getElementById('hideKey');
     const short_key = document.getElementById('short_key');
@@ -41,7 +41,7 @@ function showKey($display){
 }
 
 if(enableApi){
-    enableApi.addEventListener('change', function(e){
+    enableApi.addEventListener('change', async function(e){
         let apiName = document.getElementById('apiName');
 
         const schema = {};
@@ -54,13 +54,13 @@ if(enableApi){
         }
 
         let uri_request = "api/keys/edit?status";
-        fetchRequest(payload, uri_request, null, false);
+        await fetchRequest(payload, uri_request, null, false);
 
     })
 }
 
 if(renameKeyForm){
-    renameKeyForm.addEventListener('submit', function(e){
+    renameKeyForm.addEventListener('submit', async function(e){
         e.preventDefault();
 
         let apiName = document.getElementById('apiName');
@@ -75,10 +75,10 @@ if(renameKeyForm){
         }
 
         let uri_request = "api/keys/edit?rename";
-        fetchRequest(payload, uri_request, renameKeyForm, false);
+        await fetchRequest(payload, uri_request, renameKeyForm, false);
     })
 }
-function updateKeyName($name){
+window.updateKeyName = function updateKeyName($name){
     const renameExit = document.getElementById('renameExit');
     const apiKeyName = document.getElementById('apiKeyName');
 
@@ -87,7 +87,7 @@ function updateKeyName($name){
 }
 
 if(deleteKeyForm){
-    deleteKeyForm.addEventListener('submit', function(e){
+    deleteKeyForm.addEventListener('submit', async function(e){
         e.preventDefault();
 
         const schema = {};
@@ -99,7 +99,7 @@ if(deleteKeyForm){
         }
 
         let uri_request = "api/keys/edit?delete";
-        fetchRequest(payload, uri_request, deleteKeyForm, true);
+        await fetchRequest(payload, uri_request, deleteKeyForm, true);
 
     })
 }
@@ -139,7 +139,7 @@ if(typeof(removeDomainBtns) && removeDomainBtns !== 'undefined'){
         });
     });
 }
-async function removeDomain(domain){
+window.removeDomain = async function removeDomain(domain){
 
     if(domain === ""){
         alert('Domain invalid.');
@@ -161,7 +161,6 @@ async function removeDomain(domain){
 
 // Add Event Listeners
 async function fetchRequest(formData, url, dataForm, reload=false) {
-    event.preventDefault();
     hideAlerts();
 
     // Disable all inputs and submit button
