@@ -42,7 +42,7 @@
 
     <check if="{{ isset(@MENU.sidenav) }}">
         <repeat group="{{@MENU.sidenav}}" value="{{ @item }}">
-          <check if="{{ str_contains(@USER.access, '*') || str_contains(@USER.access, @item.route) }}">
+          <check if="{{ str_contains(@THIS.access, '*') || str_contains(@THIS.access, @item.route) }}">
             <li class="nav-item">
               <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
                 <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">

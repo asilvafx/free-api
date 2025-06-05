@@ -212,7 +212,7 @@ if (!empty($query)) {
         $f3->set('PAGE.title', 'Edit User');
 
  
-        $f3->set('USER', $user);  
+        $f3->set('USER', $user);
 
         $userId = $f3->get('CXT')->user_id;
 
