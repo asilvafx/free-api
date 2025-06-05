@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $users->is_admin = 1;
         $users->status = 1;
         $users->created_at = $createdAt;
-        $users->role = 0;
+        $users->role = 1;
         $users->is_admin = 1;
         $users->is_super_admin = 1;
 
