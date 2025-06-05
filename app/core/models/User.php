@@ -15,11 +15,6 @@ class User extends \Prefab
                 $f3->reroute('/auth/logout');
                 return false;
             } else {
-                $is_admin = false;
-                if ($user->is_admin === 1) {
-                    $is_admin = true;
-                }
-
                 $f3->set('CXT', $user);  
                 $f3->set('USER.id', $user->user_id);  
             }

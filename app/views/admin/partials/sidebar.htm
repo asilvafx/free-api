@@ -24,15 +24,17 @@
     <check if="{{ isset(@MENU.appnav) && isset(@MENU.appcount) && @MENU.appcount>0 }}">
     <li class="nav-title">App</li>
         <repeat group="{{@MENU.appnav}}" value="{{ @item }}">
-            <li class="nav-item">
-              <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
-                <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">
-                  <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-{{@item.icon}}"></use>
-                </svg>
-                {{@item.title}}
-                <check if="{{@item.hasNew}}"><span class="badge badge-sm bg-primary ms-auto">NEW</span></check>
-              </a>
-            </li>
+            <check if="{{ str_contains(@USER.access, '*') || str_contains(@USER.access, @item.route) }}">
+              <li class="nav-item">
+                <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
+                  <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">
+                    <use xlink:href="{{@PUBLIC}}/assets/icons/svg/free.svg#cil-{{@item.icon}}"></use>
+                  </svg>
+                  {{@item.title}}
+                  <check if="{{@item.hasNew}}"><span class="badge badge-sm bg-primary ms-auto">NEW</span></check>
+                </a>
+              </li>
+            </check>
         </repeat>
     </check>
 
@@ -40,6 +42,7 @@
 
     <check if="{{ isset(@MENU.sidenav) }}">
         <repeat group="{{@MENU.sidenav}}" value="{{ @item }}">
+          <check if="{{ str_contains(@USER.access, '*') || str_contains(@USER.access, @item.route) }}">
             <li class="nav-item">
               <a class="nav-link {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'active':'text-body'}}" href="/{{@SITE.uri_backend}}/{{@item.route}}" aria-label="{{@item.title}}">
                 <svg class="nav-icon {{ isset(@PAGE.slug)&&@PAGE.slug==@item.route?'':'text-body'}}">
@@ -48,6 +51,7 @@
                 {{@item.title}}
               </a>
             </li>
+          </check>
         </repeat>
     </check>
 

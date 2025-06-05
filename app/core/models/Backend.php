@@ -18,10 +18,19 @@ class Backend extends MainController  {
 
         // Load user information
         $userClass = new User;
-        $userClass->Info($f3);  
+        $userClass->Info($f3);
+
 
         $content = "/dashboard";
         $ui = 'app/views/admin/';
+
+        global $db;
+        $user_role = $f3->get('CXT')->role;
+        $roles = new DB\SQL\Mapper($db, 'roles');
+        $roles->load(array('id=?', $user_role));
+
+        $user_access = $roles->access . ',restricted';
+        $f3->set('USER.access', $user_access);
 
         $f3->set('UI', $ui);   
 
@@ -44,6 +53,14 @@ class Backend extends MainController  {
         if (file_exists($ui.'routes'.$content.'/view.js')) {
             $f3->set('VIEW_JS', 'routes'.$content.'/view.js');
         }
+
+        if(!empty($f3->get('PAGE.slug'))){
+        if(!str_contains($user_access, '*')){
+            if(!str_contains($user_access, $f3->get('PAGE.slug'))) {
+                $f3->reroute('/'.$f3->get('SITE.uri_backend').'/restricted');
+                return false;
+            }
+        }}
 
         $f3->set('CONTENT', $content);  
  
