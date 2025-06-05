@@ -6,6 +6,6 @@ $f3->set('PAGE.slug', 'dashboard');
 $f3->set('breadcrumbs', [
     [
         "name" => "Dashboard",
-        "slug" => "/dashboard"
+        "slug" => "dashboard"
     ]
 ]);

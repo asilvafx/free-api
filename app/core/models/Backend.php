@@ -29,7 +29,7 @@ class Backend extends MainController  {
         $roles = new DB\SQL\Mapper($db, 'roles');
         $roles->load(array('id=?', $user_role));
 
-        $user_access = $roles->access . ',restricted';
+        $user_access = $roles->access . ',account,dashboard';
         $f3->set('USER.access', $user_access);
 
         $f3->set('UI', $ui);   
