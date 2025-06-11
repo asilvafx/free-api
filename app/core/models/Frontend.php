@@ -33,16 +33,34 @@ class Frontend extends MainController
     function Assets($f3, $args)
     {
         $slug = empty($args[0]) ? '' : $args[0];
-
         $file_url = BASE_PATH . '/' . $f3->get('UI') . $slug;
-        if (!file_exists($file_url))  {
+
+        if (!file_exists($file_url)) {
             $f3->reroute('/');
-        } else {
-            header('Content-Type: application/octet-stream');
-            header("Content-Transfer-Encoding: Binary");
-            header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
-            readfile($file_url);
         }
+
+        $extension = pathinfo($file_url, PATHINFO_EXTENSION);
+
+        // Set correct MIME type
+        $mime_types = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'svg' => 'image/svg+xml',
+            'woff2' => 'font/woff2',
+            'woff' => 'font/woff',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+        ];
+
+        $content_type = isset($mime_types[$extension]) ? $mime_types[$extension] : 'application/octet-stream';
+        header("Content-Type: $content_type");
+        header("Content-Length: " . filesize($file_url));
+        readfile($file_url);
         exit;
     }
 
