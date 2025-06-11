@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="author" content="PIGMIL.COM">
     <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index"> 
+    <meta name="googlebot" content="index">
     <meta name="keyword" content="{{isset(@SITE.keywords)?@SITE.keywords:''}}">
     <meta name="description" content="{{isset(@SITE.description)?@SITE.description:''}}">
-    
+
     <title>{{ isset(@SITE.title) ? @SITE.title : '' }}</title>
-    
+
     <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/favicon-96x96.png" sizes="96x96">
@@ -27,14 +27,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{@PUBLIC}}/manifest/apple-touch-icon-180x180.png">
     <link rel="icon" type="image/png" href="{{@PUBLIC}}/manifest/android-chrome-192x192.png" sizes="192x192">
     <link rel="manifest" href="{{@PUBLIC}}/manifest/manifest.json">
-    
+
     <meta name="msapplication-TileImage" content="{{@PUBLIC}}/manifest/mstile-144x144.png">
     <meta name="msapplication-TileColor" content="{{@SITE.color_primary}}">
     <meta name="theme-color" content="currentColor">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     <script type="module" crossorigin src="ui/assets/index.js?v={{@DEBUG>0?time():@VERSION}}"></script>
     <link rel="stylesheet" crossorigin href="ui/assets/index.css?v={{@DEBUG>0?time():@VERSION}}">
 
@@ -55,8 +55,9 @@
 </head>
 <body>
 <div id="root">
-
-    <h1>Free-API</h1>
+    <check if="{{ isset(@CONTENT) }}">
+        <include href="{{ @CONTENT }}"/>
+    </check>
 
 </div>
 

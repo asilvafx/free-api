@@ -5,29 +5,29 @@ class Frontend extends MainController
 
     function SecureDl($f3, $args)
     {
-      $slug = empty($args[0]) ? '' : $args[0];
-      $key = isset($_GET['key']) && !empty($_GET['key']) ? htmlspecialchars_decode($_GET['key']) : null;
-      if(!$key){  $f3->reroute('/'); return false; }
+        $slug = empty($args[0]) ? '' : $args[0];
+        $key = isset($_GET['key']) && !empty($_GET['key']) ? htmlspecialchars_decode($_GET['key']) : null;
+        if(!$key){  $f3->reroute('/'); return false; }
 
-      $slug = str_replace("/secure/dl/","",$slug);
+        $slug = str_replace("/secure/dl/","",$slug);
 
-      $file_url = BASE_PATH . '/public/uploads/' . $slug;
+        $file_url = BASE_PATH . '/public/uploads/' . $slug;
 
-      if (!file_exists($file_url)) {
-        $f3->reroute('/');
-      } else {
-        $crypt = new Crypt;
-        if($crypt->verify($slug, $key)){
-          header('Content-Type: application/octet-stream');
-          header("Content-Transfer-Encoding: Binary");
-          header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
-          readfile($file_url);
+        if (!file_exists($file_url)) {
+            $f3->reroute('/');
         } else {
-          $f3->reroute('/');
-        }
+            $crypt = new Crypt;
+            if($crypt->verify($slug, $key)){
+                header('Content-Type: application/octet-stream');
+                header("Content-Transfer-Encoding: Binary");
+                header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
+                readfile($file_url);
+            } else {
+                $f3->reroute('/');
+            }
 
-      }
-      exit;
+        }
+        exit;
     }
 
     function Assets($f3, $args)
@@ -96,12 +96,18 @@ class Frontend extends MainController
             if (file_exists($ui . 'routes' . $slug . '/view.htm')) {
                 $view = 'routes' . $slug . '/view.htm';
             } else {
-                if (is_null($php)) {
-                    $view = 'routes' . $landing . '/view.htm';
-                } else {
+                if (!is_null($php)) {
                     require_once($php);
                     die;
                 }
+            }
+
+            if (file_exists($ui.'routes'.$slug.'/view.css')) {
+                $f3->set('VIEW_CSS', 'routes'.$slug.'/view.css');
+            }
+
+            if (file_exists($ui.'routes'.$slug.'/view.js')) {
+                $f3->set('VIEW_JS', 'routes'.$slug.'/view.js');
             }
         }
 
