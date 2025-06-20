@@ -47,17 +47,17 @@ class Api extends PostController
 
             // Check allowed IPs if set
             $client_ip = $f3->get('CLIENT.ip');
+            $client_address = gethostbyaddr($client_ip);
             $ips = $api->api_allowed_domains;
             if (!empty($ips) && is_string($ips)) {
                 $allowed_ips = array_map('trim', explode(',', $ips));
 
-
-                if (!in_array($client_ip, $allowed_ips) && !in_array('*', $allowed_ips)) {
-                    $response->json('error', 'IP: '.$client_ip.' not allowed.');
+                if (!in_array($client_ip, $allowed_ips) && !in_array($client_address, $allowed_ips) && !in_array('*', $allowed_ips)) {
+                    $response->json('error', 'IP: '.$client_ip.'/'.$client_address.' not allowed.');
                     return false;
                 }
             } else {
-                $response->json('error', 'IP: '.$client_ip.' not allowed.');
+                $response->json('error', 'IP: '.$client_ip.'/'.$client_address.' not allowed.');
                 return false;
             }
 
