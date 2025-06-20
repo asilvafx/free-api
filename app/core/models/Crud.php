@@ -115,6 +115,33 @@ class Crud {
         }
     }
 
+    public function readByKeyValue(string $tableName, string $search, string $value): array
+    {
+        $sql = "SELECT * FROM $tableName WHERE $search = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$value]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                return [
+                    "status" => "success",
+                    "message" => $result
+                ];
+            } else {
+                return [
+                    "status" => "error",
+                    "message" => "No item found $search: $value"
+                ];
+            }
+        } catch (PDOException $e) {
+            return [
+                "status" => "error",
+                "message" => "Error reading data: " . $e->getMessage()
+            ];
+        }
+    }
+
     // UPDATE
     public function update(string $tableName, int $id, array $data): array
     {

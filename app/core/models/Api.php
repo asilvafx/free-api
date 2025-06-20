@@ -215,6 +215,7 @@ class Api extends PostController
         $body = json_decode(file_get_contents('php://input'), true);
         $slug = empty($args['slug']) ? '' : htmlspecialchars_decode($args['slug']);
         $search = empty($args['search']) ? '' : htmlspecialchars_decode($args['search']);
+        $value = empty($args['value']) ? '' : htmlspecialchars_decode($args['value']);
         $key = isset($_SERVER['HTTP_AUTHORIZATION']) ? trim(str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'])) : null;
         $response = new Response;
 
@@ -250,6 +251,10 @@ class Api extends PostController
                 $crud = new Crud($siteDb); // Use the global $siteDb for CRUD operations
 
                 try {
+                    if (!empty($value) && !empty($search)) {
+                        // If search is set and is numeric, fetch the specific item by ID
+                        $data = $crud->readByKeyValue($requestData["collection"], (string)$search, (string)$value);
+                    } else
                     if (!empty($search) && is_numeric($search)) {
                         // If search is set and is numeric, fetch the specific item by ID
                         $data = $crud->readById($requestData["collection"], (int)$search);
