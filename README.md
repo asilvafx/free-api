@@ -14,6 +14,7 @@ Welcome to the Free API project! This is a PHP API backend built using the F3 Fa
 - **Bearer Tokens Authentication**: Secure your API http authorization requests.
 - **MVC Architecture**: Organize your code with the Model-View-Controller pattern.
 - **Emails**: Connect email to your SMTP server to send emails via API.
+- **Payments**: Stripe API and PayPal API integrated.
 - **Files Management**: Dedicated area to manage uploaded files. Download and upload files via API.
 - **SQLite Database Management**: Lightweight and easy-to-use database solution with visual editor.
 - **User Access**: Implement user registration, login and roles based functionalities.
@@ -34,9 +35,10 @@ To get started with the Free API, follow these steps:
 
 2. **Install Dependencies**:
    ``` 
-   composer install
+   composer install 
    ```
- 
+3. **Run Application**:
+   ``` 
+   Upload the files to your FTP server or Run locally (XAMPP, MAMP, ..), and follow the setup wizzard instructions on your browser! 
+   ```
      
-Upload the files to your FTP server, and follow the setup wizzard instructions on your browser!
-

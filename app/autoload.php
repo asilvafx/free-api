@@ -11,7 +11,7 @@ $f3->set('BASE', ""); // Host base path (default: empty)
 $f3->set('LOGS', "app/logs/"); // Where errors are logged
 $f3->set('TEMP', "app/tmp/cache/"); // Where errors are logged
 $f3->set('ONERROR', "Report->error"); // Our custom error handler, so we also get a pretty page for our users
-$f3->set('UI', "ui/"); // Where the framework will look for templates and related HTML-support files
+$f3->set('UI', "front/"); // Where the framework will look for templates and related HTML-support files
 $f3->set('UPLOADS', "public/uploads/"); // Where uploads will be saved
 $f3->set('db', "sqlite"); // Database DSN (sqlite/mysql)
 $f3->set('dbPath', "app/data/db/cms.db"); // Database Path
