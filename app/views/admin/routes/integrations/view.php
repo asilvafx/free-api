@@ -101,7 +101,7 @@ if ($viewIntegration) {
         $ini = parse_ini_file($integrationsIni);
         $appTitle = $ini['app_title'] ?? null;
         $appDescription = $ini['app_description'] ?? 'No description available';
-        $appIcon = $ini['app_icon'] ?? $f3->get('PUBLIC') . '/integrations/' . $viewIntegration . '.png';
+        $appIcon = $ini['app_icon'] ?? $f3->get('PUBLIC') . '/assets/img/empty.jpg';
 
         if (file_exists($integrationsFile)) {
             $integrationScript = null;
@@ -119,6 +119,7 @@ if ($viewIntegration) {
             $f3->set('PAGE.title', $appTitle . ' - Integrations');
             $f3->set('integration.title', $appTitle);
             $f3->set('integration.description', $appDescription);
+            $f3->set('integration.icon', $appIcon);
             $f3->set('viewIntegration', $viewIntegration);
             $f3->set('viewIntegrationPath', $integrationPath);
 
@@ -156,7 +157,7 @@ if ($viewIntegration) {
                 $ini = parse_ini_file($pluginIni);
                 $appTitle = $ini['app_title'] ?? 'Unknown Title';
                 $appDescription = $ini['app_description'] ?? 'No description available';
-                $appIcon = $ini['app_icon'] ?? $f3->get('PUBLIC') . '/integrations/' . $plugin . '.png';
+                $appIcon = $ini['app_icon'] ?? $f3->get('PUBLIC') . '/assets/img/empty.jpg';
 
                 $integrationsArr[] = [
                     'id' => $plugin,

@@ -77,8 +77,8 @@
                                 <div class="col-12 col-md-6 col-lg-4 mb-4 pe-2">
                                     <div class="card">
                                         <div class="card-body">
-                                        <div class="card-icon mb-2"> 
-                                            <img width="50" height="50" alt="{{@integration.title}}" src="{{@integration.icon}}">
+                                        <div class="card-icon mb-2">
+                                            <img class="bg-light p-2 rounded" width="50" height="50" alt="{{@integration.title}}" src="{{@integration.icon}}">
                                         </div>
                                         <h5 class="card-title truncate">
                                             {{@integration.title}}
@@ -86,7 +86,7 @@
                                         <p class="card-text truncate-3"> 
                                             {{@integration.description}}
                                         </p>
-                                        <a role="button" class="w-100 btn btn-primary d-flex justify-content-between" aria-label={{@integration.title}}" href="/{{@SITE.uri_backend}}/integrations?view={{@integration.id}}">
+                                        <a role="button" class="w-100 btn btn-primary d-flex justify-content-between" aria-label="{{@integration.title}}" href="/{{@SITE.uri_backend}}/integrations?view={{@integration.id}}">
                                             <span>{{@integration.title}}</span>
                                             <span>→</span>
                                         </a>

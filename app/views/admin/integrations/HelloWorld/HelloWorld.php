@@ -13,7 +13,7 @@ class HelloWorld
         header('Content-Type: application/json');
 
         try {
-            echo json_encode(['success' => 'Is Working!']);
+            echo json_encode(['success' => 'Hello world!']);
 
         } catch (Error $e) {
             http_response_code(500);
