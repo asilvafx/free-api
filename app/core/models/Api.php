@@ -127,19 +127,28 @@ class Api extends PostController
         // Gather inputs
         $to      = $body['address'] ?? $f3->get('POST.address');
         $subject = $body['subject'] ?? $f3->get('POST.subject');
-        $body    = $body['message'] ?? $f3->get('POST.message');
+        $content = $body['content'] ?? $f3->get('POST.content'); 
+        $type    = $body['method'] ?? $f3->get('POST.method');
 
-        if (!$to || !$subject || !$body) {
-            $response->json('error', 'Missing email fields (address, subject, body).');
+        if (!$to || !$subject || !$content) {
+            $response->json('error', 'Missing email fields (address, subject, content).');
             exit;
+        }
+
+        $params = ['message' => $content];
+
+        if($type === 'otp'){
+            $params = ['otp' => $content];
+        } else if(!empty($type)){
+            $params = $content;
         }
 
         // Send email
         $mail->sendEmail(
             $to,
             $subject,
-            'default',
-            ['message' => $body]
+            $type,
+            $params
         );
 
         // success response

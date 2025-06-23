@@ -2,7 +2,8 @@
 
   class Mail extends \Prefab  {
 
-    function sendEmail($address, $title, $messageType = 'default', $params = []) {
+    function sendEmail($address, $title, $messageType = 'default', $params = []): bool
+    {
       global $f3;
 
       // Retrieve SMTP settings from configuration
@@ -48,25 +49,21 @@
     }
 
     // Generate the entire email body based on the message type
-    function generateEmailBody($messageType, $params = []) {
+    function generateEmailBody($messageType, $params = []): string
+    {
       $body = $this->body($params);  // Email header
-      switch ($messageType) {
-        case 'otpCode':
-          $body .= $this->otpCode($params);
-          break;
-        case 'loginAlert':
-          $body .= $this->loginAlert($params);
-          break;
-        case 'default':
-          $body .= $this->defaultMsg($params);
-          break;
-      }
+      $body .= match ($messageType) {
+            'otp' => $this->otpCode($params),
+            'loginAlert' => $this->loginAlert($params),
+            default => $this->defaultMsg($params),
+      };
       $body .= $this->footer($params);  // Email footer
       return $body;
     }
 
     // General body structure with placeholders
-    function body($params = []) {
+    function body($params = []): string
+    {
       global $f3;
       $siteName = $f3->get('SITE.name');
       return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -125,7 +122,7 @@
                       <!-- Header Section -->
                       <tr>
                         <td align="center" style="padding: 34px 40px 20px;">
-                          <a href="'.$f3->get('SITE.base_url').'" style="font-size: 16px; font-weight: bold; color: #9B9B9B;">'.$siteName.'</a>
+                          <span style="font-size: 16px; font-weight: bold; color: #9B9B9B;">'.$siteName.'</span>
                         </td>
                       </tr>
               
@@ -137,21 +134,17 @@
 
 
     // Footer section of the email
-    function footer($params = []) {
+    function footer($params = []): string
+    {
       global $f3;
-      $footer = isset($params['footer']) ? $params['footer'] : '';
+      $footer = $params['footer'] ?? '';
       return '
             </td>
         </tr>
         <!-- Footer Section -->
         <tr>
           <td style="padding: 31px 40px; background-color: #ffffff; text-align: center; color: #9B9B9B; font-size: 14px;">
-            <span>'.$footer.'</span>
-            <div style="padding-top: 20px;">
-              <a href="http://example.com/" style="margin-right: 15px;"><img src="'.$f3->get('SITE.base_url').'public/assets/img/facebook-icon.png" alt="Facebook" width="16" height="16"></a>
-              <a href="http://example.com/" style="margin-right: 15px;"><img src="'.$f3->get('SITE.base_url').'public/assets/img/twitter-icon.png" alt="Twitter" width="16" height="16"></a>
-              <a href="http://example.com/"><img src="'.$f3->get('SITE.base_url').'public/assets/img/instagram-icon.png" alt="Instagram" width="16" height="16"></a>
-            </div>
+            <span>'.$footer.'</span> 
             <div style="padding-top: 10px;">
               <a href="http://example.com/" style="color: #1595E7;">Manage Preferences</a>
               &nbsp;&nbsp;
@@ -169,28 +162,30 @@
     }
 
     // Default message structure
-    function defaultMsg($params = []) {
-      $message = isset($params['message']) ? htmlspecialchars_decode($params['message']) : '';
-      return '<div class="message">' . $message . '</div>';
+    function defaultMsg($params = []): string
+    {
+      $message = !empty($params['message']) ? htmlspecialchars_decode($params['message']) : '';
+      return '<div class="message" style="margin-bottom: 10px; font-size: 12px; color: #ccc;">' . $message . '</div>';
     }
 
     // OTP-specific message structure
-    function otpCode($params = []) {
-      $otpCode = isset($params['otp']) ? $params['otp'] : '000000';  // Default OTP if not provided
-      return '<div class="otp-title" style="margin-bottom: 10px; font-size: x-small; text-transform: uppercase; font-weight: bold; color: #3aa055;">Verification Code</div>
-            <span class="otp-code" style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #1595E7;">
-            ' . $otpCode . '
+    function otpCode($params = []): string
+    {
+      $code = $params['otp'] ?? '000000';  // Default OTP if not provided
+      return '<div class="otp-title" style="margin-bottom: 10px; font-size: x-small; text-transform: uppercase; font-weight: bold; color: #ccc;">Verification Code</div>
+            <span class="otp-code" style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #fff;">
+            ' . $code . '
             </span>
             <div class="message" style="margin: 20px 0;">You\'re now performing a one-time verification. Your code will be valid for 15 minutes.</div>
-            <a href="http://example.com/" class="verify-btn">Verify manually</a>
             <div class="disclaimer" style="padding-top: 10px; font-size: small; color: #9B9B9B;">*Don\'t forward this email or verification code to anyone</div>
       ';
     }
 
     // OTP-specific message structure
-    function loginAlert($params = []) {
+    function loginAlert($params = []): string
+    {
       global $f3;
-      $visitorIp = isset($params['ip']) ? $params['ip'] : ':0';  // Default OTP if not provided
+      $visitorIp = $params['ip'] ?? ':0';  // Default OTP if not provided
       return '<div class="message" style="margin: 20px 0;">
               We noticed a login to your account from a new device. Was this you?
               <p>

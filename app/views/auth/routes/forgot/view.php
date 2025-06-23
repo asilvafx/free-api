@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 $users->nonce = $otp_gen;
                 if ($users->save()) {
                     $mail = new Mail;
-                    $mail->sendEmail($user_email, 'Verification Code', 'otpCode', ['otp' => $otp_gen]);
+                    $mail->sendEmail($user_email, 'Verification Code', 'otp', $otp_gen);
                     $message = $f3->get('CSRF');
                 } else {
                     $response->json('error', 'There was an error processing your request. Please, try again later.');
