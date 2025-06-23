@@ -165,7 +165,7 @@
     function defaultMsg($params = []): string
     {
       $message = !empty($params['message']) ? htmlspecialchars_decode($params['message']) : '';
-      return '<div class="message" style="margin-bottom: 10px; font-size: 12px; color: #ccc;">' . $message . '</div>';
+      return '<div class="message" style="margin-bottom: 10px;">' . $message . '</div>';
     }
 
     // OTP-specific message structure
@@ -173,7 +173,7 @@
     {
       $code = $params['otp'] ?? '000000';  // Default OTP if not provided
       return '<div class="otp-title" style="margin-bottom: 10px; font-size: x-small; text-transform: uppercase; font-weight: bold; color: #ccc;">Verification Code</div>
-            <span class="otp-code" style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #fff;">
+            <span class="otp-code message" style="margin-bottom: 20px; font-size: 24px; font-weight: bolder;">
             ' . $code . '
             </span>
             <div class="message" style="margin: 20px 0;">You\'re now performing a one-time verification. Your code will be valid for 15 minutes.</div>
