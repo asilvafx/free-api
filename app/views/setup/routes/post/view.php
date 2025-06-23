@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $site->enable_api = 0;
         $site->enable_register = 0;
         $site->uri_backend = 'cp-admin';
-        $site->uri_auth = 'auth';
+        $site->uri_auth = 'cp-auth';
         $site->color_primary = '#0025ff';
         $site->color_primary_text = '#ffffff';
         $site->color_dark = '#1d222b';

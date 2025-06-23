@@ -127,12 +127,18 @@ class Api extends PostController
         // Gather inputs
         $to      = $body['address'] ?? $f3->get('POST.address');
         $subject = $body['subject'] ?? $f3->get('POST.subject');
-        $content = $body['content'] ?? $f3->get('POST.content'); 
+        $content = $body['content'] ?? $f3->get('POST.content');
         $type    = $body['method'] ?? $f3->get('POST.method');
+        $options    = $body['options'] ?? $f3->get('POST.options');
 
         if (!$to || !$subject || !$content) {
             $response->json('error', 'Missing email fields (address, subject, content).');
             exit;
+        }
+
+        if(!empty($options) && $options === 'crypt'){
+            $crypt = new Crypt();
+            $content = $crypt->JsDecrypt($content);
         }
 
         $params = ['message' => $content];
