@@ -35,7 +35,7 @@ class Query extends \Prefab
         try {
             $response = $db->exec($sql);
         } catch (Exception $e) {
-            $response[] = "";
+            return null;
         }
 
         return $response;

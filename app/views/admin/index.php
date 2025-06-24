@@ -12,12 +12,7 @@ $sidenav_menu = '[
         "title": "Database",
         "route": "database",
         "icon": "storage"
-    },
-    {
-        "title": "Payments",
-        "route": "pay",
-        "icon": "dollar"
-    },
+    }, 
     {
         "title": "E-Mail",
         "route": "mail",

@@ -94,7 +94,7 @@ if ($viewIntegration) {
     $f3->set('integration.enabled', true);
     $integrationsFile = $integrationsPath . $viewIntegration . '/' . $viewIntegration . '.php';
     $integrationsIni = $integrationsPath . $viewIntegration . '/' . $viewIntegration . '.ini';
-    $integrationPath =  $f3->get('INTEGRATIONS') . $viewIntegration . '/view/index.htm';
+    $integrationPath =  $f3->get('INTEGRATIONS') . $viewIntegration . '/view/view.htm';
 
     $ini = null;
     if (file_exists($integrationsIni)) {
@@ -107,14 +107,25 @@ if ($viewIntegration) {
             $integrationScript = null;
 
             if (file_exists($integrationPath)) {
-                $integrationScript = 'integrations/' . $viewIntegration . '/view/index.php';
+                $integrationScript = 'integrations/' . $viewIntegration . '/view/view.php';
                 if (file_exists(ROOT . 'views/admin/' . $integrationScript)) {
                     require_once(ROOT . 'views/admin/' . $integrationScript);
                 }
-                $integrationPath = 'integrations/' . $viewIntegration . '/view/index.htm';
+                $integrationPathJs =  'integrations/' . $viewIntegration . '/view/view.js';
+                if (file_exists(ROOT . 'views/admin/' . $integrationPathJs)) {
+                   $f3->set('INTEGRATION_JS', $integrationPathJs);
+                }
+
+                $integrationPathCss = 'integrations/' . $viewIntegration . '/view/view.css';
+                if (file_exists(ROOT . 'views/admin/' . $integrationPathCss)) {
+                    $f3->set('INTEGRATION_CSS', $integrationPathCss);
+                }
+
+                $integrationPath = 'integrations/' . $viewIntegration . '/view/view.htm';
             } else {
                 $integrationPath = null;
             }
+
 
             $f3->set('PAGE.title', $appTitle . ' - Integrations');
             $f3->set('integration.title', $appTitle);
