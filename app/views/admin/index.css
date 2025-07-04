@@ -3,6 +3,12 @@
   flex-direction: column;
   position: relative;
 }
+tr, td {
+    white-space: nowrap;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .footer {
   margin-top: auto;
 }

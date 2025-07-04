@@ -23,8 +23,6 @@
       <path value="$PROJECT_DIR$/app/vendor/ralouphie/getallheaders" />
       <path value="$PROJECT_DIR$/app/vendor/dasprid/enum" />
       <path value="$PROJECT_DIR$/app/vendor/composer" />
-      <path value="$PROJECT_DIR$/app/lib/vendor/stripe-php/lib" />
-      <path value="$PROJECT_DIR$/app/lib/vendor/stripe-php/data" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

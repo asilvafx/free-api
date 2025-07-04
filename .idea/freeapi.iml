@@ -5,8 +5,6 @@
       <sourceFolder url="file://$MODULE_DIR$/app/vendor/src" isTestSource="false" packagePrefix="Pigmilcom\Webapp\" />
       <sourceFolder url="file://$MODULE_DIR$/app/vendor2/src" isTestSource="false" packagePrefix="Pigmilcom\Webapp\" />
       <sourceFolder url="file://$MODULE_DIR$/app/lib/spec" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/app/lib/vendor/stripe-php/data" />
-      <excludeFolder url="file://$MODULE_DIR$/app/lib/vendor/stripe-php/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

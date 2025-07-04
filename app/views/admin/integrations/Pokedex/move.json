@@ -1,0 +1,38 @@
+{
+    "pound": {
+        "id": 1,
+        "name": "pound",
+        "type": "normal",
+        "damage_class": "physical",
+        "power": 40,
+        "pp": 35,
+        "accuracy": 100,
+        "priority": 0,
+        "effect": "Inflicts regular damage with no additional effect.",
+        "target": "selected-pokemon"
+    },
+    "karate-chop": {
+        "id": 2,
+        "name": "karate-chop",
+        "type": "fighting",
+        "damage_class": "physical",
+        "power": 50,
+        "pp": 25,
+        "accuracy": 100,
+        "priority": 0,
+        "effect": "Has an increased chance for a critical hit.",
+        "target": "selected-pokemon"
+    },
+    "double-slap": {
+        "id": 3,
+        "name": "double-slap",
+        "type": "normal",
+        "damage_class": "physical",
+        "power": 15,
+        "pp": 10,
+        "accuracy": 85,
+        "priority": 0,
+        "effect": "Hits 2-5 times in one turn.",
+        "target": "selected-pokemon"
+    }
+}
