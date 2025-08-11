@@ -36,6 +36,7 @@ header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
 ini_set('session.save_path', ROOT . 'tmp/session/');
+ini_set('memory_limit', '256M'); // or 512M
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {

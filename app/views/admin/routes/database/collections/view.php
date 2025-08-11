@@ -1,5 +1,6 @@
 <?php
 
+
 $f3->set('PAGE.title', 'Collections');
 $f3->set('PAGE.slug', 'database');
 $f3->set('breadcrumbs', [
